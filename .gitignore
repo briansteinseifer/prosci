@@ -1,0 +1,10 @@
+.DS_Store
+node_modules/
+package.json
+package-lock.json
+shot.mjs
+
+# Working artifacts, not deliverables
+.superdesign/
+docs/
+shots/
