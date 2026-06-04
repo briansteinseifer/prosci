@@ -17,6 +17,9 @@ live Prosci store) but diverge deliberately in how courses are presented and ref
   match-strength pill and Register / Join Waitlist actions; chip-based facet filters.
 - **`version-b.html`** — *Reasoning cards.* Lavender-framed cards leading with a
   "Why this fits" rationale and an "Add to path" action; checkbox/radio filter panel.
+- **`version-c.html`** — *Conversational.* A guided chat advisor that asks a couple
+  of questions, then synthesizes a best-fit "Why this fits" recommendation with
+  supporting courses and a running path you build as you go. (Tailwind CDN based.)
 
 ## Context
 

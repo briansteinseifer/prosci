@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Advisor — Prosci (Grid)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'prosci-bg': '#fffefa',
+            'prosci-primary': '#350944',
+            'prosci-primary-deep': '#2a0736',
+            'prosci-accent': '#ff1aa3',
+            'prosci-accent-hover': '#e0088c',
+            'prosci-secondary': '#025c67',
+            'prosci-text': '#000000',
+            'prosci-text-secondary': '#3e3e3e',
+            'prosci-text-muted': '#8c8c8c',
+            'prosci-surface': '#f6f4ed',
+          },
+          fontFamily: {
+            'instrument': ['"Instrument Sans"', 'Arial', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            'display': ['"Baskervville"', 'Georgia', '"Times New Roman"', 'serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Instrument Sans', Arial, sans-serif; background:#fffefa; color:#3e3e3e; overflow-x: clip; }
+    .font-display { font-family: 'Baskervville', Georgia, serif; }
+
+    /* hairline border */
+    .hairline { border:1px solid rgba(53,9,68,0.10); }
+    .hairline-b { border-bottom:1px solid rgba(53,9,68,0.10); }
+
+    /* brand shadows (aubergine-tinted, never gray) */
+    .shadow-card { box-shadow: 0 14px 34px rgba(53,9,68,0.08); }
+    .shadow-elevated { box-shadow: 0 24px 70px rgba(53,9,68,0.14); }
+
+    /* search focus ring */
+    .focus-ring:focus-within { box-shadow: 0 0 0 4px rgba(255,26,163,0.12); border-color: rgba(255,26,163,0.45); }
+
+    @keyframes fadeInUp { from { opacity:0; transform: translateY(14px); } to { opacity:1; transform: translateY(0); } }
+    .enter { animation: fadeInUp 0.45s cubic-bezier(.2,.7,.3,1) forwards; }
+
+    @keyframes dotPulse { 0%,80%,100% { opacity:.25; transform: translateY(0);} 40% { opacity:1; transform: translateY(-3px);} }
+    .dot { width:7px;height:7px;border-radius:999px;background:#350944;display:inline-block;animation:dotPulse 1.2s infinite; }
+    .dot:nth-child(2){animation-delay:.15s} .dot:nth-child(3){animation-delay:.3s}
+
+    @keyframes haloPulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,26,163,0.14);} 50%{box-shadow:0 0 26px 6px rgba(255,26,163,0.07);} }
+    .ai-halo { animation: haloPulse 3.2s ease-in-out infinite; }
+
+    /* decorative hero blurs */
+    .blur-blob { position:absolute; border-radius:999px; filter: blur(70px); opacity:.5; z-index:0; pointer-events:none; }
+
+    .chip { transition: all .18s ease; }
+    .chip:hover { transform: translateY(-1px); }
+
+    .thread-scroll::-webkit-scrollbar { width:8px; }
+    .thread-scroll::-webkit-scrollbar-thumb { background: rgba(53,9,68,0.12); border-radius:999px; }
+
+    /* tray slide-in */
+    @keyframes traySlide { from { opacity:0; transform: translateY(16px);} to {opacity:1;transform:translateY(0);} }
+    .tray-enter { animation: traySlide .35s ease forwards; }
+
+    /* ---- recommended card: collapsible "why this fits" footer ---- */
+    .rec-card { border:1px solid rgba(53,9,68,0.12); transition: border-color .22s ease, box-shadow .22s ease; }
+    .rec-card:hover, .rec-card.open {
+      border-color:#350944;
+      box-shadow: 0 0 0 1px #350944, 0 16px 38px rgba(53,9,68,0.12);
+    }
+    .fit-body { max-height:0; overflow:hidden; transition: max-height .38s cubic-bezier(.2,.7,.3,1); }
+    .rec-card:hover .fit-body, .rec-card.open .fit-body { max-height:340px; }
+    .fit-caret { transition: transform .3s ease; }
+    .rec-card:hover .fit-caret, .rec-card.open .fit-caret { transform: rotate(180deg); }
+
+    /* FAQ accordion */
+    details.faq summary::-webkit-details-marker { display:none; }
+    details.faq[open] .faq-icon { transform: rotate(45deg); }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- ===================== HEADER (Prosci store) ===================== -->
+  <header class="sticky top-0 z-40">
+
+    <!-- top utility bar (cream) -->
+    <div class="bg-prosci-surface" style="border-bottom:1px solid rgba(53,9,68,0.10);">
+      <div class="max-w-[1320px] mx-auto px-5 sm:px-6 h-[56px] flex items-center justify-end gap-3 sm:gap-5">
+
+        <!-- TRAINING (active page) — desktop only -->
+        <a href="#" class="hidden md:inline-flex items-center gap-2 bg-prosci-primary text-[#fffefa] px-4 py-2.5 rounded-[8px] text-[0.82rem] font-semibold uppercase tracking-[0.05em]">
+          <iconify-icon icon="ph:calendar-blank" class="text-[1.1rem]"></iconify-icon> Training
+        </a>
+
+        <!-- Store Account — desktop only -->
+        <a href="#" class="hidden md:inline-flex items-center gap-2 text-[0.9rem] font-medium text-prosci-primary hover:text-prosci-accent transition">
+          <span class="w-8 h-8 rounded-full bg-prosci-primary text-white flex items-center justify-center text-[1.05rem]"><iconify-icon icon="ph:storefront"></iconify-icon></span>
+          Store Account <iconify-icon icon="ph:caret-down" class="text-[0.72rem] opacity-70"></iconify-icon>
+        </a>
+
+        <!-- English — all sizes -->
+        <a href="#" class="inline-flex items-center gap-2 text-[0.9rem] font-medium text-prosci-primary hover:text-prosci-accent transition">
+          <span class="w-8 h-8 rounded-full bg-prosci-primary text-white flex items-center justify-center text-[1.05rem]"><iconify-icon icon="ph:globe"></iconify-icon></span>
+          English <iconify-icon icon="ph:caret-down" class="text-[0.72rem] opacity-70"></iconify-icon>
+        </a>
+
+        <!-- Cart — all sizes -->
+        <a href="#" aria-label="Cart (0 items)" class="w-9 h-9 rounded-full bg-prosci-primary text-white flex flex-col items-center justify-center leading-none">
+          <span class="text-[0.6rem] font-bold -mb-[3px]">0</span>
+          <iconify-icon icon="ph:shopping-cart-simple" class="text-[0.95rem]"></iconify-icon>
+        </a>
+
+        <!-- divider + Prosci Portal — desktop only -->
+        <span class="hidden md:block w-px h-7 bg-prosci-primary/25 mx-1"></span>
+        <a href="#" class="hidden md:inline-flex items-center gap-2 text-[0.9rem] font-medium text-prosci-primary hover:text-prosci-accent transition">
+          <span class="w-8 h-8 rounded-full bg-prosci-primary text-white flex items-center justify-center text-[1.05rem]"><iconify-icon icon="ph:flag-pennant-fill"></iconify-icon></span>
+          Prosci Portal
+        </a>
+      </div>
+    </div>
+
+    <!-- main bar (white) -->
+    <div class="bg-prosci-bg" style="border-bottom:1px solid rgba(53,9,68,0.10);">
+      <div class="max-w-[1320px] mx-auto px-5 sm:px-6 h-[74px] flex items-center justify-between gap-6">
+
+        <!-- left: logo + desktop nav -->
+        <div class="flex items-center gap-6 lg:gap-9 min-w-0">
+          <a href="#" class="shrink-0" aria-label="Prosci home">
+            <img src="https://www.prosci.com/hubfs/raw_assets/public/bf-child/assets/images/logos/prosci-logo-wordmark-trademark.svg" alt="Prosci" class="h-[26px] sm:h-[30px] w-auto" />
+          </a>
+          <nav class="hidden md:flex items-center gap-5 lg:gap-7 text-[0.96rem] font-medium text-prosci-primary">
+            <a href="#" class="inline-flex items-center gap-1 hover:text-prosci-accent transition">Change management <iconify-icon icon="ph:caret-down" class="text-[0.68rem] opacity-70"></iconify-icon></a>
+            <a href="#" class="inline-flex items-center gap-1 hover:text-prosci-accent transition">Methodology <iconify-icon icon="ph:caret-down" class="text-[0.68rem] opacity-70"></iconify-icon></a>
+            <a href="#" class="inline-flex items-center gap-1 hover:text-prosci-accent transition">Solutions <iconify-icon icon="ph:caret-down" class="text-[0.68rem] opacity-70"></iconify-icon></a>
+            <a href="#" class="inline-flex items-center gap-1 hover:text-prosci-accent transition">Resources <iconify-icon icon="ph:caret-down" class="text-[0.68rem] opacity-70"></iconify-icon></a>
+            <a href="#" class="inline-flex items-center gap-1 hover:text-prosci-accent transition">About us <iconify-icon icon="ph:caret-down" class="text-[0.68rem] opacity-70"></iconify-icon></a>
+          </nav>
+        </div>
+
+        <!-- desktop search -->
+        <div class="hidden md:flex items-center gap-2 bg-white rounded-[8px] px-4 h-[46px] w-[240px] lg:w-[280px] shrink-0" style="border:1px solid rgba(53,9,68,0.25);">
+          <input type="text" placeholder="Search" class="flex-1 bg-transparent outline-none text-[0.95rem] text-prosci-primary placeholder:text-prosci-text-muted min-w-0">
+          <iconify-icon icon="ph:magnifying-glass" class="text-prosci-primary text-[1.25rem]"></iconify-icon>
+        </div>
+
+        <!-- mobile actions -->
+        <div class="flex md:hidden items-center gap-5 text-prosci-primary">
+          <button aria-label="Search" class="text-[1.55rem] leading-none"><iconify-icon icon="ph:magnifying-glass"></iconify-icon></button>
+          <button aria-label="Menu" class="text-[1.7rem] leading-none"><iconify-icon icon="ph:list"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="flex-1 relative overflow-hidden">
+    <!-- decorative blobs (welcome only) -->
+    <div id="blobs" class="absolute inset-0">
+      <div class="blur-blob" style="width:420px;height:420px;background:#ff1aa3;top:-120px;left:8%;opacity:.10;"></div>
+      <div class="blur-blob" style="width:380px;height:380px;background:#025c67;top:40px;right:6%;opacity:.10;"></div>
+      <div class="blur-blob" style="width:340px;height:340px;background:#b5bbdb;top:240px;left:38%;opacity:.30;"></div>
+    </div>
+
+    <div class="relative z-10 max-w-[860px] mx-auto px-6 w-full">
+
+      <!-- ---------- WELCOME STATE ---------- -->
+      <section id="welcome" class="pt-16 pb-10 text-center">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-prosci-surface hairline mb-7">
+          <iconify-icon icon="ph:sparkle-fill" class="text-prosci-accent text-[0.85rem]"></iconify-icon>
+          <span class="text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-prosci-text-muted">Prosci Advisor</span>
+        </div>
+
+        <h1 class="font-display text-prosci-primary leading-[1.08] tracking-[-0.01em]" style="font-size:clamp(2.5rem,5vw,3.9rem);">
+          Tell me what you're<br>trying to <span class="text-prosci-accent italic">change.</span>
+        </h1>
+        <p class="mt-5 mx-auto max-w-[560px] text-[1.05rem] leading-[1.6] text-prosci-text-secondary">
+          Describe your situation in plain language — who's involved, what's stalling. I'll
+          recommend the exact Prosci program to get adoption moving, and why it fits.
+        </p>
+
+        <!-- input -->
+        <div class="mt-9 mx-auto max-w-[680px]">
+          <div class="focus-ring ai-halo flex items-end gap-2 bg-white hairline rounded-[16px] p-2.5 shadow-card transition">
+            <iconify-icon icon="ph:sparkle-fill" class="text-prosci-accent text-[1.15rem] ml-2 mb-2.5 shrink-0"></iconify-icon>
+            <textarea id="welcome-input" rows="1" placeholder="e.g. Our ERP rollout is stalling — employees won't adopt the new processes…"
+              class="flex-1 resize-none bg-transparent outline-none text-[1.02rem] text-prosci-text placeholder:text-prosci-text-muted py-2.5 leading-[1.5] max-h-32"></textarea>
+            <button id="welcome-send" class="shrink-0 flex items-center gap-2 bg-prosci-primary hover:bg-prosci-accent transition text-white font-semibold text-[0.92rem] px-5 py-3 rounded-[10px]">
+              Ask <iconify-icon icon="ph:arrow-up" class="text-[1rem]"></iconify-icon>
+            </button>
+          </div>
+
+          <!-- example chips -->
+          <div class="mt-5 flex flex-wrap justify-center gap-2.5">
+            <button class="example-chip chip px-4 py-2 rounded-full bg-prosci-surface hairline text-[0.85rem] font-medium text-prosci-text-secondary hover:border-prosci-accent/40">Our ERP rollout is stalling — employees won't adopt</button>
+            <button class="example-chip chip px-4 py-2 rounded-full bg-prosci-surface hairline text-[0.85rem] font-medium text-prosci-text-secondary hover:border-prosci-accent/40">I need to get certified in change management</button>
+            <button class="example-chip chip px-4 py-2 rounded-full bg-prosci-surface hairline text-[0.85rem] font-medium text-prosci-text-secondary hover:border-prosci-accent/40">My executives aren't sponsoring our change</button>
+            <button class="example-chip chip px-4 py-2 rounded-full bg-prosci-surface hairline text-[0.85rem] font-medium text-prosci-text-secondary hover:border-prosci-accent/40">Train my whole team on a transformation</button>
+          </div>
+
+          <!-- trust signal -->
+          <p class="mt-8 text-[0.8rem] text-prosci-text-muted flex items-center justify-center gap-2">
+            <iconify-icon icon="ph:shield-check" class="text-prosci-secondary text-[1rem]"></iconify-icon>
+            The methodology trusted by 80%+ of the Fortune 100 · 1.5M+ people trained
+          </p>
+        </div>
+      </section>
+
+      <!-- ---------- CONVERSATION THREAD ---------- -->
+      <section id="thread" class="hidden pt-8 pb-44 space-y-7 thread-scroll"></section>
+
+    </div>
+
+    <!-- ============================================================
+         BELOW THE FOLD — educate · find the right path · build trust · convert
+         (hidden once a conversation starts)
+         ============================================================ -->
+    <div id="belowfold" class="relative z-10">
+
+      <!-- ---------- 1 · HOW THE ADVISOR WORKS ---------- -->
+      <section class="bg-prosci-bg pt-14 pb-16 sm:pt-20 sm:pb-24" style="border-top:1px solid rgba(53,9,68,0.08);">
+        <div class="max-w-[1180px] mx-auto px-6">
+          <div class="text-center max-w-[700px] mx-auto">
+            <div class="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-prosci-accent mb-3">How it works</div>
+            <h2 class="font-display text-prosci-primary text-[2rem] sm:text-[2.7rem] leading-[1.1]">From “where do I start?” to a clear plan — in one conversation</h2>
+            <p class="mt-5 text-[1.05rem] leading-[1.6] text-prosci-text-secondary">No forms, no filter mazes. Describe your situation in plain language and the advisor recommends the exact program to move adoption forward. It's free, and you're never obligated to enroll.</p>
+          </div>
+          <div class="mt-12 sm:mt-14 grid sm:grid-cols-3 gap-5">
+            <div class="rounded-[16px] bg-prosci-surface hairline p-7">
+              <div class="flex items-center gap-3">
+                <span class="w-11 h-11 rounded-[12px] bg-white hairline flex items-center justify-center text-prosci-accent text-[1.4rem]"><iconify-icon icon="ph:chat-teardrop-text"></iconify-icon></span>
+                <span class="text-[0.78rem] font-bold uppercase tracking-[0.1em] text-prosci-text-muted">Step 1</span>
+              </div>
+              <h3 class="font-display text-prosci-primary text-[1.4rem] mt-5">Describe your challenge</h3>
+              <p class="mt-2 text-[0.97rem] leading-[1.55] text-prosci-text-secondary">Tell the advisor who's involved and what's stalling — like you'd brief a trusted colleague.</p>
+            </div>
+            <div class="rounded-[16px] bg-prosci-surface hairline p-7">
+              <div class="flex items-center gap-3">
+                <span class="w-11 h-11 rounded-[12px] bg-white hairline flex items-center justify-center text-prosci-accent text-[1.4rem]"><iconify-icon icon="ph:sparkle-fill"></iconify-icon></span>
+                <span class="text-[0.78rem] font-bold uppercase tracking-[0.1em] text-prosci-text-muted">Step 2</span>
+              </div>
+              <h3 class="font-display text-prosci-primary text-[1.4rem] mt-5">Get a tailored path</h3>
+              <p class="mt-2 text-[0.97rem] leading-[1.55] text-prosci-text-secondary">A consultant-style recommendation grounded in ADKAR®, with the best-fit program and why it fits <em class="not-italic font-semibold text-prosci-primary">you</em>.</p>
+            </div>
+            <div class="rounded-[16px] bg-prosci-surface hairline p-7">
+              <div class="flex items-center gap-3">
+                <span class="w-11 h-11 rounded-[12px] bg-white hairline flex items-center justify-center text-prosci-accent text-[1.4rem]"><iconify-icon icon="ph:graduation-cap"></iconify-icon></span>
+                <span class="text-[0.78rem] font-bold uppercase tracking-[0.1em] text-prosci-text-muted">Step 3</span>
+              </div>
+              <h3 class="font-display text-prosci-primary text-[1.4rem] mt-5">Enroll with confidence</h3>
+              <p class="mt-2 text-[0.97rem] leading-[1.55] text-prosci-text-secondary">See dates, formats and pricing up front, build a sequenced path, and register when you're ready.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- 2 · START WITH YOUR GOAL ---------- -->
+      <section class="bg-prosci-surface py-16 sm:py-24">
+        <div class="max-w-[1180px] mx-auto px-6">
+          <div class="text-center max-w-[680px] mx-auto">
+            <div class="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-prosci-accent mb-3">Find your path</div>
+            <h2 class="font-display text-prosci-primary text-[2rem] sm:text-[2.7rem] leading-[1.1]">Start with your goal</h2>
+            <p class="mt-5 text-[1.05rem] leading-[1.6] text-prosci-text-secondary">Pick whatever's closest to where you are — the advisor takes it from there and tailors the rest.</p>
+          </div>
+          <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <button onclick="startConversation('I want to get certified as a Prosci practitioner')" class="goal-tile group flex items-start gap-4 text-left rounded-[16px] bg-white hairline p-5 hover:border-prosci-accent/45 hover:shadow-card transition">
+              <span class="w-12 h-12 shrink-0 rounded-[12px] flex items-center justify-center text-prosci-accent text-[1.5rem]" style="background:rgba(255,26,163,0.08);"><iconify-icon icon="ph:certificate"></iconify-icon></span>
+              <span class="min-w-0">
+                <span class="block font-semibold text-prosci-primary text-[1.05rem]">Get certified as a practitioner</span>
+                <span class="block text-[0.9rem] text-prosci-text-secondary mt-0.5">Lead and coach change on real projects</span>
+              </span>
+              <iconify-icon icon="ph:arrow-right" class="ml-auto text-prosci-primary/40 group-hover:text-prosci-accent transition text-[1.1rem] mt-1"></iconify-icon>
+            </button>
+            <button onclick="startConversation('We are about to start a major transformation and need a plan')" class="goal-tile group flex items-start gap-4 text-left rounded-[16px] bg-white hairline p-5 hover:border-prosci-accent/45 hover:shadow-card transition">
+              <span class="w-12 h-12 shrink-0 rounded-[12px] flex items-center justify-center text-prosci-accent text-[1.5rem]" style="background:rgba(255,26,163,0.08);"><iconify-icon icon="ph:rocket-launch"></iconify-icon></span>
+              <span class="min-w-0">
+                <span class="block font-semibold text-prosci-primary text-[1.05rem]">Lead a major transformation</span>
+                <span class="block text-[0.9rem] text-prosci-text-secondary mt-0.5">Big rollout, lots of moving parts</span>
+              </span>
+              <iconify-icon icon="ph:arrow-right" class="ml-auto text-prosci-primary/40 group-hover:text-prosci-accent transition text-[1.1rem] mt-1"></iconify-icon>
+            </button>
+            <button onclick="startConversation('I need to enable my managers to lead their teams through change')" class="goal-tile group flex items-start gap-4 text-left rounded-[16px] bg-white hairline p-5 hover:border-prosci-accent/45 hover:shadow-card transition">
+              <span class="w-12 h-12 shrink-0 rounded-[12px] flex items-center justify-center text-prosci-accent text-[1.5rem]" style="background:rgba(255,26,163,0.08);"><iconify-icon icon="ph:chalkboard-teacher"></iconify-icon></span>
+              <span class="min-w-0">
+                <span class="block font-semibold text-prosci-primary text-[1.05rem]">Enable my managers</span>
+                <span class="block text-[0.9rem] text-prosci-text-secondary mt-0.5">Equip the people in the middle</span>
+              </span>
+              <iconify-icon icon="ph:arrow-right" class="ml-auto text-prosci-primary/40 group-hover:text-prosci-accent transition text-[1.1rem] mt-1"></iconify-icon>
+            </button>
+            <button onclick="startConversation('I want to train my whole organization on change management')" class="goal-tile group flex items-start gap-4 text-left rounded-[16px] bg-white hairline p-5 hover:border-prosci-accent/45 hover:shadow-card transition">
+              <span class="w-12 h-12 shrink-0 rounded-[12px] flex items-center justify-center text-prosci-accent text-[1.5rem]" style="background:rgba(255,26,163,0.08);"><iconify-icon icon="ph:users-three"></iconify-icon></span>
+              <span class="min-w-0">
+                <span class="block font-semibold text-prosci-primary text-[1.05rem]">Train my whole organization</span>
+                <span class="block text-[0.9rem] text-prosci-text-secondary mt-0.5">Scale ADKAR across many teams</span>
+              </span>
+              <iconify-icon icon="ph:arrow-right" class="ml-auto text-prosci-primary/40 group-hover:text-prosci-accent transition text-[1.1rem] mt-1"></iconify-icon>
+            </button>
+            <button onclick="startConversation('I need my executives to actively sponsor our change')" class="goal-tile group flex items-start gap-4 text-left rounded-[16px] bg-white hairline p-5 hover:border-prosci-accent/45 hover:shadow-card transition">
+              <span class="w-12 h-12 shrink-0 rounded-[12px] flex items-center justify-center text-prosci-accent text-[1.5rem]" style="background:rgba(255,26,163,0.08);"><iconify-icon icon="ph:seal-check"></iconify-icon></span>
+              <span class="min-w-0">
+                <span class="block font-semibold text-prosci-primary text-[1.05rem]">Get executives to sponsor</span>
+                <span class="block text-[0.9rem] text-prosci-text-secondary mt-0.5">Build active, visible sponsorship</span>
+              </span>
+              <iconify-icon icon="ph:arrow-right" class="ml-auto text-prosci-primary/40 group-hover:text-prosci-accent transition text-[1.1rem] mt-1"></iconify-icon>
+            </button>
+            <button onclick="startConversation('I am new to change management and want to explore ADKAR')" class="goal-tile group flex items-start gap-4 text-left rounded-[16px] bg-white hairline p-5 hover:border-prosci-accent/45 hover:shadow-card transition">
+              <span class="w-12 h-12 shrink-0 rounded-[12px] flex items-center justify-center text-prosci-accent text-[1.5rem]" style="background:rgba(255,26,163,0.08);"><iconify-icon icon="ph:compass"></iconify-icon></span>
+              <span class="min-w-0">
+                <span class="block font-semibold text-prosci-primary text-[1.05rem]">Just exploring ADKAR</span>
+                <span class="block text-[0.9rem] text-prosci-text-secondary mt-0.5">New to change management</span>
+              </span>
+              <iconify-icon icon="ph:arrow-right" class="ml-auto text-prosci-primary/40 group-hover:text-prosci-accent transition text-[1.1rem] mt-1"></iconify-icon>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- 3 · THE ADKAR METHODOLOGY ---------- -->
+      <section class="bg-prosci-bg py-16 sm:py-24">
+        <div class="max-w-[1180px] mx-auto px-6">
+          <div class="text-center max-w-[720px] mx-auto">
+            <div class="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-prosci-accent mb-3">The methodology</div>
+            <h2 class="font-display text-prosci-primary text-[2rem] sm:text-[2.7rem] leading-[1.1]">Every recommendation is built on ADKAR®</h2>
+            <p class="mt-5 text-[1.05rem] leading-[1.6] text-prosci-text-secondary">Change happens one person at a time, in a sequence of five building blocks. Skip one and adoption stalls — which is exactly the gap the advisor listens for.</p>
+          </div>
+          <div class="mt-12 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div class="rounded-[16px] bg-prosci-surface hairline p-6 text-center">
+              <span class="w-12 h-12 mx-auto rounded-full bg-prosci-primary text-white font-display text-[1.5rem] flex items-center justify-center">A</span>
+              <h3 class="font-semibold text-prosci-primary text-[1.05rem] mt-4">Awareness</h3>
+              <p class="text-[0.9rem] text-prosci-text-secondary leading-[1.5] mt-1">of why the change is needed</p>
+            </div>
+            <div class="rounded-[16px] bg-prosci-surface hairline p-6 text-center">
+              <span class="w-12 h-12 mx-auto rounded-full bg-prosci-primary text-white font-display text-[1.5rem] flex items-center justify-center">D</span>
+              <h3 class="font-semibold text-prosci-primary text-[1.05rem] mt-4">Desire</h3>
+              <p class="text-[0.9rem] text-prosci-text-secondary leading-[1.5] mt-1">to support and take part</p>
+            </div>
+            <div class="rounded-[16px] bg-prosci-surface hairline p-6 text-center">
+              <span class="w-12 h-12 mx-auto rounded-full bg-prosci-primary text-white font-display text-[1.5rem] flex items-center justify-center">K</span>
+              <h3 class="font-semibold text-prosci-primary text-[1.05rem] mt-4">Knowledge</h3>
+              <p class="text-[0.9rem] text-prosci-text-secondary leading-[1.5] mt-1">of how to change</p>
+            </div>
+            <div class="rounded-[16px] bg-prosci-surface hairline p-6 text-center">
+              <span class="w-12 h-12 mx-auto rounded-full bg-prosci-primary text-white font-display text-[1.5rem] flex items-center justify-center">A</span>
+              <h3 class="font-semibold text-prosci-primary text-[1.05rem] mt-4">Ability</h3>
+              <p class="text-[0.9rem] text-prosci-text-secondary leading-[1.5] mt-1">to apply new skills daily</p>
+            </div>
+            <div class="rounded-[16px] bg-prosci-surface hairline p-6 text-center">
+              <span class="w-12 h-12 mx-auto rounded-full bg-prosci-primary text-white font-display text-[1.5rem] flex items-center justify-center">R</span>
+              <h3 class="font-semibold text-prosci-primary text-[1.05rem] mt-4">Reinforcement</h3>
+              <p class="text-[0.9rem] text-prosci-text-secondary leading-[1.5] mt-1">to make it stick</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- 4 · PROGRAMS & FORMATS ---------- -->
+      <section class="bg-prosci-surface py-16 sm:py-24">
+        <div class="max-w-[1180px] mx-auto px-6">
+          <div class="text-center max-w-[700px] mx-auto">
+            <div class="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-prosci-accent mb-3">Programs &amp; formats</div>
+            <h2 class="font-display text-prosci-primary text-[2rem] sm:text-[2.7rem] leading-[1.1]">A program for every level — and every format</h2>
+            <p class="mt-5 text-[1.05rem] leading-[1.6] text-prosci-text-secondary">Learn the way that fits your schedule and scale — on your own, with your team, or across the whole enterprise.</p>
+          </div>
+
+          <div class="mt-12 grid sm:grid-cols-3 gap-5">
+            <div class="rounded-[16px] bg-white hairline p-7">
+              <span class="w-11 h-11 rounded-[12px] bg-prosci-primary text-white flex items-center justify-center text-[1.4rem]"><iconify-icon icon="ph:user"></iconify-icon></span>
+              <h3 class="font-display text-prosci-primary text-[1.45rem] mt-5">For individuals</h3>
+              <p class="mt-2 text-[0.95rem] leading-[1.55] text-prosci-text-secondary">Certifications and self-paced eLearning to build your own change-management credentials.</p>
+              <ul class="mt-4 space-y-2 text-[0.92rem] text-prosci-text-secondary">
+                <li class="flex items-center gap-2"><iconify-icon icon="ph:check-circle-fill" class="text-prosci-secondary"></iconify-icon>Practitioner certification</li>
+                <li class="flex items-center gap-2"><iconify-icon icon="ph:check-circle-fill" class="text-prosci-secondary"></iconify-icon>Self-paced eLearning</li>
+                <li class="flex items-center gap-2"><iconify-icon icon="ph:check-circle-fill" class="text-prosci-secondary"></iconify-icon>Virtual or in-person</li>
+              </ul>
+            </div>
+            <div class="rounded-[16px] bg-white hairline p-7">
+              <span class="w-11 h-11 rounded-[12px] bg-prosci-primary text-white flex items-center justify-center text-[1.4rem]"><iconify-icon icon="ph:users-three"></iconify-icon></span>
+              <h3 class="font-display text-prosci-primary text-[1.45rem] mt-5">For teams</h3>
+              <p class="mt-2 text-[0.95rem] leading-[1.55] text-prosci-text-secondary">Practical workshops that equip managers and project teams to drive adoption together.</p>
+              <ul class="mt-4 space-y-2 text-[0.92rem] text-prosci-text-secondary">
+                <li class="flex items-center gap-2"><iconify-icon icon="ph:check-circle-fill" class="text-prosci-secondary"></iconify-icon>Manager enablement</li>
+                <li class="flex items-center gap-2"><iconify-icon icon="ph:check-circle-fill" class="text-prosci-secondary"></iconify-icon>Team workshops</li>
+                <li class="flex items-center gap-2"><iconify-icon icon="ph:check-circle-fill" class="text-prosci-secondary"></iconify-icon>Sponsor briefings</li>
+              </ul>
+            </div>
+            <div class="rounded-[16px] bg-white hairline p-7">
+              <span class="w-11 h-11 rounded-[12px] bg-prosci-primary text-white flex items-center justify-center text-[1.4rem]"><iconify-icon icon="ph:buildings"></iconify-icon></span>
+              <h3 class="font-display text-prosci-primary text-[1.45rem] mt-5">For your enterprise</h3>
+              <p class="mt-2 text-[0.95rem] leading-[1.55] text-prosci-text-secondary">Licensing, advisory and tooling to build lasting change capability across the organization.</p>
+              <ul class="mt-4 space-y-2 text-[0.92rem] text-prosci-text-secondary">
+                <li class="flex items-center gap-2"><iconify-icon icon="ph:check-circle-fill" class="text-prosci-secondary"></iconify-icon>Enterprise licensing</li>
+                <li class="flex items-center gap-2"><iconify-icon icon="ph:check-circle-fill" class="text-prosci-secondary"></iconify-icon>Methodology rollout</li>
+                <li class="flex items-center gap-2"><iconify-icon icon="ph:check-circle-fill" class="text-prosci-secondary"></iconify-icon>Dedicated advisory</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3 class="font-display text-prosci-primary text-[1.6rem] mt-16 mb-1">Featured programs</h3>
+          <p class="text-[0.97rem] text-prosci-text-secondary mb-2">A few of the most popular starting points.</p>
+          <div id="featured-cards" class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch"></div>
+        </div>
+      </section>
+
+      <!-- ---------- 5 · PROOF & TRUST ---------- -->
+      <section class="bg-prosci-primary text-white py-16 sm:py-24">
+        <div class="max-w-[1180px] mx-auto px-6">
+          <div class="text-center max-w-[680px] mx-auto">
+            <div class="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-prosci-accent mb-3">Why Prosci</div>
+            <h2 class="font-display text-[2rem] sm:text-[2.7rem] leading-[1.1]">The standard the world's biggest changes are built on</h2>
+          </div>
+          <div class="mt-12 grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+            <div>
+              <div class="font-display text-[2.6rem] sm:text-[3rem] leading-none text-prosci-accent">80%+</div>
+              <p class="mt-2 text-[0.92rem] text-white/75">of the Fortune 100 trained in Prosci</p>
+            </div>
+            <div>
+              <div class="font-display text-[2.6rem] sm:text-[3rem] leading-none text-prosci-accent">1.5M+</div>
+              <p class="mt-2 text-[0.92rem] text-white/75">people certified worldwide</p>
+            </div>
+            <div>
+              <div class="font-display text-[2.6rem] sm:text-[3rem] leading-none text-prosci-accent">25+</div>
+              <p class="mt-2 text-[0.92rem] text-white/75">years of change-management research</p>
+            </div>
+            <div>
+              <div class="font-display text-[2.6rem] sm:text-[3rem] leading-none text-prosci-accent">#1</div>
+              <p class="mt-2 text-[0.92rem] text-white/75">most-recognized change methodology</p>
+            </div>
+          </div>
+          <div class="mt-14 grid md:grid-cols-2 gap-5">
+            <figure class="rounded-[16px] p-7" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);">
+              <iconify-icon icon="ph:quotes-fill" class="text-prosci-accent text-[1.6rem]"></iconify-icon>
+              <blockquote class="mt-3 text-[1.05rem] leading-[1.6] text-white/90">“We stopped guessing which training to buy. The advisor mapped our rollout to the exact programs — our managers were enabled before go-live and adoption actually held.”</blockquote>
+              <figcaption class="mt-5 text-[0.9rem] text-white/70">Director of Transformation · Global manufacturer</figcaption>
+            </figure>
+            <figure class="rounded-[16px] p-7" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);">
+              <iconify-icon icon="ph:quotes-fill" class="text-prosci-accent text-[1.6rem]"></iconify-icon>
+              <blockquote class="mt-3 text-[1.05rem] leading-[1.6] text-white/90">“ADKAR gave my team a shared language for change. Getting certified was the best professional investment I've made in a decade.”</blockquote>
+              <figcaption class="mt-5 text-[0.9rem] text-white/70">Senior Change Manager · Healthcare system</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- 6 · FAQ ---------- -->
+      <section class="bg-prosci-bg py-16 sm:py-24">
+        <div class="max-w-[820px] mx-auto px-6">
+          <div class="text-center">
+            <div class="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-prosci-accent mb-3">Questions, answered</div>
+            <h2 class="font-display text-prosci-primary text-[2rem] sm:text-[2.7rem] leading-[1.1]">Before you decide</h2>
+          </div>
+          <div class="mt-10 space-y-3">
+            <details class="faq group rounded-[14px] bg-prosci-surface hairline overflow-hidden">
+              <summary class="flex items-center justify-between gap-4 cursor-pointer list-none px-6 py-5 text-[1.05rem] font-semibold text-prosci-primary">
+                What if I don't know which course I need?
+                <iconify-icon icon="ph:plus" class="faq-icon text-prosci-accent text-[1.2rem] shrink-0 transition"></iconify-icon>
+              </summary>
+              <div class="px-6 pb-6 -mt-1 text-[0.98rem] leading-[1.6] text-prosci-text-secondary">That's exactly what the advisor is for. Describe your situation at the top of the page and it'll recommend the right program — and explain why — before you spend a dollar.</div>
+            </details>
+            <details class="faq group rounded-[14px] bg-prosci-surface hairline overflow-hidden">
+              <summary class="flex items-center justify-between gap-4 cursor-pointer list-none px-6 py-5 text-[1.05rem] font-semibold text-prosci-primary">
+                Is Prosci certification actually worth it?
+                <iconify-icon icon="ph:plus" class="faq-icon text-prosci-accent text-[1.2rem] shrink-0 transition"></iconify-icon>
+              </summary>
+              <div class="px-6 pb-6 -mt-1 text-[0.98rem] leading-[1.6] text-prosci-text-secondary">Prosci is the most widely recognized change-management certification, used by 80%+ of the Fortune 100. You leave with the ADKAR methodology, a reusable toolkit, and a plan applied to a live project — not just a certificate.</div>
+            </details>
+            <details class="faq group rounded-[14px] bg-prosci-surface hairline overflow-hidden">
+              <summary class="flex items-center justify-between gap-4 cursor-pointer list-none px-6 py-5 text-[1.05rem] font-semibold text-prosci-primary">
+                What's the difference between virtual and in-person?
+                <iconify-icon icon="ph:plus" class="faq-icon text-prosci-accent text-[1.2rem] shrink-0 transition"></iconify-icon>
+              </summary>
+              <div class="px-6 pb-6 -mt-1 text-[0.98rem] leading-[1.6] text-prosci-text-secondary">Both cover identical content and earn the same certification. Virtual cohorts are live and instructor-led — ideal for distributed teams; in-person adds hands-on collaboration and networking. The advisor can recommend based on your timeline.</div>
+            </details>
+            <details class="faq group rounded-[14px] bg-prosci-surface hairline overflow-hidden">
+              <summary class="flex items-center justify-between gap-4 cursor-pointer list-none px-6 py-5 text-[1.05rem] font-semibold text-prosci-primary">
+                How much time will this take?
+                <iconify-icon icon="ph:plus" class="faq-icon text-prosci-accent text-[1.2rem] shrink-0 transition"></iconify-icon>
+              </summary>
+              <div class="px-6 pb-6 -mt-1 text-[0.98rem] leading-[1.6] text-prosci-text-secondary">It ranges from a few hours of self-paced eLearning to a half-day manager workshop to a 3-day practitioner certification. You'll see the exact commitment on every recommendation before enrolling.</div>
+            </details>
+            <details class="faq group rounded-[14px] bg-prosci-surface hairline overflow-hidden">
+              <summary class="flex items-center justify-between gap-4 cursor-pointer list-none px-6 py-5 text-[1.05rem] font-semibold text-prosci-primary">
+                Do you offer team or enterprise pricing?
+                <iconify-icon icon="ph:plus" class="faq-icon text-prosci-accent text-[1.2rem] shrink-0 transition"></iconify-icon>
+              </summary>
+              <div class="px-6 pb-6 -mt-1 text-[0.98rem] leading-[1.6] text-prosci-text-secondary">Yes. Tell the advisor you're enrolling a group or rolling out org-wide and it'll route you to team workshops and enterprise licensing, with a dedicated Prosci advisor for volume pricing.</div>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- 7 · FINAL CTA ---------- -->
+      <section class="bg-prosci-surface py-16 sm:py-24">
+        <div class="max-w-[820px] mx-auto px-6 text-center">
+          <h2 class="font-display text-prosci-primary text-[2.2rem] sm:text-[3rem] leading-[1.08]">Still not sure where to start?</h2>
+          <p class="mt-5 text-[1.08rem] leading-[1.6] text-prosci-text-secondary max-w-[600px] mx-auto">Tell the advisor what you're facing in a sentence. You'll get a clear, personalized path in seconds — no commitment required.</p>
+          <div class="mt-9 flex flex-wrap items-center justify-center gap-3">
+            <button onclick="focusAdvisor()" class="inline-flex items-center gap-2 bg-prosci-primary hover:bg-prosci-accent transition text-[#fffefa] font-semibold text-[0.95rem] px-7 py-4 rounded-[10px]">
+              <iconify-icon icon="ph:sparkle-fill"></iconify-icon> Ask the advisor
+            </button>
+            <a href="#" class="inline-flex items-center gap-2 bg-white hairline hover:border-prosci-accent/45 transition text-prosci-primary font-semibold text-[0.95rem] px-7 py-4 rounded-[10px]">
+              <iconify-icon icon="ph:headset"></iconify-icon> Talk to a human
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- FOOTER ---------- -->
+      <footer class="bg-prosci-primary text-white pt-16 pb-8">
+        <div class="max-w-[1180px] mx-auto px-6">
+          <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-10">
+            <div class="lg:col-span-2">
+              <img src="https://www.prosci.com/hubfs/raw_assets/public/bf-child/assets/images/logos/prosci-logo-wordmark-trademark.svg" alt="Prosci" class="h-[28px] w-auto" style="filter:brightness(0) invert(1);" />
+              <p class="mt-4 text-[0.95rem] leading-[1.6] text-white/70 max-w-[320px]">The global standard in change management. Helping people and organizations make change stick since 1996.</p>
+              <div class="mt-5 flex items-center gap-3 text-white/70">
+                <a href="#" aria-label="LinkedIn" class="w-9 h-9 rounded-full flex items-center justify-center hover:text-prosci-accent transition" style="background:rgba(255,255,255,0.08);"><iconify-icon icon="ph:linkedin-logo"></iconify-icon></a>
+                <a href="#" aria-label="YouTube" class="w-9 h-9 rounded-full flex items-center justify-center hover:text-prosci-accent transition" style="background:rgba(255,255,255,0.08);"><iconify-icon icon="ph:youtube-logo"></iconify-icon></a>
+                <a href="#" aria-label="X" class="w-9 h-9 rounded-full flex items-center justify-center hover:text-prosci-accent transition" style="background:rgba(255,255,255,0.08);"><iconify-icon icon="ph:x-logo"></iconify-icon></a>
+              </div>
+            </div>
+            <div>
+              <div class="text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-white/50 mb-4">Training</div>
+              <ul class="space-y-2.5 text-[0.95rem] text-white/80">
+                <li><a href="#" class="hover:text-prosci-accent transition">Practitioner Program</a></li>
+                <li><a href="#" class="hover:text-prosci-accent transition">Manager workshops</a></li>
+                <li><a href="#" class="hover:text-prosci-accent transition">eLearning</a></li>
+                <li><a href="#" class="hover:text-prosci-accent transition">Enterprise</a></li>
+              </ul>
+            </div>
+            <div>
+              <div class="text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-white/50 mb-4">Methodology</div>
+              <ul class="space-y-2.5 text-[0.95rem] text-white/80">
+                <li><a href="#" class="hover:text-prosci-accent transition">ADKAR®</a></li>
+                <li><a href="#" class="hover:text-prosci-accent transition">Research</a></li>
+                <li><a href="#" class="hover:text-prosci-accent transition">Resources</a></li>
+                <li><a href="#" class="hover:text-prosci-accent transition">Blog</a></li>
+              </ul>
+            </div>
+            <div>
+              <div class="text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-white/50 mb-4">Company</div>
+              <ul class="space-y-2.5 text-[0.95rem] text-white/80">
+                <li><a href="#" class="hover:text-prosci-accent transition">About us</a></li>
+                <li><a href="#" class="hover:text-prosci-accent transition">Contact</a></li>
+                <li><a href="#" class="hover:text-prosci-accent transition">Careers</a></li>
+                <li><a href="#" class="hover:text-prosci-accent transition">Support</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[0.85rem] text-white/55" style="border-top:1px solid rgba(255,255,255,0.12);">
+            <span>© 2026 Prosci Inc. All rights reserved.</span>
+            <div class="flex items-center gap-5">
+              <a href="#" class="hover:text-prosci-accent transition">Privacy</a>
+              <a href="#" class="hover:text-prosci-accent transition">Terms</a>
+              <a href="#" class="hover:text-prosci-accent transition">Accessibility</a>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  </main>
+
+  <!-- ===================== DOCKED INPUT BAR (conversation) ===================== -->
+  <div id="dock" class="hidden fixed bottom-0 left-0 right-0 z-40" style="background:linear-gradient(to top,#fffefa 60%,rgba(255,254,250,0));">
+    <div class="max-w-[860px] mx-auto px-6 pb-5 pt-2">
+      <!-- reply chips render here -->
+      <div id="reply-chips" class="flex flex-wrap gap-2.5 mb-3"></div>
+      <div class="focus-ring flex items-end gap-2 bg-white hairline rounded-[16px] p-2 shadow-card transition">
+        <iconify-icon icon="ph:sparkle-fill" class="text-prosci-accent text-[1.1rem] ml-2 mb-2 shrink-0"></iconify-icon>
+        <textarea id="dock-input" rows="1" placeholder="Reply to your advisor…"
+          class="flex-1 resize-none bg-transparent outline-none text-[1rem] text-prosci-text placeholder:text-prosci-text-muted py-2 leading-[1.5] max-h-28"></textarea>
+        <button id="dock-send" class="shrink-0 flex items-center justify-center bg-prosci-primary hover:bg-prosci-accent transition text-white w-10 h-10 rounded-[10px]">
+          <iconify-icon icon="ph:arrow-up" class="text-[1.1rem]"></iconify-icon>
+        </button>
+      </div>
+      <p class="text-center text-[0.7rem] text-prosci-text-muted mt-2">Prosci AI gives guidance based on the ADKAR® methodology. Verify course dates at checkout.</p>
+    </div>
+  </div>
+
+  <!-- ===================== RECOMMENDED PATH TRAY ===================== -->
+  <div id="tray" class="hidden fixed z-50 bottom-[120px] right-6 w-[300px] bg-white rounded-[16px] shadow-elevated hairline overflow-hidden tray-enter">
+    <div class="bg-prosci-primary text-white px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <iconify-icon icon="ph:path" class="text-prosci-accent text-[1.05rem]"></iconify-icon>
+        <span class="font-semibold text-[0.9rem]">Your recommended path</span>
+      </div>
+      <span id="tray-count" class="text-[0.75rem] bg-white/15 px-2 py-0.5 rounded-full">0</span>
+    </div>
+    <div id="tray-items" class="px-4 py-3 space-y-2.5 max-h-[230px] overflow-y-auto thread-scroll"></div>
+    <div class="px-4 pb-4 pt-1">
+      <div class="flex items-center justify-between text-[0.85rem] mb-3">
+        <span class="text-prosci-text-muted">Total</span>
+        <span id="tray-total" class="font-semibold text-prosci-primary">$0</span>
+      </div>
+      <button class="w-full bg-prosci-accent hover:bg-prosci-accent-hover transition text-white font-semibold text-[0.9rem] py-3 rounded-[10px] flex items-center justify-center gap-2">
+        <iconify-icon icon="ph:lock-simple-open"></iconify-icon> Enroll in this path
+      </button>
+    </div>
+  </div>
+
+<script>
+/* ============================================================
+   SCRIPTED CONSULTATIVE FLOW — click-through, user-paced
+   GRID VARIANT: hero best-fit unit + collapsible "why this fits" cards
+   ============================================================ */
+
+const COURSES = {
+  practitioner: {
+    title: "Change Management Practitioner Program",
+    badge: "3-Day Certification", badgeIcon: "ph:certificate",
+    desc: "Master the Prosci ADKAR® methodology and leave certified to build and lead a change plan on a live project.",
+    date: "Jun 23 – 25, 2026", format: "Virtual", formatIcon: "ph:laptop",
+    price: 4500, priceWas: 4850, cta: "Register now", bestFit: true,
+    image: "https://images.unsplash.com/photo-1552581234-26160f608093?auto=format&fit=crop&w=500&q=70"
+  },
+  managers: {
+    title: "Leading Your Team Through Change",
+    badge: "Half-Day Workshop", badgeIcon: "ph:chalkboard-teacher",
+    desc: "Equips frontline managers with practical ADKAR tools to coach their teams through disruption and drive adoption.",
+    date: "Jul 9, 2026", format: "Online", formatIcon: "ph:laptop",
+    price: 1200, priceWas: 1400, cta: "Register now",
+    image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=500&q=70"
+  },
+  adkar: {
+    title: "ADKAR® Foundations",
+    badge: "Self-Paced eLearning", badgeIcon: "ph:monitor-play",
+    desc: "A short self-paced course that builds the Awareness and Desire your people need before new processes can stick.",
+    date: "Start anytime", format: "eLearning", formatIcon: "ph:monitor-play",
+    price: 295, priceWas: 350, cta: "Register now",
+    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=500&q=70"
+  }
+};
+
+const WHYFITS = {
+  practitioner: "you're mid-rollout and need someone who can diagnose where adoption is breaking and build a targeted ADKAR plan <em>now</em> — not next quarter.",
+  managers: "you said the change touches a mix of people, and your managers are the #1 influencer of whether employees actually adopt the new ERP processes.",
+  adkar: "it gives every affected employee the Awareness and Desire that resistance is signaling they're missing — at a price you can roll out org-wide."
+};
+
+/* The scripted beats. Each "agent" beat is played after a user action.
+   reply: chips the user can tap to advance to the next beat. */
+const BEATS = [
+  { // beat 0 — frame + qualifying Q1
+    agent: `<p>Resistance during an ERP rollout is almost always an <strong>ADKAR gap</strong> — people don't yet have the <em>Awareness</em> of why it's changing or the <em>Desire</em> to get on board, so the new processes just feel like extra work.</p>
+            <p class="mt-3">To point you to the right program, two quick questions. <strong>Who most needs to change how they work day-to-day?</strong></p>`,
+    reply: ["Frontline employees", "People managers", "Executives & sponsors", "A mix of all three"]
+  },
+  { // beat 1 — qualifying Q2
+    agent: `<p>Got it — when change touches everyone, the managers in the middle make or break adoption. <strong>And where are you in the rollout right now?</strong></p>`,
+    reply: ["Still planning it", "Mid-rollout, resistance now", "Launched, adoption stalling"]
+  },
+  { // beat 2 — synthesized recommendation + cards + closing
+    agent: `<p>Then here's the play. Mid-rollout resistance won't fix itself with more training emails — you need a <strong>structured ADKAR plan</strong>, someone equipped to run it, and managers who can carry it to their teams. I'd build it in three layers:</p>`,
+    answer: `<ol class="mt-1 space-y-2 text-[0.97rem]">
+        <li><strong>1 · Equip a lead</strong> to diagnose where adoption is breaking and build the plan — that's the Practitioner Program.</li>
+        <li><strong>2 · Enable your managers</strong> as the front line of adoption with a short, practical workshop.</li>
+        <li><strong>3 · Give every affected employee</strong> the Awareness &amp; Desire foundation, self-paced.</li>
+      </ol>
+      <p class="mt-3">Best-fit program first, supporting courses below 👇</p>`,
+    cards: ["practitioner", "managers", "adkar"],
+    reply: ["Build these into one path", "Compare the top two", "Talk to an advisor"]
+  },
+  { // beat 3 — close
+    agent: `<p>Done — I've added all three to <strong>your recommended path</strong> (bottom-right). Enrolling the path together keeps your rollout sequenced: certify your lead first, enable managers in week one, roll ADKAR Foundations to employees alongside go-live.</p>
+            <p class="mt-3">Want me to check the next available <strong>Practitioner cohort dates</strong>, or send this path to a colleague for sign-off?</p>`,
+    reply: ["Show me cohort dates", "Email this path", "I'm ready to enroll"]
+  },
+  { // beat 4 — terminal
+    agent: `<p>The next virtual <strong>Practitioner cohort</strong> opens <strong>June 23–25</strong> with seats remaining, and in-person Chicago runs <strong>July 14–16</strong>. Your managers' workshop and ADKAR Foundations can both start immediately — they're not cohort-bound.</p>
+            <p class="mt-3">Hit <span class="text-prosci-accent font-semibold">Enroll in this path</span> in your tray whenever you're ready, and I'll hold these dates while you check out.</p>`,
+    reply: []
+  }
+];
+
+/* ---------- element refs ---------- */
+const welcome = document.getElementById('welcome');
+const blobs = document.getElementById('blobs');
+const thread = document.getElementById('thread');
+const dock = document.getElementById('dock');
+const replyChips = document.getElementById('reply-chips');
+const tray = document.getElementById('tray');
+const trayItems = document.getElementById('tray-items');
+
+let beatIndex = 0;
+const path = []; // course keys added
+
+/* ---------- helpers ---------- */
+function scrollDown() { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }
+
+function addUserMessage(text) {
+  const wrap = document.createElement('div');
+  wrap.className = 'flex justify-end enter';
+  wrap.innerHTML = `<div class="max-w-[78%] bg-prosci-primary text-white rounded-[16px] rounded-br-[5px] px-4 py-3 text-[0.97rem] leading-[1.5] shadow-card">${text}</div>`;
+  thread.appendChild(wrap);
+  scrollDown();
+}
+
+function typingIndicator() {
+  const el = document.createElement('div');
+  el.className = 'flex items-center gap-3 enter';
+  el.id = 'typing';
+  el.innerHTML = `
+    <div class="w-9 h-9 rounded-full bg-prosci-surface hairline flex items-center justify-center shrink-0">
+      <iconify-icon icon="ph:sparkle-fill" class="text-prosci-accent text-[1rem]"></iconify-icon>
+    </div>
+    <div class="flex items-center gap-1.5 bg-prosci-surface hairline rounded-full px-4 py-3">
+      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    </div>`;
+  thread.appendChild(el);
+  scrollDown();
+  return el;
+}
+
+/* ---------- the official Prosci course card (inner markup, reused everywhere) ---------- */
+function officialInner(key) {
+  const c = COURSES[key];
+  const priceWas = c.priceWas
+    ? `<span class="text-[0.85rem] text-prosci-text-muted line-through shrink-0">$${c.priceWas.toLocaleString()}</span>` : '';
+  return `
+    <div class="shrink-0 bg-center bg-cover" style="height:170px;background-image:url('${c.image}');"></div>
+    <div class="p-6 bg-white flex-1 flex flex-col">
+      <div class="inline-flex items-center gap-2 px-3 py-2 rounded-[10px] self-start" style="border:1px solid rgba(255,26,163,0.55);">
+        <iconify-icon icon="${c.badgeIcon}" class="text-prosci-primary text-[1.05rem]"></iconify-icon>
+        <span class="text-[0.85rem] font-semibold text-prosci-primary">${c.badge}</span>
+      </div>
+      <h3 class="font-display text-prosci-primary text-[1.5rem] leading-tight mt-4">${c.title}</h3>
+      <p class="mt-3 text-[0.96rem] text-prosci-text-secondary leading-[1.55] flex-1">${c.desc}</p>
+      <div class="my-5" style="border-top:1px solid rgba(53,9,68,0.12);"></div>
+      <div class="flex flex-wrap items-center gap-x-7 gap-y-2 text-[0.92rem] text-prosci-text-secondary">
+        <span class="flex items-center gap-2"><iconify-icon icon="ph:calendar-blank" class="text-prosci-primary text-[1.05rem]"></iconify-icon>${c.date}</span>
+        <span class="flex items-center gap-2"><iconify-icon icon="${c.formatIcon}" class="text-prosci-primary text-[1.05rem]"></iconify-icon>${c.format}</span>
+      </div>
+      <div class="my-5" style="border-top:1px solid rgba(53,9,68,0.12);"></div>
+      <div class="flex items-center justify-between gap-2 flex-nowrap">
+        <div class="flex items-center gap-2 min-w-0">
+          <span class="font-bold text-[1.05rem] text-prosci-text">$${c.price.toLocaleString()}</span>
+          ${priceWas}
+          <button title="Includes the official Prosci toolkit and 12 months of portal access." class="w-5 h-5 shrink-0 rounded-full bg-prosci-primary text-white text-[0.7rem] font-bold flex items-center justify-center hover:bg-prosci-accent transition leading-none">i</button>
+        </div>
+        <button onclick="enrollNow('${key}')" class="shrink-0 whitespace-nowrap bg-prosci-primary hover:bg-prosci-accent transition text-[#fffefa] font-semibold text-[0.875rem] uppercase tracking-[0.04em] px-5 py-3 rounded-[4px]">${c.cta}</button>
+      </div>
+    </div>`;
+}
+
+/* ---------- plain catalog card (no "why this fits" footer) — for Featured programs ---------- */
+function plainCard(key) {
+  return `<div class="bg-white rounded-[16px] hairline shadow-card overflow-hidden flex flex-col h-full">${officialInner(key)}</div>`;
+}
+
+/* ---------- HERO best-fit unit: "why this fits you" panel + official card ---------- */
+function heroCard(key) {
+  return `
+  <div class="recommendation rounded-[20px] p-5 grid grid-cols-1 sm:grid-cols-2 gap-5 items-stretch" style="background:rgba(181,187,219,0.32);" data-course="${key}">
+    <!-- left: AI rationale panel -->
+    <div class="flex flex-col justify-center px-4 py-5">
+      <div>
+        <span class="inline-flex items-center gap-1.5 bg-white rounded-full px-3.5 py-1.5 text-[0.7rem] font-bold uppercase tracking-[0.09em] text-prosci-accent shadow-card">
+          <iconify-icon icon="ph:star-fill" class="text-[0.8rem]"></iconify-icon> Best fit
+        </span>
+      </div>
+      <h3 class="font-display text-prosci-primary text-[2rem] leading-[1.12] mt-5">Why this fits you</h3>
+      <p class="mt-4 text-[1.02rem] text-prosci-text-secondary leading-[1.55] [&_em]:text-prosci-primary [&_em]:not-italic [&_em]:font-semibold">${WHYFITS[key]}</p>
+      <div class="mt-7">
+        <button onclick="addToPath('${key}', this)" class="add-btn inline-flex items-center gap-2 bg-white hairline hover:border-prosci-accent/45 transition text-prosci-primary font-semibold text-[0.8rem] uppercase tracking-[0.07em] px-6 py-3.5 rounded-[10px] shadow-card">
+          <iconify-icon icon="ph:plus" class="text-[1rem]"></iconify-icon> Add to path
+        </button>
+      </div>
+    </div>
+    <!-- right: official Prosci course card -->
+    <div class="bg-white rounded-[16px] hairline shadow-card overflow-hidden flex flex-col">${officialInner(key)}</div>
+  </div>`;
+}
+
+/* ---------- RECOMMENDED card: official card + collapsible "why this fits" footer ---------- */
+function recCard(key) {
+  return `
+  <div class="recommendation rec-card rounded-[16px] overflow-hidden bg-white flex flex-col" data-course="${key}">
+    <div class="bg-white flex-1 flex flex-col">${officialInner(key)}</div>
+
+    <!-- collapsible footer -->
+    <button onclick="toggleFit(this)" aria-label="Why this fits"
+      class="w-full flex items-center justify-between px-5 py-4 text-left" style="background:rgba(181,187,219,0.22);">
+      <span class="flex items-center gap-2 text-[0.78rem] font-bold uppercase tracking-[0.09em] text-prosci-primary">
+        <iconify-icon icon="ph:sparkle-fill" class="text-prosci-accent text-[1rem]"></iconify-icon> Why this fits
+      </span>
+      <iconify-icon icon="ph:caret-down" class="fit-caret text-prosci-primary text-[1.1rem]"></iconify-icon>
+    </button>
+    <div class="fit-body" style="background:rgba(181,187,219,0.22);">
+      <div class="px-5 pb-5">
+        <p class="text-[0.9rem] text-prosci-text-secondary leading-[1.5] [&_em]:text-prosci-primary [&_em]:not-italic [&_em]:font-semibold">${WHYFITS[key]}</p>
+        <button onclick="addToPath('${key}', this)" class="add-btn mt-4 w-full justify-center inline-flex items-center gap-2 bg-white hairline hover:border-prosci-accent/45 transition text-prosci-primary font-semibold text-[0.78rem] uppercase tracking-[0.07em] py-3 rounded-[10px]">
+          <iconify-icon icon="ph:plus" class="text-[1rem]"></iconify-icon> Add to path
+        </button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleFit(btn) {
+  btn.closest('.rec-card').classList.toggle('open');
+}
+
+/* keep collapsed rec cards equal height per row, but let only the hovered/open
+   card grow — siblings hold their min-height instead of stretching along */
+function equalizeRecGrid(grid) {
+  const cards = grid.querySelectorAll('.rec-card');
+  if (cards.length < 2) return;
+  cards.forEach(c => { c.style.minHeight = ''; });
+  // single column (stacked) → no equalization needed
+  if (cards[0].offsetTop !== cards[cards.length - 1].offsetTop) return;
+  let max = 0;
+  cards.forEach(c => { max = Math.max(max, c.offsetHeight); });
+  cards.forEach(c => { c.style.minHeight = max + 'px'; });
+}
+function equalizeAllRecGrids() {
+  document.querySelectorAll('.rec-grid').forEach(equalizeRecGrid);
+}
+window.addEventListener('resize', equalizeAllRecGrids);
+
+function renderAgentBeat(beat) {
+  const wrap = document.createElement('div');
+  wrap.className = 'flex gap-3 enter';
+  let inner = `
+    <div class="w-9 h-9 rounded-full bg-prosci-surface hairline flex items-center justify-center shrink-0 mt-0.5">
+      <iconify-icon icon="ph:sparkle-fill" class="text-prosci-accent text-[1rem]"></iconify-icon>
+    </div>
+    <div class="flex-1 min-w-0">
+      <div class="text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-prosci-text-muted mb-2">Prosci AI</div>
+      <div class="text-[1rem] leading-[1.6] text-prosci-text-secondary [&_strong]:text-prosci-primary [&_em]:text-prosci-primary [&_em]:not-italic [&_em]:font-medium">${beat.agent}</div>`;
+
+  // synthesized answer block
+  if (beat.answer) {
+    inner += `<div class="mt-4 rounded-[16px] p-4 hairline" style="background:rgba(255,26,163,0.05);">
+        <div class="flex items-center gap-2 mb-1">
+          <iconify-icon icon="ph:lightbulb-filament" class="text-prosci-accent"></iconify-icon>
+          <span class="text-[0.8rem] font-semibold text-prosci-primary">Your recommended approach</span>
+        </div>
+        <div class="text-[0.95rem] leading-[1.55] text-prosci-text-secondary [&_strong]:text-prosci-primary">${beat.answer}</div>
+      </div>`;
+  }
+  // cards — hero best-fit unit on top, supporting cards in a 2-col grid beneath
+  if (beat.cards) {
+    const best = beat.cards.find(k => COURSES[k].bestFit) || beat.cards[0];
+    const rest = beat.cards.filter(k => k !== best);
+    inner += `<div class="mt-5 space-y-5">`;
+    inner += heroCard(best);
+    if (rest.length) {
+      inner += `<div class="rec-grid grid grid-cols-1 sm:grid-cols-2 gap-5 items-start">${rest.map(recCard).join('')}</div>`;
+    }
+    inner += `</div>`;
+  }
+  inner += `</div>`;
+  wrap.innerHTML = inner;
+  thread.appendChild(wrap);
+  scrollDown();
+  if (beat.cards) {
+    const grid = wrap.querySelector('.rec-grid');
+    if (grid) requestAnimationFrame(() => requestAnimationFrame(() => equalizeRecGrid(grid)));
+  }
+}
+
+function renderReplyChips(options) {
+  replyChips.innerHTML = '';
+  if (!options || !options.length) return;
+  options.forEach(opt => {
+    const b = document.createElement('button');
+    b.className = 'chip px-4 py-2 rounded-full bg-white hairline text-[0.85rem] font-medium text-prosci-primary hover:border-prosci-accent/45 shadow-card';
+    b.innerHTML = `<iconify-icon icon="ph:arrow-bend-up-left" class="text-prosci-accent mr-1.5 text-[0.85rem]"></iconify-icon>${opt}`;
+    b.onclick = () => handleUserReply(opt);
+    replyChips.appendChild(b);
+  });
+}
+
+/* ---------- flow control ---------- */
+function startConversation(firstMessage) {
+  welcome.classList.add('hidden');
+  blobs.classList.add('hidden');
+  const bf = document.getElementById('belowfold');
+  if (bf) bf.classList.add('hidden');
+  thread.classList.remove('hidden');
+  dock.classList.remove('hidden');
+  document.body.classList.add('in-convo');
+  window.scrollTo({ top: 0, behavior: 'auto' });
+  addUserMessage(firstMessage);
+  playBeat();
+}
+
+/* return to the advisor input from a below-the-fold CTA */
+function focusAdvisor() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(() => {
+    const i = document.getElementById('welcome-input');
+    if (i) i.focus();
+  }, 450);
+}
+
+function handleUserReply(text) {
+  renderReplyChips([]);          // clear chips immediately
+  addUserMessage(text);
+  beatIndex++;
+  playBeat();
+}
+
+function playBeat() {
+  if (beatIndex >= BEATS.length) return;
+  const beat = BEATS[beatIndex];
+  const typing = typingIndicator();
+  const delay = beat.cards ? 1300 : 950;
+  setTimeout(() => {
+    typing.remove();
+    renderAgentBeat(beat);
+    renderReplyChips(beat.reply);
+  }, delay);
+}
+
+/* ---------- recommended path tray ---------- */
+function refreshTray() {
+  if (!path.length) { tray.classList.add('hidden'); return; }
+  tray.classList.remove('hidden');
+  document.getElementById('tray-count').textContent = path.length;
+  trayItems.innerHTML = path.map(k => {
+    const c = COURSES[k];
+    return `<div class="flex items-start gap-2 enter">
+        <iconify-icon icon="ph:check-circle-fill" class="text-prosci-secondary text-[1.05rem] mt-0.5 shrink-0"></iconify-icon>
+        <div class="min-w-0">
+          <div class="text-[0.84rem] font-semibold text-prosci-primary leading-tight truncate">${c.title}</div>
+          <div class="text-[0.78rem] text-prosci-text-muted">${c.format} · $${c.price.toLocaleString()}</div>
+        </div>
+      </div>`;
+  }).join('');
+  const total = path.reduce((s,k)=>s+COURSES[k].price,0);
+  document.getElementById('tray-total').textContent = '$' + total.toLocaleString();
+}
+
+function addToPath(key, btn) {
+  if (!path.includes(key)) path.push(key);
+  if (btn) {
+    btn.innerHTML = `<iconify-icon icon="ph:check"></iconify-icon> Added`;
+    btn.classList.add('text-prosci-secondary');
+    btn.disabled = true;
+  }
+  refreshTray();
+}
+function enrollNow(key) { addToPath(key); refreshTray(); }
+
+/* ---------- wire up entry points ---------- */
+document.querySelectorAll('.example-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    startConversation(chip.textContent.trim());
+  });
+});
+
+function sendFromWelcome() {
+  const v = document.getElementById('welcome-input').value.trim();
+  startConversation(v || "Our ERP rollout is stalling — employees won't adopt the new processes.");
+}
+document.getElementById('welcome-send').addEventListener('click', sendFromWelcome);
+document.getElementById('welcome-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendFromWelcome(); }
+});
+
+/* dock input: typing a reply advances the same flow */
+function sendFromDock() {
+  const el = document.getElementById('dock-input');
+  const v = el.value.trim();
+  if (!v) return;
+  el.value = '';
+  handleUserReply(v);
+}
+document.getElementById('dock-send').addEventListener('click', sendFromDock);
+document.getElementById('dock-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendFromDock(); }
+});
+
+/* When user reaches the "build into one path" reply, auto-add all three. */
+const _handleUserReply = handleUserReply;
+handleUserReply = function(text) {
+  if (/build these into one path/i.test(text)) {
+    ['practitioner','managers','adkar'].forEach(k => addToPath(k));
+  }
+  _handleUserReply(text);
+};
+
+/* auto-grow textareas */
+document.querySelectorAll('textarea').forEach(t => {
+  t.addEventListener('input', () => { t.style.height='auto'; t.style.height=Math.min(t.scrollHeight,128)+'px'; });
+});
+
+/* populate the "Featured programs" catalog row below the fold */
+(function () {
+  const el = document.getElementById('featured-cards');
+  if (el) el.innerHTML = ['practitioner','managers','adkar'].map(plainCard).join('');
+})();
+</script>
+</body>
+</html>
