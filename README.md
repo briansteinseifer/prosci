@@ -4,27 +4,38 @@ An LLM-guided course finder for Prosci. A user describes a change-management
 challenge in plain language and receives an AI recommendation plus a ranked set
 of matching Prosci programs, each with an explicit "why this fits" rationale.
 
-This is a front-end prototype: single-file HTML/CSS/JS, no build step. The AI
+These are front-end prototypes: single-file HTML/CSS/JS, no build step. The AI
 recommendation and match scoring are mocked/canned for demonstration.
 
-## Files
+## Versions
 
-- **`index.html`** — primary version. Focal landing search, split results view,
-  photo course cards with match pill and Register / Join Waitlist CTAs.
-- **`index-alt.html`** — alternate version. Same landing and results flow, with
-  lavender-framed cards ("Why this fits" + "Add to path") and a checkbox/radio
-  filter panel.
+Each version is a distinct design. They share one design system (derived from the
+live Prosci store) but diverge deliberately in how courses are presented and refined.
+
+- **`index.html`** — version picker. The entry point; links to each design.
+- **`version-a.html`** — *Photo cards.* Photo-forward course cards with a
+  match-strength pill and Register / Join Waitlist actions; chip-based facet filters.
+- **`version-b.html`** — *Reasoning cards.* Lavender-framed cards leading with a
+  "Why this fits" rationale and an "Add to path" action; checkbox/radio filter panel.
+
+## Context
+
 - **`PRODUCT.md`** — strategic product context (users, brand, principles).
 - **`DESIGN.md`** — visual system, derived from the live Prosci store.
+- **`previews/`** — thumbnails used by the picker page.
+
+## Adding a version
+
+1. Drop the new `version-*.html` in this directory.
+2. Add a thumbnail to `previews/`.
+3. Append one entry to the `VERSIONS` array in `index.html`. The picker renders the rest.
 
 ## Viewing
 
-Open either HTML file directly in a browser. Course imagery hotlinks from the
-Prosci store CDN, so an internet connection is needed for photos to load.
+Open `index.html` in a browser, or visit the live build. Course imagery hotlinks
+from the Prosci store CDN, so an internet connection is needed for photos to load.
 
 ## Notes for review
 
-- Strikethrough "was" prices are illustrative (member pricing, shown via the
-  info tooltip).
-- Header, the "Prosci Advisor" recommendation module, and course cards follow
-  the Figma source designs.
+- Strikethrough "was" prices are illustrative (member pricing, shown via the info tooltip).
+- Header, the "Prosci Advisor" recommendation module, and course cards follow the Figma source designs.

@@ -2,7 +2,7 @@
 node_modules/
 package.json
 package-lock.json
-shot.mjs
+*.mjs
 
 # Working artifacts, not deliverables
 .superdesign/

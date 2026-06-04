@@ -3,23 +3,18 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Prosci Course Finder</title>
-<meta name="description" content="Describe your change challenge in plain language and find the Prosci program that fits." />
+<title>Prosci Course Finder — Design Review</title>
+<meta name="description" content="Concept directions for the Prosci Course Finder. One shared design system, several distinct designs." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
 <style>
-  /* ============================================================
-     Prosci Course Finder — tokens derived from store.prosci.com
-     ============================================================ */
   :root {
     --damson: #350944;
     --damson-deep: #26063a;
     --purple: #5c1761;
     --pink: #ff1aa3;
-    --pink-ink: #c30d79;          /* AA-safe pink for small text on cream */
-    --orange: #f3902d;
-    --green: #d2f7a9;
+    --pink-ink: #c30d79;
     --lilac: #b5bbdb;
     --gold: #836434;
     --white: #fffefa;
@@ -31,1256 +26,199 @@
     --muted: #7d7385;
     --line: rgba(53, 9, 68, 0.10);
     --line-strong: rgba(53, 9, 68, 0.16);
-    --ok: #2f8f5b;
-    --err: #de351b;
     --serif: "Baskervville", Cambria, Georgia, serif;
     --sans: "Instrument Sans", Arial, ui-sans-serif, system-ui, sans-serif;
-    --r-card: 6px;
+    --r-card: 10px;
     --r-input: 8px;
     --r-pill: 999px;
-    --shadow-sm: 0 1px 2px rgba(53, 9, 68, 0.05);
     --shadow-card: 0 10px 30px -16px rgba(53, 9, 68, 0.22);
-    --shadow-lift: 0 18px 44px -20px rgba(53, 9, 68, 0.30);
-    --shadow-hero: 0 30px 80px -34px rgba(53, 9, 68, 0.40);
+    --shadow-lift: 0 26px 60px -24px rgba(53, 9, 68, 0.34);
     --shadow-ring: 0 0 0 4px rgba(255, 26, 163, 0.16);
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
-    --rail-w: 320px;
   }
-
   *, *::before, *::after { box-sizing: border-box; }
   [hidden] { display: none !important; }
-
   html { -webkit-text-size-adjust: 100%; }
   body {
-    margin: 0;
-    font-family: var(--sans);
-    font-size: 16px;
-    line-height: 1.6;
-    color: var(--ink-2);
-    background: var(--white);
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-    min-height: 100vh;
+    margin: 0; font-family: var(--sans); font-size: 16px; line-height: 1.6;
+    color: var(--ink-2); background: var(--white);
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; min-height: 100vh;
   }
   body::before {
-    content: "";
-    position: fixed;
-    inset: -20% -10% auto -10%;
-    height: 620px;
+    content: ""; position: fixed; inset: -20% -10% auto -10%; height: 640px;
     background:
       radial-gradient(58% 70% at 80% 4%, rgba(255, 26, 163, 0.08), transparent 60%),
       radial-gradient(52% 80% at 10% 0%, rgba(181, 187, 219, 0.34), transparent 62%),
       radial-gradient(42% 60% at 92% 26%, rgba(131, 100, 52, 0.07), transparent 60%);
-    z-index: -1;
-    pointer-events: none;
+    z-index: -1; pointer-events: none;
   }
   a { color: var(--damson); text-decoration: none; }
   ::selection { background: rgba(255, 26, 163, 0.18); }
   :focus-visible { outline: none; box-shadow: var(--shadow-ring); border-radius: var(--r-input); }
 
-  .sr-only {
-    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
-  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 32px); }
 
-  /* ============================================================
-     Site header  (utility bar + main nav, store-matched)
-     ============================================================ */
-  .site-header { position: sticky; top: 0; z-index: 30; }
+  /* Masthead */
+  .top { padding: 22px 0; }
+  .top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo { font-family: var(--sans); font-weight: 700; font-size: 1.5rem; letter-spacing: -0.035em; color: var(--damson); }
+  .top .tag { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
 
-  /* Wordmark (footer reuses this) */
-  .wordmark {
-    font-family: var(--sans); font-weight: 700; font-size: 1.4rem;
-    letter-spacing: -0.02em; color: var(--damson); line-height: 1;
-  }
-  .wordmark span { color: var(--pink); }
-
-  /* Utility bar */
-  .util-bar {
-    display: flex; align-items: center; justify-content: flex-end; gap: clamp(10px, 1.4vw, 20px);
-    background: var(--linen); border-bottom: 1px solid var(--sand);
-    padding: 7px clamp(20px, 4vw, 48px); min-height: 52px;
-  }
-  .util-item {
-    display: inline-flex; align-items: center; gap: 9px;
-    font-family: var(--sans); font-size: 0.92rem; font-weight: 500; color: var(--damson);
-    background: none; border: 0; cursor: pointer; white-space: nowrap;
-    transition: opacity 0.18s var(--ease);
-  }
-  .util-item:hover { opacity: 0.68; }
-  .util-chev { width: 13px; height: 13px; opacity: 0.7; }
-  .u-ico {
-    flex: none; width: 38px; height: 38px; border-radius: var(--r-pill);
-    background: var(--damson); color: var(--white);
-    display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
-  }
-  .u-ico svg { width: 19px; height: 19px; }
-  .u-ico .cart-n { font-size: 0.6rem; font-weight: 600; line-height: 1; margin-bottom: 1px; }
-  .u-ico--cart svg { width: 16px; height: 14px; }
-  .util-training {
-    background: var(--damson); color: var(--white); border-radius: var(--r-input);
-    padding: 11px 17px; gap: 10px;
-    font-weight: 600; font-size: 0.8rem; letter-spacing: 0.09em; text-transform: uppercase;
-  }
-  .util-training:hover { background: var(--purple); opacity: 1; }
-  .util-training svg { width: 16px; height: 16px; }
-  .util-div { width: 1px; align-self: stretch; background: var(--sand); margin: 6px 2px; }
-
-  /* Main nav */
-  .main-nav {
-    display: flex; align-items: center; gap: clamp(14px, 2.6vw, 38px);
-    background: var(--white); border-bottom: 1px solid var(--sand);
-    padding: 14px clamp(20px, 4vw, 48px);
-  }
-  .logo {
-    font-family: var(--sans); font-weight: 700; font-size: 1.95rem;
-    letter-spacing: -0.035em; color: var(--damson); line-height: 1; text-decoration: none; flex: none;
-  }
-  .nav-links { display: flex; align-items: center; gap: clamp(12px, 2vw, 30px); }
-  .nav-links a {
-    display: inline-flex; align-items: center; gap: 5px;
-    font-size: 0.98rem; font-weight: 500; color: var(--damson); text-decoration: none;
-    transition: color 0.18s var(--ease);
-  }
-  .nav-links a:hover { color: var(--pink-ink); }
-  .nav-chev { width: 12px; height: 12px; opacity: 0.6; }
-  .nav-search {
-    margin-left: auto; display: flex; align-items: center; gap: 8px;
-    background: var(--white); border: 1px solid var(--line-strong); border-radius: var(--r-pill);
-    padding: 9px 16px; min-width: 230px;
-    transition: border-color 0.18s var(--ease), box-shadow 0.18s var(--ease);
-  }
-  .nav-search:focus-within { border-color: var(--pink); box-shadow: var(--shadow-ring); }
-  .nav-search input {
-    flex: 1; min-width: 0; border: 0; background: transparent; outline: none;
-    font-family: var(--sans); font-size: 0.95rem; color: var(--ink);
-  }
-  .nav-search input::placeholder { color: var(--muted); }
-  .nav-search button { border: 0; background: none; color: var(--damson); cursor: pointer; display: grid; place-items: center; padding: 0; }
-  .nav-search button svg { width: 18px; height: 18px; }
-
-  /* Mobile-only controls + menu (hidden on desktop) */
-  .mobile-actions { display: none; margin-left: auto; align-items: center; gap: 4px; }
-  .icon-btn {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 44px; height: 44px; border: 0; background: none; color: var(--damson);
-    cursor: pointer; border-radius: var(--r-input); transition: background 0.16s var(--ease);
-  }
-  .icon-btn:hover { background: var(--linen); }
-  .icon-btn svg { width: 25px; height: 25px; }
-  .mobile-menu {
-    display: none; background: var(--white); border-bottom: 1px solid var(--sand);
-    padding: 6px clamp(20px, 4vw, 48px) 18px; flex-direction: column;
-  }
-  .mobile-menu a {
-    padding: 13px 2px; font-size: 1.02rem; font-weight: 500; color: var(--damson);
-    text-decoration: none; border-bottom: 1px solid var(--line);
-  }
-  .mobile-menu a:last-of-type { border-bottom: 0; }
-  .mobile-search {
-    margin-top: 14px; display: flex; align-items: center; gap: 8px;
-    border: 1px solid var(--line-strong); border-radius: var(--r-pill); padding: 10px 16px;
-  }
-  .mobile-search input {
-    flex: 1; min-width: 0; border: 0; background: none; outline: none;
-    font-family: var(--sans); font-size: 0.98rem; color: var(--ink);
-  }
-  .mobile-search input::placeholder { color: var(--muted); }
-  .mobile-search svg { width: 18px; height: 18px; color: var(--damson); flex: none; }
-
-  /* ============================================================
-     Buttons
-     ============================================================ */
-  .btn {
-    font-family: var(--sans); font-weight: 600; font-size: 0.95rem; line-height: 1;
-    border-radius: var(--r-input); border: 1px solid transparent; padding: 13px 22px;
-    cursor: pointer; display: inline-flex; align-items: center; gap: 9px; white-space: nowrap;
-    transition: background 0.18s var(--ease), color 0.18s var(--ease),
-                border-color 0.18s var(--ease), transform 0.18s var(--ease), box-shadow 0.18s var(--ease);
-  }
-  .btn-primary { background: var(--damson); color: var(--white); box-shadow: var(--shadow-sm); }
-  .btn-primary:hover { background: var(--purple); }
-  .btn-primary:active { transform: translateY(1px); }
-  .btn-secondary { background: transparent; color: var(--damson); border-color: var(--line-strong); }
-  .btn-secondary:hover { background: var(--linen); border-color: var(--damson); }
-  .btn-sm { padding: 9px 15px; font-size: 0.88rem; }
-
-  /* ============================================================
-     LANDING — search as the focal point
-     ============================================================ */
-  .landing {
-    max-width: 880px;
-    margin: 0 auto;
-    padding: clamp(48px, 9vh, 110px) clamp(20px, 4vw, 32px) 80px;
-    text-align: center;
-  }
-  .landing .eyebrow {
+  /* Hero */
+  .hero { padding: clamp(36px, 7vh, 72px) 0 clamp(28px, 4vw, 44px); }
+  .eyebrow {
     display: inline-flex; align-items: center; gap: 8px;
     font-size: 0.74rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
-    color: var(--pink-ink); margin-bottom: 24px;
+    color: var(--pink-ink); margin-bottom: 20px;
   }
-  .landing .eyebrow svg { width: 15px; height: 15px; }
-  .landing h1 {
+  .eyebrow svg { width: 16px; height: 16px; }
+  .hero h1 {
     font-family: var(--serif); font-weight: 400; color: var(--damson);
-    font-size: clamp(2.5rem, 5.4vw, 4rem); line-height: 1.04; letter-spacing: -0.015em;
-    margin: 0 auto 22px; max-width: 16ch;
+    font-size: clamp(2.4rem, 5vw, 3.7rem); line-height: 1.05; letter-spacing: -0.015em;
+    margin: 0 0 18px; max-width: 18ch;
   }
-  .landing h1 em { font-style: italic; color: var(--pink); }
-  .landing .lede {
-    font-size: 1.16rem; line-height: 1.6; color: var(--ink-2);
-    margin: 0 auto 40px; max-width: 60ch;
-  }
+  .hero h1 em { font-style: italic; color: var(--pink); }
+  .hero p { font-size: 1.12rem; line-height: 1.6; color: var(--ink-2); margin: 0; max-width: 64ch; }
+  .hero .note { margin-top: 16px; font-size: 0.96rem; color: var(--muted); max-width: 64ch; }
 
-  /* Focal search */
-  .hero-search {
-    display: flex; align-items: center; gap: 10px;
-    background: var(--paper);
-    border: 1px solid var(--line-strong);
-    border-radius: 14px;
-    padding: 12px 12px 12px 18px;
-    max-width: 720px; margin: 0 auto;
-    box-shadow: var(--shadow-hero);
-    text-align: left;
-    transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  /* Version grid */
+  .versions { padding: 8px 0 clamp(56px, 9vw, 104px); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 28px; }
+  .card {
+    position: relative;
+    display: flex; flex-direction: column; background: var(--paper);
+    border: 1px solid var(--sand); border-radius: var(--r-card); overflow: hidden;
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s var(--ease);
   }
-  .hero-search:focus-within { border-color: var(--pink); box-shadow: var(--shadow-hero), var(--shadow-ring); }
-  .hero-spark {
-    flex: none; width: 30px; height: 30px; border-radius: var(--r-pill);
-    display: grid; place-items: center; color: var(--pink); align-self: start; margin-top: 6px;
-  }
-  .hero-spark svg { width: 22px; height: 22px; }
-  .hero-search textarea {
-    flex: 1; min-width: 0; border: 0; background: transparent; resize: none;
-    font-family: var(--sans); font-size: 1.12rem; line-height: 1.5; color: var(--ink);
-    padding: 9px 4px; min-height: 54px; max-height: 160px; overflow-y: auto;
-  }
-  .hero-search textarea:focus { outline: none; }
-  .hero-search textarea::placeholder { color: var(--muted); }
-  .hero-search .btn-primary { align-self: stretch; padding: 0 24px; }
-
-  .examples-inline {
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
-    gap: 10px; margin: 22px auto 0; max-width: 760px;
-  }
-  .examples-inline .label { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
-  .ex-pill {
-    font-family: var(--sans); font-size: 0.9rem; color: var(--damson); font-weight: 500;
-    background: var(--linen); border: 1px solid var(--line); border-radius: var(--r-pill);
-    padding: 8px 15px; cursor: pointer; transition: background 0.16s var(--ease), border-color 0.16s var(--ease), transform 0.16s var(--ease);
-  }
-  .ex-pill:hover { background: var(--white); border-color: var(--pink); transform: translateY(-1px); }
-
-  .trust {
-    margin-top: 64px; padding-top: 30px; border-top: 1px solid var(--line);
-    display: flex; flex-wrap: wrap; justify-content: center; gap: 24px 48px;
-  }
-  .trust-item { display: flex; flex-direction: column; gap: 2px; align-items: center; }
-  .trust-num { font-family: var(--serif); font-size: 1.8rem; color: var(--damson); line-height: 1; }
-  .trust-label { font-size: 0.86rem; color: var(--muted); }
-
-  /* ============================================================
-     Landing — below the fold
-     ============================================================ */
-  .section { max-width: 1120px; margin: 0 auto; padding: clamp(56px, 8vw, 104px) clamp(20px, 4vw, 32px); }
-  .section-head { max-width: 720px; }
-  .section-head.center { margin: 0 auto; text-align: center; }
-  .s-eyebrow { display: inline-block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--pink-ink); margin-bottom: 16px; }
-  .section h2 { font-family: var(--serif); font-weight: 400; color: var(--damson); font-size: clamp(2rem, 3.6vw, 2.9rem); line-height: 1.1; letter-spacing: -0.01em; margin: 0 0 16px; }
-  .section h2 em { font-style: italic; color: var(--pink); }
-  .s-intro { font-size: 1.08rem; line-height: 1.6; color: var(--ink-2); margin: 0; max-width: 60ch; }
-  .section-head.center .s-intro { margin-inline: auto; }
-  .band { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-  .band-linen { background: var(--linen); }
-
-  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: clamp(28px, 4vw, 48px); margin-top: 56px; }
-  .step .num { font-family: var(--serif); font-size: 2.6rem; line-height: 1; color: var(--pink); opacity: 0.9; margin-bottom: 16px; }
-  .step h3 { font-size: 1.18rem; font-weight: 600; color: var(--damson); margin: 0 0 8px; }
-  .step p { margin: 0; color: var(--ink-2); font-size: 0.98rem; line-height: 1.55; }
-
-  .adkar { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(16px, 3vw, 30px); margin-top: 52px; }
-  .adkar-step { flex: 1 1 150px; max-width: 190px; text-align: center; }
-  .adkar-letter { width: 60px; height: 60px; margin: 0 auto 14px; border-radius: 50%; border: 1.5px solid var(--line-strong); display: grid; place-items: center; font-family: var(--serif); font-size: 1.7rem; color: var(--damson); background: var(--white); }
-  .adkar-step h3 { font-size: 1.02rem; font-weight: 600; color: var(--damson); margin: 0 0 6px; }
-  .adkar-step p { margin: 0; font-size: 0.9rem; line-height: 1.5; color: var(--ink-2); }
-
-  .audiences { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: clamp(28px, 4vw, 40px); margin-top: 52px; }
-  .aud { display: flex; gap: 16px; align-items: flex-start; }
-  .aud .ico { flex: none; width: 44px; height: 44px; border-radius: var(--r-input); background: var(--linen); color: var(--purple); display: grid; place-items: center; }
-  .aud .ico svg { width: 22px; height: 22px; }
-  .aud h3 { font-size: 1.08rem; font-weight: 600; color: var(--damson); margin: 0 0 5px; }
-  .aud p { margin: 0; font-size: 0.95rem; line-height: 1.5; color: var(--ink-2); }
-
-  .manifesto { max-width: 940px; margin: 0 auto; text-align: center; }
-  .manifesto p { font-family: var(--serif); font-weight: 400; font-size: clamp(1.7rem, 3.4vw, 2.6rem); line-height: 1.25; color: var(--damson); margin: 0; letter-spacing: -0.01em; }
-  .manifesto em { font-style: italic; color: var(--pink); }
-
-  .programs { display: grid; grid-template-columns: repeat(auto-fit, minmax(258px, 1fr)); gap: 22px; margin-top: 52px; }
-  .prog { display: flex; flex-direction: column; background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-card); overflow: hidden; transition: border-color 0.18s var(--ease), transform 0.2s var(--ease), box-shadow 0.2s var(--ease); }
-  .prog:hover { border-color: var(--line-strong); transform: translateY(-3px); box-shadow: var(--shadow-lift); }
-  .prog-photo { aspect-ratio: 16 / 9; overflow: hidden; background: var(--sand); }
-  .prog-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .prog-body { padding: 18px 18px 20px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
-  .prog .ptag { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
-  .prog h3 { font-family: var(--serif); font-weight: 400; font-size: 1.25rem; color: var(--damson); margin: 0; line-height: 1.15; }
-  .prog p { margin: 0; font-size: 0.93rem; color: var(--ink-2); line-height: 1.5; flex: 1; }
-  .prog .plink { margin-top: 6px; font-weight: 600; font-size: 0.9rem; color: var(--damson); display: inline-flex; align-items: center; gap: 6px; }
-  .prog .plink svg { width: 14px; height: 14px; transition: transform 0.16s var(--ease); }
-  .prog:hover .plink svg { transform: translateX(3px); }
-  .programs-note { margin-top: 28px; text-align: center; font-size: 1rem; color: var(--ink-2); }
-  .programs-note button { font: inherit; font-weight: 600; color: var(--pink-ink); background: none; border: 0; cursor: pointer; padding: 0; text-decoration: underline; text-underline-offset: 3px; }
-
-  .cta-band { background: var(--damson); color: var(--white); text-align: center; padding: clamp(56px, 8vw, 96px) clamp(20px, 4vw, 32px); }
-  .cta-band h2 { font-family: var(--serif); font-weight: 400; color: var(--white); font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1; margin: 0 auto 14px; max-width: 18ch; }
-  .cta-band h2 em { font-style: italic; color: var(--pink); }
-  .cta-band p { color: rgba(255, 254, 250, 0.78); font-size: 1.08rem; margin: 0 auto 32px; max-width: 52ch; }
-  .cta-actions { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
-  .btn-light { background: var(--white); color: var(--damson); }
-  .btn-light:hover { background: var(--linen); }
-  .btn-ghost-light { background: transparent; color: var(--white); border-color: rgba(255, 254, 250, 0.5); }
-  .btn-ghost-light:hover { background: rgba(255, 254, 250, 0.1); border-color: var(--white); }
-
-  .site-footer { background: var(--linen); border-top: 1px solid var(--line); }
-  .footer-inner { max-width: 1120px; margin: 0 auto; padding: clamp(40px, 5vw, 64px) clamp(20px, 4vw, 32px); display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 32px; }
-  .footer-brand .wordmark { font-size: 1.3rem; }
-  .footer-brand p { margin: 12px 0 0; font-size: 0.92rem; color: var(--muted); max-width: 34ch; line-height: 1.55; }
-  .footer-col h4 { font-size: 0.74rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 14px; }
-  .footer-col a { display: block; font-size: 0.95rem; color: var(--ink-2); padding: 5px 0; }
-  .footer-col a:hover { color: var(--pink-ink); }
-  .footer-legal { border-top: 1px solid var(--line); }
-  .footer-legal .inner { max-width: 1120px; margin: 0 auto; padding: 20px clamp(20px, 4vw, 32px); display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; font-size: 0.86rem; color: var(--muted); }
-
-  /* ============================================================
-     RESULTS — split screen
-     ============================================================ */
-  .shell {
-    display: grid;
-    grid-template-columns: var(--rail-w) minmax(0, 1fr);
-    gap: clamp(24px, 3.5vw, 52px);
-    max-width: 1380px; margin: 0 auto;
-    padding: clamp(26px, 4vw, 44px) clamp(20px, 4vw, 48px) 96px;
-    align-items: start;
-  }
-  .rail { position: sticky; top: 92px; display: flex; flex-direction: column; gap: 22px; }
-  .rail-card {
-    background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-card);
-    padding: 20px; box-shadow: var(--shadow-card);
-  }
-  .rail-eyebrow {
-    display: inline-flex; align-items: center; gap: 7px;
-    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--pink-ink); margin-bottom: 12px;
-  }
-  .rail-eyebrow svg { width: 14px; height: 14px; }
-  .rail-search {
-    position: relative; border: 1px solid var(--line-strong); border-radius: var(--r-input);
-    background: var(--white); transition: border-color 0.18s var(--ease), box-shadow 0.18s var(--ease);
-  }
-  .rail-search:focus-within { border-color: var(--pink); box-shadow: var(--shadow-ring); }
-  .rail-search textarea {
-    width: 100%; border: 0; background: transparent; resize: none;
-    font-family: var(--sans); font-size: 0.97rem; line-height: 1.5; color: var(--ink);
-    padding: 12px 13px; min-height: 84px; border-radius: var(--r-input);
-  }
-  .rail-search textarea:focus { outline: none; }
-  .rail-actions { margin-top: 12px; }
-  .rail-actions .btn-primary { width: 100%; justify-content: center; }
-
-  .facets { display: flex; flex-direction: column; gap: 20px; }
-  .facet-group-title {
-    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--muted); margin: 0 0 11px;
-  }
-  .facet-list { display: flex; flex-wrap: wrap; gap: 8px; }
-  .chip {
-    font-family: var(--sans); font-size: 0.85rem; font-weight: 500; color: var(--ink-2);
-    background: var(--linen); border: 1px solid transparent; border-radius: var(--r-pill);
-    padding: 7px 13px; cursor: pointer;
-    transition: background 0.16s var(--ease), color 0.16s var(--ease), border-color 0.16s var(--ease);
-  }
-  .chip:hover { border-color: var(--line-strong); }
-  .chip[aria-pressed="true"] { background: var(--damson); color: var(--white); }
-  .rail-divider { height: 1px; background: var(--line); border: 0; margin: 0; }
-  .followup label {
-    display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em;
-    text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
-  }
-  .followup-row { display: flex; gap: 8px; }
-  .followup input {
-    flex: 1; min-width: 0; font-family: var(--sans); font-size: 0.9rem; color: var(--ink);
-    background: var(--white); border: 1px solid var(--line-strong); border-radius: var(--r-input); padding: 10px 12px;
-  }
-  .followup input:focus { outline: none; border-color: var(--pink); box-shadow: var(--shadow-ring); }
-
-  /* ---- Main column ---- */
-  .main { min-width: 0; }
-  .query-echo { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 22px; }
-  .query-echo .label {
-    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--muted); padding-top: 6px; flex: none;
-  }
-  .query-echo .q {
-    font-family: var(--serif); font-size: clamp(1.35rem, 2.4vw, 1.85rem); line-height: 1.2;
-    color: var(--damson); margin: 0;
-  }
-
-  .ai-answer {
-    background: var(--paper);
-    border-radius: 12px;
-    padding: clamp(24px, 4vw, 48px); margin-bottom: 36px;
-    box-shadow: 0 0 50px rgba(26, 13, 31, 0.08), 0 10px 30px rgba(53, 9, 68, 0.10);
-  }
-  .ai-head { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
-  .ai-spark { display: inline-flex; align-items: center; flex: none; color: var(--pink); }
-  .ai-spark svg { width: 22px; height: 22px; display: block; }
-  .ai-title {
-    font-size: 0.9rem; font-weight: 700; letter-spacing: 0.04em;
-    text-transform: uppercase; color: var(--damson);
-  }
-  .ai-title .by { font-weight: 500; }
-  .ai-body { font-size: 1.05rem; line-height: 1.62; color: var(--ink); margin: 0; max-width: 72ch; }
-  .ai-body strong { color: var(--damson); font-weight: 600; }
-  .ai-foot {
-    margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line);
-    font-size: 0.8rem; color: var(--muted); display: flex; align-items: center; gap: 8px;
-  }
-  .ai-foot svg { flex: none; }
-  .ai-foot b { color: var(--muted); font-weight: 600; }
-
-  .results-bar { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
-  .results-bar h2 { font-family: var(--serif); font-weight: 400; font-size: 1.6rem; color: var(--damson); margin: 0; }
-  .results-bar h2 b { font-style: italic; font-weight: 400; }
-  .results-count { font-size: 0.9rem; color: var(--muted); }
-
-  /* ============================================================
-     Course card (matches provided design)
-     ============================================================ */
-  .course-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-    gap: 22px;
-  }
-  .course {
-    display: flex; flex-direction: column;
-    background: var(--linen); border: 1px solid var(--sand); border-radius: var(--r-card);
-    overflow: hidden;
-    transition: border-color 0.18s var(--ease), transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
-  }
-  .course:hover { border-color: var(--line-strong); transform: translateY(-3px); box-shadow: var(--shadow-lift); }
-
-  .course-photo { position: relative; aspect-ratio: 16 / 9; background: var(--sand); overflow: hidden; }
-  .course-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .match-pill {
-    position: absolute; top: 12px; left: 12px;
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 0.73rem; font-weight: 600; letter-spacing: 0.02em;
-    padding: 6px 11px; border-radius: var(--r-pill);
-    background: rgba(255, 254, 250, 0.94); backdrop-filter: blur(4px);
-    box-shadow: var(--shadow-sm);
-  }
-  .match-pill .ico { width: 7px; height: 7px; border-radius: 50%; }
-  .tier-top    { color: var(--pink-ink); } .tier-top .ico    { background: var(--pink); }
-  .tier-strong { color: var(--purple); }   .tier-strong .ico { background: var(--purple); }
-  .tier-fair   { color: var(--gold); }      .tier-fair .ico   { background: var(--gold); }
-
-  .course-content { display: flex; flex-direction: column; flex: 1; padding: 20px 22px 22px; }
+  .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); border-color: var(--line-strong); }
+  .card:focus-within { box-shadow: var(--shadow-ring); }
+  .thumb { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--linen); border-bottom: 1px solid var(--sand); }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; transition: transform 0.4s var(--ease); }
+  .card:hover .thumb img { transform: scale(1.025); }
   .badge {
-    align-self: flex-start; display: inline-flex; align-items: center; gap: 8px;
-    font-size: 0.82rem; font-weight: 600; color: var(--damson);
-    border: 1px solid var(--pink); border-radius: var(--r-input);
-    padding: 7px 12px; margin-bottom: 16px;
+    position: absolute; top: 14px; left: 14px;
+    width: 38px; height: 38px; border-radius: var(--r-pill);
+    background: var(--damson); color: var(--white);
+    display: grid; place-items: center; font-family: var(--serif); font-size: 1.25rem; line-height: 1;
+    box-shadow: 0 4px 14px -4px rgba(38, 6, 58, 0.6);
   }
-  .badge svg { width: 16px; height: 16px; color: var(--purple); }
-  .course-title {
-    font-family: var(--serif); font-weight: 400; font-size: 1.5rem; line-height: 1.12;
-    color: var(--damson); margin: 0 0 12px; letter-spacing: -0.01em;
+  .body { display: flex; flex-direction: column; flex: 1; padding: 24px clamp(20px, 2.4vw, 28px) 26px; }
+  .body h2 { font-family: var(--serif); font-weight: 400; color: var(--damson); font-size: 1.6rem; line-height: 1.12; margin: 0 0 6px; }
+  .kicker { font-size: 0.74rem; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .body p { font-size: 1rem; line-height: 1.58; color: var(--ink-2); margin: 0 0 18px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+  .chip {
+    font-size: 0.8rem; font-weight: 500; color: var(--damson);
+    background: var(--linen); border: 1px solid var(--line); border-radius: var(--r-pill); padding: 5px 12px;
   }
-  .course-desc { font-size: 0.97rem; line-height: 1.55; color: var(--ink-2); margin: 0 0 16px; }
+  .open {
+    margin-top: auto; align-self: flex-start; display: inline-flex; align-items: center; gap: 9px;
+    font-family: var(--sans); font-weight: 600; font-size: 0.95rem; line-height: 1;
+    background: var(--damson); color: var(--white); border-radius: var(--r-input); padding: 13px 20px;
+    transition: background 0.18s var(--ease), transform 0.18s var(--ease);
+  }
+  .card:hover .open { background: var(--purple); }
+  .open:active { transform: translateY(1px); }
+  .open svg { width: 16px; height: 16px; transition: transform 0.18s var(--ease); }
+  .card:hover .open svg { transform: translateX(3px); }
 
-  .why {
-    display: flex; gap: 10px; font-size: 0.92rem; line-height: 1.5; color: var(--ink);
-    background: rgba(255, 254, 250, 0.7); border: 1px solid var(--line); border-radius: var(--r-input);
-    padding: 11px 13px; margin-bottom: 18px;
-  }
-  .why .dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--pink); margin-top: 6px; }
-  .why .label { font-weight: 600; color: var(--purple); }
+  .stretched { position: absolute; inset: 0; z-index: 1; }
 
-  .card-divider { height: 1px; background: var(--line); border: 0; margin: 0 0 16px; }
-  .meta-row { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-bottom: 16px; }
-  .meta-item { display: inline-flex; align-items: center; gap: 8px; font-size: 0.92rem; color: var(--ink-2); }
-  .meta-item svg { width: 16px; height: 16px; color: var(--muted); flex: none; }
+  /* Footer */
+  .foot { border-top: 1px solid var(--line); padding: 28px 0 56px; }
+  .foot .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+  .foot p { margin: 0; font-size: 0.9rem; color: var(--muted); }
+  .foot a { font-weight: 600; color: var(--damson); }
 
-  .price-row { display: flex; align-items: center; gap: 14px; margin-top: auto; }
-  .price { display: inline-flex; align-items: center; gap: 9px; flex: 1; min-width: 0; }
-  .price .now { font-size: 1.18rem; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; }
-  .price .was { font-size: 0.95rem; color: var(--muted); text-decoration: line-through; }
-  .price .info {
-    flex: none; width: 22px; height: 22px; border-radius: 50%; border: 0; cursor: pointer;
-    background: var(--damson); color: var(--white); display: grid; place-items: center; padding: 0;
-  }
-  .price .info svg { width: 13px; height: 13px; }
-  .cta {
-    font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-    padding: 13px 20px; border-radius: var(--r-input); white-space: nowrap;
-    transition: background 0.16s var(--ease), color 0.16s var(--ease), border-color 0.16s var(--ease);
-  }
-  .cta-register { background: var(--damson); color: var(--white); border: 1px solid var(--damson); }
-  .cta-register:hover { background: var(--purple); border-color: var(--purple); }
-  .cta-waitlist { background: transparent; color: var(--damson); border: 1px solid var(--damson); }
-  .cta-waitlist:hover { background: var(--damson); color: var(--white); }
-
-  /* Waitlist / limited treatment (mirrors provided design's muted card) */
-  .course[data-available="waitlist"] .course-photo img { filter: grayscale(0.35); opacity: 0.92; }
-  .course[data-available="waitlist"] .course-photo::after {
-    content: ""; position: absolute; inset: 0; background: rgba(246, 244, 237, 0.32);
-  }
-  .course[data-available="waitlist"] .course-title { color: var(--muted); }
-  .course[data-available="waitlist"] .course-desc { color: var(--muted); }
-
-  /* Disclosure for weaker matches */
-  .more-wrap { margin-top: 22px; }
-  .more-list { margin-top: 22px; }
-  .more-toggle {
-    width: 100%; font-family: var(--sans); font-size: 0.9rem; font-weight: 600; color: var(--purple);
-    background: transparent; border: 1px dashed var(--line-strong); border-radius: var(--r-card);
-    padding: 14px 16px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    transition: background 0.16s var(--ease), border-color 0.16s var(--ease);
-  }
-  .more-toggle:hover { background: var(--linen); border-color: var(--purple); }
-  .more-toggle svg { width: 15px; height: 15px; transition: transform 0.2s var(--ease); }
-  .more-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
-
-  /* Loading */
-  .skeleton .thinking {
-    display: flex; align-items: center; gap: 10px; font-size: 0.95rem; color: var(--purple);
-    font-weight: 600; margin-bottom: 18px;
-  }
-  .skeleton .thinking .ai-spark svg { width: 20px; height: 20px; }
-  .sk-answer { height: 168px; margin-bottom: 36px; padding: 24px; }
-  .sk-answer, .sk-card { background: var(--linen); border: 1px solid var(--sand); border-radius: var(--r-card); }
-  .sk-line { height: 13px; border-radius: var(--r-pill); background: var(--sand); margin-bottom: 12px; }
-  .sk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 22px; }
-  .sk-card { height: 380px; }
-  .shimmer { position: relative; overflow: hidden; }
-  .shimmer::after {
-    content: ""; position: absolute; inset: 0;
-    background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,0.7) 50%, transparent 70%);
-    transform: translateX(-100%); animation: shimmer 1.3s infinite;
-  }
-  @keyframes shimmer { to { transform: translateX(100%); } }
-
-  /* No-match */
-  .nomatch-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-card); padding: 36px; text-align: center; box-shadow: var(--shadow-card); }
-  .nomatch-card h3 { font-family: var(--serif); font-weight: 400; font-size: 1.5rem; color: var(--damson); margin: 0 0 10px; }
-  .nomatch-card p { color: var(--ink-2); margin: 0 auto 22px; max-width: 46ch; }
-
-  /* Reveal */
-  .reveal { opacity: 0; transform: translateY(14px); }
-  .reveal.in { opacity: 1; transform: none; transition: opacity 0.5s var(--ease), transform 0.5s var(--ease); }
-
-  /* ============================================================
-     Responsive
-     ============================================================ */
-  @media (max-width: 880px) {
-    .util-training, .u-account, .u-portal, .util-div { display: none; }
-    .nav-links, .nav-search { display: none; }
-    .mobile-actions { display: flex; }
-    .mobile-menu:not([hidden]) { display: flex; }
-    .main-nav { gap: 14px; }
-  }
-  @media (max-width: 940px) {
-    .shell { grid-template-columns: 1fr; gap: 24px; }
-    .rail { position: static; }
-    .footer-inner { grid-template-columns: 1fr 1fr; }
-  }
-  @media (max-width: 560px) {
-    .util-bar { gap: 14px; padding-left: 18px; padding-right: 18px; }
-    .footer-inner { grid-template-columns: 1fr; }
-    .shell { padding: 22px 16px 72px; }
-    .hero-search { flex-wrap: wrap; padding: 14px; }
-    .hero-spark { margin-top: 2px; }
-    .hero-search textarea { flex-basis: 100%; order: 2; }
-    .hero-search .btn-primary { flex: 1; justify-content: center; order: 3; }
-    .hero-spark { order: 1; }
-    .course-grid, .sk-grid { grid-template-columns: 1fr; }
-    .price-row { flex-wrap: wrap; }
-    .cta { flex: 1; text-align: center; justify-content: center; }
+  @media (max-width: 720px) {
+    .grid { grid-template-columns: 1fr; gap: 22px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important;
-    }
-    .reveal { opacity: 1; transform: none; }
+    *, *::before, *::after { transition-duration: 0.001ms !important; }
   }
 </style>
 </head>
 <body>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="ic-spark" viewBox="0 0 24 24"><path d="M18.7851 12.5213L13.4501 10.5499L11.485 5.21081C11.3686 4.89466 11.158 4.6218 10.8817 4.42907C10.6054 4.23634 10.2766 4.133 9.93971 4.133C9.60281 4.133 9.27402 4.23634 8.99771 4.42907C8.72139 4.6218 8.51083 4.89466 8.39446 5.21081L6.41687 10.5499L1.07781 12.515C0.761654 12.6314 0.488802 12.842 0.29607 13.1183C0.103338 13.3946 0 13.7234 0 14.0603C0 14.3972 0.103338 14.726 0.29607 15.0023C0.488802 15.2786 0.761654 15.4892 1.07781 15.6055L6.41687 17.5831L8.38205 22.9222C8.49842 23.2383 8.70897 23.5112 8.98529 23.7039C9.26161 23.8967 9.5904 24 9.92729 24C10.2642 24 10.593 23.8967 10.8693 23.7039C11.1456 23.5112 11.3562 23.2383 11.4725 22.9222L13.4501 17.5831L18.7892 15.618C19.1053 15.5016 19.3782 15.291 19.5709 15.0147C19.7637 14.7384 19.867 14.4096 19.867 14.0727C19.867 13.7358 19.7637 13.407 19.5709 13.1307C19.3782 12.8544 19.1053 12.6438 18.7892 12.5275L18.7851 12.5213ZM12.5193 16.1579C12.4069 16.1993 12.3049 16.2645 12.2203 16.3492C12.1357 16.4338 12.0704 16.5358 12.029 16.6481L9.9335 22.3254L7.84214 16.6523C7.80081 16.5388 7.73514 16.4357 7.64973 16.3503C7.56432 16.2649 7.46124 16.1992 7.34775 16.1579L1.6746 14.0665L7.34775 11.9751C7.46124 11.9338 7.56432 11.8681 7.64973 11.7827C7.73514 11.6973 7.80081 11.5942 7.84214 11.4807L9.9335 5.8076L12.0249 11.4807C12.0663 11.5931 12.1315 11.6951 12.2162 11.7797C12.3008 11.8643 12.4028 11.9296 12.5151 11.971L18.1924 14.0665L12.5193 16.1579ZM13.2433 3.30976C13.2433 3.09031 13.3304 2.87985 13.4856 2.72468C13.6408 2.5695 13.8513 2.48232 14.0707 2.48232H15.7256V0.827441C15.7256 0.60799 15.8128 0.397527 15.9679 0.242352C16.1231 0.0871766 16.3336 0 16.553 0C16.7725 0 16.9829 0.0871766 17.1381 0.242352C17.2933 0.397527 17.3805 0.60799 17.3805 0.827441V2.48232H19.0354C19.2548 2.48232 19.4653 2.5695 19.6204 2.72468C19.7756 2.87985 19.8628 3.09031 19.8628 3.30976C19.8628 3.52922 19.7756 3.73968 19.6204 3.89485C19.4653 4.05003 19.2548 4.13721 19.0354 4.13721H17.3805V5.79209C17.3805 6.01154 17.2933 6.222 17.1381 6.37718C16.9829 6.53235 16.7725 6.61953 16.553 6.61953C16.3336 6.61953 16.1231 6.53235 15.9679 6.37718C15.8128 6.222 15.7256 6.01154 15.7256 5.79209V4.13721H14.0707C13.8513 4.13721 13.6408 4.05003 13.4856 3.89485C13.3304 3.73968 13.2433 3.52922 13.2433 3.30976ZM24 8.27441C24 8.49386 23.9128 8.70433 23.7576 8.8595C23.6025 9.01468 23.392 9.10185 23.1726 9.10185H22.3451V9.92929C22.3451 10.1487 22.2579 10.3592 22.1028 10.5144C21.9476 10.6696 21.7371 10.7567 21.5177 10.7567C21.2982 10.7567 21.0878 10.6696 20.9326 10.5144C20.7774 10.3592 20.6902 10.1487 20.6902 9.92929V9.10185H19.8628C19.6433 9.10185 19.4329 9.01468 19.2777 8.8595C19.1225 8.70433 19.0354 8.49386 19.0354 8.27441C19.0354 8.05496 19.1225 7.8445 19.2777 7.68932C19.4329 7.53415 19.6433 7.44697 19.8628 7.44697H20.6902V6.61953C20.6902 6.40008 20.7774 6.18962 20.9326 6.03444C21.0878 5.87927 21.2982 5.79209 21.5177 5.79209C21.7371 5.79209 21.9476 5.87927 22.1028 6.03444C22.2579 6.18962 22.3451 6.40008 22.3451 6.61953V7.44697H23.1726C23.392 7.44697 23.6025 7.53415 23.7576 7.68932C23.9128 7.8445 24 8.05496 24 8.27441Z" fill="#FF1AA3"/></symbol></svg>
-
-<header class="site-header">
-  <div class="util-bar">
-    <button type="button" class="util-item util-training">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-      Training
-    </button>
-    <button type="button" class="util-item u-account">
-      <span class="u-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-      Store Account
-      <svg class="util-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-    </button>
-    <button type="button" class="util-item u-language">
-      <span class="u-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg></span>
-      English
-      <svg class="util-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-    </button>
-    <button type="button" class="util-item u-cart" aria-label="Shopping cart, 0 items">
-      <span class="u-ico u-ico--cart"><span class="cart-n">0</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2.5 3.5H5l2.2 11a1.8 1.8 0 0 0 1.8 1.4h8.1a1.8 1.8 0 0 0 1.8-1.5L21.5 7H6"/></svg></span>
-    </button>
-    <span class="util-div" aria-hidden="true"></span>
-    <button type="button" class="util-item u-portal">
-      <span class="u-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21V5a2 2 0 0 1 2-2h6.5a4.5 4.5 0 0 1 0 9H6"/></svg></span>
-      Prosci Portal
-    </button>
-  </div>
-  <nav class="main-nav" aria-label="Primary">
-    <a href="#" class="logo">Prosci</a>
-    <div class="nav-links">
-      <a href="#">Change management <svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a>
-      <a href="#">Methodology <svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a>
-      <a href="#">Solutions <svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a>
-      <a href="#">Resources <svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a>
-      <a href="#">About us <svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a>
-    </div>
-    <form class="nav-search" role="search" onsubmit="return false;">
-      <input type="search" placeholder="Search" aria-label="Search the Prosci store" />
-      <button type="submit" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
-    </form>
-    <div class="mobile-actions">
-      <button type="button" class="icon-btn nav-search-icon" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
-      <button type="button" class="icon-btn nav-toggle" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
-    </div>
-  </nav>
-  <div class="mobile-menu" id="mobile-menu" hidden>
-    <a href="#">Change management</a>
-    <a href="#">Methodology</a>
-    <a href="#">Solutions</a>
-    <a href="#">Resources</a>
-    <a href="#">About us</a>
-    <a href="#">Store Account</a>
-    <a href="#">Prosci Portal</a>
-    <form class="mobile-search" role="search" onsubmit="return false;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-      <input type="search" placeholder="Search" aria-label="Search the Prosci store" />
-    </form>
+<header class="top">
+  <div class="wrap">
+    <span class="logo">Prosci</span>
+    <span class="tag">Course Finder &middot; Design Review</span>
   </div>
 </header>
 
-<!-- ===================== LANDING ===================== -->
-<div id="landing-page">
-<section class="landing" id="landing" aria-labelledby="landing-h">
-  <span class="eyebrow" aria-hidden="true">
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18.7851 12.5213L13.4501 10.5499L11.485 5.21081C11.3686 4.89466 11.158 4.6218 10.8817 4.42907C10.6054 4.23634 10.2766 4.133 9.93971 4.133C9.60281 4.133 9.27402 4.23634 8.99771 4.42907C8.72139 4.6218 8.51083 4.89466 8.39446 5.21081L6.41687 10.5499L1.07781 12.515C0.761654 12.6314 0.488802 12.842 0.29607 13.1183C0.103338 13.3946 0 13.7234 0 14.0603C0 14.3972 0.103338 14.726 0.29607 15.0023C0.488802 15.2786 0.761654 15.4892 1.07781 15.6055L6.41687 17.5831L8.38205 22.9222C8.49842 23.2383 8.70897 23.5112 8.98529 23.7039C9.26161 23.8967 9.5904 24 9.92729 24C10.2642 24 10.593 23.8967 10.8693 23.7039C11.1456 23.5112 11.3562 23.2383 11.4725 22.9222L13.4501 17.5831L18.7892 15.618C19.1053 15.5016 19.3782 15.291 19.5709 15.0147C19.7637 14.7384 19.867 14.4096 19.867 14.0727C19.867 13.7358 19.7637 13.407 19.5709 13.1307C19.3782 12.8544 19.1053 12.6438 18.7892 12.5275L18.7851 12.5213ZM12.5193 16.1579C12.4069 16.1993 12.3049 16.2645 12.2203 16.3492C12.1357 16.4338 12.0704 16.5358 12.029 16.6481L9.9335 22.3254L7.84214 16.6523C7.80081 16.5388 7.73514 16.4357 7.64973 16.3503C7.56432 16.2649 7.46124 16.1992 7.34775 16.1579L1.6746 14.0665L7.34775 11.9751C7.46124 11.9338 7.56432 11.8681 7.64973 11.7827C7.73514 11.6973 7.80081 11.5942 7.84214 11.4807L9.9335 5.8076L12.0249 11.4807C12.0663 11.5931 12.1315 11.6951 12.2162 11.7797C12.3008 11.8643 12.4028 11.9296 12.5151 11.971L18.1924 14.0665L12.5193 16.1579ZM13.2433 3.30976C13.2433 3.09031 13.3304 2.87985 13.4856 2.72468C13.6408 2.5695 13.8513 2.48232 14.0707 2.48232H15.7256V0.827441C15.7256 0.60799 15.8128 0.397527 15.9679 0.242352C16.1231 0.0871766 16.3336 0 16.553 0C16.7725 0 16.9829 0.0871766 17.1381 0.242352C17.2933 0.397527 17.3805 0.60799 17.3805 0.827441V2.48232H19.0354C19.2548 2.48232 19.4653 2.5695 19.6204 2.72468C19.7756 2.87985 19.8628 3.09031 19.8628 3.30976C19.8628 3.52922 19.7756 3.73968 19.6204 3.89485C19.4653 4.05003 19.2548 4.13721 19.0354 4.13721H17.3805V5.79209C17.3805 6.01154 17.2933 6.222 17.1381 6.37718C16.9829 6.53235 16.7725 6.61953 16.553 6.61953C16.3336 6.61953 16.1231 6.53235 15.9679 6.37718C15.8128 6.222 15.7256 6.01154 15.7256 5.79209V4.13721H14.0707C13.8513 4.13721 13.6408 4.05003 13.4856 3.89485C13.3304 3.73968 13.2433 3.52922 13.2433 3.30976ZM24 8.27441C24 8.49386 23.9128 8.70433 23.7576 8.8595C23.6025 9.01468 23.392 9.10185 23.1726 9.10185H22.3451V9.92929C22.3451 10.1487 22.2579 10.3592 22.1028 10.5144C21.9476 10.6696 21.7371 10.7567 21.5177 10.7567C21.2982 10.7567 21.0878 10.6696 20.9326 10.5144C20.7774 10.3592 20.6902 10.1487 20.6902 9.92929V9.10185H19.8628C19.6433 9.10185 19.4329 9.01468 19.2777 8.8595C19.1225 8.70433 19.0354 8.49386 19.0354 8.27441C19.0354 8.05496 19.1225 7.8445 19.2777 7.68932C19.4329 7.53415 19.6433 7.44697 19.8628 7.44697H20.6902V6.61953C20.6902 6.40008 20.7774 6.18962 20.9326 6.03444C21.0878 5.87927 21.2982 5.79209 21.5177 5.79209C21.7371 5.79209 21.9476 5.87927 22.1028 6.03444C22.2579 6.18962 22.3451 6.40008 22.3451 6.61953V7.44697H23.1726C23.392 7.44697 23.6025 7.53415 23.7576 7.68932C23.9128 7.8445 24 8.05496 24 8.27441Z" fill="#FF1AA3"/></svg>
-    Prosci Advisor
-  </span>
-  <h1 id="landing-h">Find the perfect course, <em>naturally</em>.</h1>
-  <p class="lede">Describe your situation in plain language. Prosci's AI reads it for the change challenge underneath, then points you to the programs that solve it, with the reasoning behind each one.</p>
-
-  <form class="hero-search" id="hero-form">
-    <span class="hero-spark" aria-hidden="true">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-spark"/></svg>
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18.7851 12.5213L13.4501 10.5499L11.485 5.21081C11.3686 4.89466 11.158 4.6218 10.8817 4.42907C10.6054 4.23634 10.2766 4.133 9.93971 4.133C9.60281 4.133 9.27402 4.23634 8.99771 4.42907C8.72139 4.6218 8.51083 4.89466 8.39446 5.21081L6.41687 10.5499L1.07781 12.515C0.761654 12.6314 0.488802 12.842 0.29607 13.1183C0.103338 13.3946 0 13.7234 0 14.0603C0 14.3972 0.103338 14.726 0.29607 15.0023C0.488802 15.2786 0.761654 15.4892 1.07781 15.6055L6.41687 17.5831L8.38205 22.9222C8.49842 23.2383 8.70897 23.5112 8.98529 23.7039C9.26161 23.8967 9.5904 24 9.92729 24C10.2642 24 10.593 23.8967 10.8693 23.7039C11.1456 23.5112 11.3562 23.2383 11.4725 22.9222L13.4501 17.5831L18.7892 15.618C19.1053 15.5016 19.3782 15.291 19.5709 15.0147C19.7637 14.7384 19.867 14.4096 19.867 14.0727C19.867 13.7358 19.7637 13.407 19.5709 13.1307C19.3782 12.8544 19.1053 12.6438 18.7892 12.5275L18.7851 12.5213ZM12.5193 16.1579C12.4069 16.1993 12.3049 16.2645 12.2203 16.3492C12.1357 16.4338 12.0704 16.5358 12.029 16.6481L9.9335 22.3254L7.84214 16.6523C7.80081 16.5388 7.73514 16.4357 7.64973 16.3503C7.56432 16.2649 7.46124 16.1992 7.34775 16.1579L1.6746 14.0665L7.34775 11.9751C7.46124 11.9338 7.56432 11.8681 7.64973 11.7827C7.73514 11.6973 7.80081 11.5942 7.84214 11.4807L9.9335 5.8076L12.0249 11.4807C12.0663 11.5931 12.1315 11.6951 12.2162 11.7797C12.3008 11.8643 12.4028 11.9296 12.5151 11.971L18.1924 14.0665L12.5193 16.1579ZM13.2433 3.30976C13.2433 3.09031 13.3304 2.87985 13.4856 2.72468C13.6408 2.5695 13.8513 2.48232 14.0707 2.48232H15.7256V0.827441C15.7256 0.60799 15.8128 0.397527 15.9679 0.242352C16.1231 0.0871766 16.3336 0 16.553 0C16.7725 0 16.9829 0.0871766 17.1381 0.242352C17.2933 0.397527 17.3805 0.60799 17.3805 0.827441V2.48232H19.0354C19.2548 2.48232 19.4653 2.5695 19.6204 2.72468C19.7756 2.87985 19.8628 3.09031 19.8628 3.30976C19.8628 3.52922 19.7756 3.73968 19.6204 3.89485C19.4653 4.05003 19.2548 4.13721 19.0354 4.13721H17.3805V5.79209C17.3805 6.01154 17.2933 6.222 17.1381 6.37718C16.9829 6.53235 16.7725 6.61953 16.553 6.61953C16.3336 6.61953 16.1231 6.53235 15.9679 6.37718C15.8128 6.222 15.7256 6.01154 15.7256 5.79209V4.13721H14.0707C13.8513 4.13721 13.6408 4.05003 13.4856 3.89485C13.3304 3.73968 13.2433 3.52922 13.2433 3.30976ZM24 8.27441C24 8.49386 23.9128 8.70433 23.7576 8.8595C23.6025 9.01468 23.392 9.10185 23.1726 9.10185H22.3451V9.92929C22.3451 10.1487 22.2579 10.3592 22.1028 10.5144C21.9476 10.6696 21.7371 10.7567 21.5177 10.7567C21.2982 10.7567 21.0878 10.6696 20.9326 10.5144C20.7774 10.3592 20.6902 10.1487 20.6902 9.92929V9.10185H19.8628C19.6433 9.10185 19.4329 9.01468 19.2777 8.8595C19.1225 8.70433 19.0354 8.49386 19.0354 8.27441C19.0354 8.05496 19.1225 7.8445 19.2777 7.68932C19.4329 7.53415 19.6433 7.44697 19.8628 7.44697H20.6902V6.61953C20.6902 6.40008 20.7774 6.18962 20.9326 6.03444C21.0878 5.87927 21.2982 5.79209 21.5177 5.79209C21.7371 5.79209 21.9476 5.87927 22.1028 6.03444C22.2579 6.18962 22.3451 6.40008 22.3451 6.61953V7.44697H23.1726C23.392 7.44697 23.6025 7.53415 23.7576 7.68932C23.9128 7.8445 24 8.05496 24 8.27441Z" fill="#FF1AA3"/></svg>
+      Concept review
     </span>
-    <label class="sr-only" for="hero-q">Describe your change challenge</label>
-    <textarea id="hero-q" name="q" rows="2" placeholder="We're rolling out a new system and adoption is stalling. How do I get teams on board?"></textarea>
-    <button type="submit" class="btn btn-primary">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
-      Find courses
-    </button>
-  </form>
-
-  <div class="examples-inline">
-    <span class="label">Try:</span>
-    <button type="button" class="ex-pill" data-q="My company is going through a major transformation. How do I get employees to adopt new processes?">Driving adoption in a transformation</button>
-    <button type="button" class="ex-pill" data-q="My frontline managers resist every change we roll out. How do I get them to lead it instead?">Managers who resist change</button>
-    <button type="button" class="ex-pill" data-q="I want to build an internal change capability so we stop depending on outside consultants.">Building internal capability</button>
-  </div>
-
-  <div class="trust">
-    <div class="trust-item"><span class="trust-num">25+ yrs</span><span class="trust-label">of change research</span></div>
-    <div class="trust-item"><span class="trust-num">ADKAR</span><span class="trust-label">the model behind every match</span></div>
-    <div class="trust-item"><span class="trust-num">1M+</span><span class="trust-label">practitioners trained</span></div>
+    <h1>Pick a direction to <em>review</em>.</h1>
+    <p>Each option below is a distinct take on the Prosci Course Finder. They share one design system, derived from the live store, but diverge deliberately in how courses are presented and refined.</p>
+    <p class="note">Open any version to walk the full flow: describe a challenge, get the Prosci Advisor recommendation, and see the ranked programs.</p>
   </div>
 </section>
 
-<!-- How it works -->
-<section class="section" aria-labelledby="how-h">
-  <div class="section-head center">
-    <span class="s-eyebrow">How it works</span>
-    <h2 id="how-h">From a messy situation to a confident choice</h2>
-    <p class="s-intro">No course codes, no guesswork. Three steps from the change you're facing to the program that addresses it.</p>
-  </div>
-  <div class="steps">
-    <div class="step"><div class="num">01</div><h3>Describe your challenge</h3><p>Tell the finder what you're facing in plain language, the same way you'd explain it to a colleague.</p></div>
-    <div class="step"><div class="num">02</div><h3>AI reads it through ADKAR</h3><p>It maps your situation to Prosci's change methodology to find where people are getting stuck.</p></div>
-    <div class="step"><div class="num">03</div><h3>See your matched programs</h3><p>Get a short, ranked list, each with the reasoning for why it fits, so you choose with confidence.</p></div>
+<section class="versions">
+  <div class="wrap">
+    <div class="grid" id="grid"></div>
   </div>
 </section>
 
-<!-- ADKAR -->
-<section class="section band band-linen" aria-labelledby="adkar-h">
-  <div class="section-head center">
-    <span class="s-eyebrow">The methodology</span>
-    <h2 id="adkar-h">Every recommendation runs on the ADKAR Model</h2>
-    <p class="s-intro">Prosci's research-backed framework for how individuals move through change. The finder reads your challenge for the stage where people stall, then matches programs to that gap.</p>
+<footer class="foot">
+  <div class="wrap">
+    <p>Front-end prototype &middot; AI recommendation and matching are demo data.</p>
+    <p><a href="https://github.com/briansteinseifer/prosci" rel="noopener">View source on GitHub</a></p>
   </div>
-  <div class="adkar">
-    <div class="adkar-step"><div class="adkar-letter">A</div><h3>Awareness</h3><p>of the need for change</p></div>
-    <div class="adkar-step"><div class="adkar-letter">D</div><h3>Desire</h3><p>to support the change</p></div>
-    <div class="adkar-step"><div class="adkar-letter">K</div><h3>Knowledge</h3><p>of how to change</p></div>
-    <div class="adkar-step"><div class="adkar-letter">A</div><h3>Ability</h3><p>to apply new skills</p></div>
-    <div class="adkar-step"><div class="adkar-letter">R</div><h3>Reinforcement</h3><p>to sustain the change</p></div>
-  </div>
-</section>
-
-<!-- Who it's for -->
-<section class="section" aria-labelledby="who-h">
-  <div class="section-head">
-    <span class="s-eyebrow">Who it's for</span>
-    <h2 id="who-h">Built for everyone steering change</h2>
-    <p class="s-intro">Whether you own the strategy or carry the rollout, the finder meets you where you are.</p>
-  </div>
-  <div class="audiences">
-    <div class="aud"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><div><h3>HR &amp; L&amp;D leaders</h3><p>Build a change capability across the organization, not one workshop at a time.</p></div></div>
-    <div class="aud"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="3" width="8" height="4" rx="1"/><path d="M16 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg></span><div><h3>Program &amp; project managers</h3><p>Keep adoption on track when a transformation is already in motion.</p></div></div>
-    <div class="aud"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m17 11 2 2 4-4"/></svg></span><div><h3>People managers</h3><p>Lead your own team through change instead of just enforcing it.</p></div></div>
-    <div class="aud"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span><div><h3>Executives &amp; sponsors</h3><p>Master the sponsor role that research shows decides whether change sticks.</p></div></div>
-  </div>
-</section>
-
-<!-- Manifesto -->
-<section class="section" aria-label="Why the finder exists">
-  <div class="manifesto">
-    <p>You don't need to browse thirty courses. You need the one that fits the change in front of you, <em>and the reason why</em>.</p>
-  </div>
-</section>
-
-<!-- Popular programs -->
-<section class="section band band-linen" aria-labelledby="prog-h">
-  <div class="section-head center">
-    <span class="s-eyebrow">Popular programs</span>
-    <h2 id="prog-h">Where most journeys begin</h2>
-    <p class="s-intro">A glimpse of the catalog. Not sure which is right for you? That's exactly what the finder is for.</p>
-  </div>
-  <div class="programs">
-    <article class="prog">
-      <div class="prog-photo"><img src="https://store.prosci.com/media/catalog/product/cache/bb7be3eff6733bca632089ad7f465ac9/c/e/certification_program_1_1.jpg" alt="" loading="lazy" decoding="async" /></div>
-      <div class="prog-body">
-        <span class="ptag">Flagship · Certification</span>
-        <h3>Change Management Certification Program</h3>
-        <p>The foundational 3-day program. Learn ADKAR and apply it to a real project you bring with you.</p>
-        <a class="plink" href="https://store.prosci.com/training/cert-vir-jun0826-us-en.html" target="_blank" rel="noopener">View program <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      </div>
-    </article>
-    <article class="prog">
-      <div class="prog-photo"><img src="https://store.prosci.com/media/catalog/product/cache/bb7be3eff6733bca632089ad7f465ac9/p/r/prevent_change_resistance_13.jpg" alt="" loading="lazy" decoding="async" /></div>
-      <div class="prog-body">
-        <span class="ptag">Focused · 1 day</span>
-        <h3>ADKAR Mastery: Prevent Change Resistance</h3>
-        <p>Build Awareness and Desire deliberately so resistance never takes hold in the first place.</p>
-        <a class="plink" href="https://store.prosci.com/training/adk1-vir-jun2226-us-en.html" target="_blank" rel="noopener">View program <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      </div>
-    </article>
-    <article class="prog">
-      <div class="prog-photo"><img src="https://store.prosci.com/media/catalog/product/cache/bb7be3eff6733bca632089ad7f465ac9/l/e/leading_your_team_through_change_7.jpg" alt="" loading="lazy" decoding="async" /></div>
-      <div class="prog-body">
-        <span class="ptag">Manager enablement · On-demand</span>
-        <h3>Leading Your Team Through Change</h3>
-        <p>Equip people managers to sponsor change with their own teams, where adoption is won or lost.</p>
-        <a class="plink" href="https://store.prosci.com/training/lyttc-vir-jul1026-us-en.html" target="_blank" rel="noopener">View program <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      </div>
-    </article>
-  </div>
-  <p class="programs-note">Not sure where you fit? <button type="button" class="to-search">Describe your challenge</button> and let the AI choose.</p>
-</section>
-
-<!-- Closing CTA -->
-<section class="cta-band" aria-labelledby="cta-h">
-  <h2 id="cta-h">Describe your challenge. See your shortlist in <em>seconds</em>.</h2>
-  <p>No catalog scrolling. Tell the finder what you're up against, and get matched programs with the reasoning behind each one.</p>
-  <div class="cta-actions">
-    <button type="button" class="btn btn-light to-search">Find my courses</button>
-    <a class="btn btn-ghost-light" href="#">Talk to an advisor</a>
-  </div>
-</section>
-
-<!-- Footer -->
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-brand">
-      <span class="wordmark">PROSCI<span>.</span></span>
-      <p>The global leader in change management training, certification, and research. Turning complex change into results.</p>
-    </div>
-    <nav class="footer-col" aria-label="Programs"><h4>Programs</h4><a href="#">Certification</a><a href="#">ADKAR Mastery</a><a href="#">For Managers</a><a href="#">Train-the-Trainer</a></nav>
-    <nav class="footer-col" aria-label="Methodology"><h4>Methodology</h4><a href="#">The ADKAR Model</a><a href="#">Research</a><a href="#">Resources</a><a href="#">Case studies</a></nav>
-    <nav class="footer-col" aria-label="Company"><h4>Company</h4><a href="#">About Prosci</a><a href="#">For teams</a><a href="#">Contact</a><a href="#">Talk to an advisor</a></nav>
-  </div>
-  <div class="footer-legal"><div class="inner"><span>© 2026 Prosci Inc. All rights reserved.</span><span>Privacy · Terms · Accessibility</span></div></div>
 </footer>
-</div><!-- /#landing-page -->
-
-<!-- ===================== RESULTS (split) ===================== -->
-<div class="shell" id="shell" hidden>
-  <aside class="rail" aria-label="Search and refine">
-    <div class="rail-card">
-      <span class="rail-eyebrow" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>
-        Your challenge
-      </span>
-      <form id="rail-form">
-        <div class="rail-search">
-          <label class="sr-only" for="rail-q">Describe your change challenge</label>
-          <textarea id="rail-q" name="q" rows="3"></textarea>
-        </div>
-        <div class="rail-actions">
-          <button type="submit" class="btn btn-primary">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
-            Update results
-          </button>
-        </div>
-      </form>
-    </div>
-
-    <div class="rail-card facets" id="facets">
-      <div class="facet-group">
-        <p class="facet-group-title">Format</p>
-        <div class="facet-list" data-facet="format">
-          <button type="button" class="chip" aria-pressed="false" data-value="Virtual">Virtual</button>
-          <button type="button" class="chip" aria-pressed="false" data-value="In-Person">In-Person</button>
-          <button type="button" class="chip" aria-pressed="false" data-value="On-Demand">On-Demand</button>
-        </div>
-      </div>
-      <hr class="rail-divider" />
-      <div class="facet-group">
-        <p class="facet-group-title">Audience</p>
-        <div class="facet-list" data-facet="audience">
-          <button type="button" class="chip" aria-pressed="false" data-value="Practitioners">Practitioners</button>
-          <button type="button" class="chip" aria-pressed="false" data-value="Managers">Managers</button>
-          <button type="button" class="chip" aria-pressed="false" data-value="Sponsors">Sponsors</button>
-          <button type="button" class="chip" aria-pressed="false" data-value="Trainers">Trainers</button>
-        </div>
-      </div>
-      <hr class="rail-divider" />
-      <div class="facet-group">
-        <p class="facet-group-title">Commitment</p>
-        <div class="facet-list" data-facet="length">
-          <button type="button" class="chip" aria-pressed="false" data-value="Short">Half / 1 day</button>
-          <button type="button" class="chip" aria-pressed="false" data-value="Multi">Multi-day</button>
-          <button type="button" class="chip" aria-pressed="false" data-value="Self">Self-paced</button>
-        </div>
-      </div>
-      <hr class="rail-divider" />
-      <div class="followup">
-        <label for="followup-q">Refine your question</label>
-        <div class="followup-row">
-          <input type="text" id="followup-q" placeholder="Add a detail, e.g. for frontline managers" />
-          <button type="button" class="btn btn-secondary btn-sm" id="followup-btn">Add</button>
-        </div>
-      </div>
-    </div>
-  </aside>
-
-  <main class="main">
-    <!-- Loading -->
-    <section class="skeleton" id="skeleton" aria-hidden="true">
-      <div class="thinking">
-        <span class="ai-spark" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-spark"/></svg></span>
-        Prosci Advisor is reading your challenge&hellip;
-      </div>
-      <div class="sk-answer shimmer">
-        <div class="sk-line" style="width: 40%"></div>
-        <div class="sk-line" style="width: 92%"></div>
-        <div class="sk-line" style="width: 88%"></div>
-        <div class="sk-line" style="width: 70%"></div>
-      </div>
-      <div class="sk-grid"><div class="sk-card shimmer"></div><div class="sk-card shimmer"></div></div>
-    </section>
-
-    <!-- Results -->
-    <section class="results" id="results" aria-live="polite" hidden>
-      <div class="query-echo reveal">
-        <span class="label">You asked</span>
-        <p class="q" id="echo"></p>
-      </div>
-
-      <div class="ai-answer reveal" id="ai-answer">
-        <div class="ai-head">
-          <span class="ai-spark" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-spark"/></svg></span>
-          <span class="ai-title">Prosci Advisor <span class="by">&middot; Recommendation</span></span>
-        </div>
-        <p class="ai-body" id="ai-body"></p>
-        <p class="ai-foot"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polygon points="15.5 8.5 13.5 13.5 8.5 15.5 10.5 10.5 15.5 8.5"/></svg> Reasoned through the <b>ADKAR Model</b> (Awareness, Desire, Knowledge, Ability, Reinforcement).</p>
-      </div>
-
-      <div class="results-bar">
-        <h2>Programs that <b>fit</b></h2>
-        <span class="results-count" id="count"></span>
-      </div>
-      <div class="course-grid" id="course-list"></div>
-
-      <div class="more-wrap" id="more-wrap" hidden>
-        <button type="button" class="more-toggle" id="more-toggle" aria-expanded="false"></button>
-        <div class="course-grid more-list" id="more-list" hidden></div>
-      </div>
-
-      <div class="nomatch" id="nomatch" hidden>
-        <div class="nomatch-card">
-          <h3>Nothing scored a strong match</h3>
-          <p>Your filters narrowed things past where the AI is confident. Loosen a filter, or let a Prosci advisor map your situation to the right program directly.</p>
-          <a class="btn btn-primary" href="#">Talk to an advisor</a>
-        </div>
-      </div>
-    </section>
-  </main>
-</div>
 
 <script>
-(function () {
-  "use strict";
-
-  var IMG = "https://store.prosci.com/media/catalog/product/cache/bb7be3eff6733bca632089ad7f465ac9/";
-
-  /* Real catalog, extracted from store.prosci.com/training.html */
-  var COURSES = [
+  /* To add a version: drop its HTML file in this directory, add a thumbnail to
+     previews/, and append one entry here. The picker renders the rest. */
+  var VERSIONS = [
     {
-      id: "cert", title: "Change Management Certification Program", badge: "3-Day Certification",
-      summary: "Prosci's foundational program. Learn the ADKAR Model and apply the methodology to a real project you bring with you.",
-      why: "It gives you the end-to-end methodology and a reusable plan for driving adoption, exactly the structure a major transformation needs.",
-      img: IMG + "c/e/certification_program_1_1.jpg",
-      date: "Jun 8 - 12, 2026", where: "Online", whereType: "online",
-      formats: ["Virtual", "In-Person"], audience: ["Practitioners"], length: "Multi",
-      price: "$4,500", was: "$4,850", avail: "register", match: 96,
-      url: "https://store.prosci.com/training/cert-vir-jun0826-us-en.html"
+      badge: "A",
+      file: "version-a.html",
+      thumb: "previews/version-a.png",
+      title: "Photo cards",
+      kicker: "Match pills · chip filters",
+      desc: "Photo-forward course cards led by a match-strength pill, with Register / Join Waitlist actions. Results are refined with chip-based facet filters.",
+      chips: ["Photo-top cards", "Match pill", "Register / Waitlist", "Chip facets"]
     },
     {
-      id: "lyttc", title: "Leading Your Team Through Change", badge: "Manager Enablement",
-      summary: "Equips people managers to sponsor change with their own teams, the role that makes or breaks adoption.",
-      why: "Adoption lives or dies with frontline managers. This turns them into change sponsors instead of blockers.",
-      img: IMG + "l/e/leading_your_team_through_change_7.jpg",
-      date: "Self-paced", where: "Online", whereType: "online",
-      formats: ["On-Demand"], audience: ["Managers"], length: "Self",
-      price: "$1,050", was: "", avail: "register", match: 91,
-      url: "https://store.prosci.com/training/lyttc-vir-jul1026-us-en.html"
-    },
-    {
-      id: "adk1", title: "ADKAR Mastery: Prevent Change Resistance", badge: "Focused Workshop",
-      summary: "Go deep on building Awareness and Desire so resistance never takes hold in the first place.",
-      why: "Stalled adoption is almost always an Awareness and Desire gap. This targets exactly that, fast.",
-      img: IMG + "p/r/prevent_change_resistance_13.jpg",
-      date: "Jun 22 - 23, 2026", where: "Online", whereType: "online",
-      formats: ["Virtual"], audience: ["Practitioners", "Managers"], length: "Short",
-      price: "$1,050", was: "", avail: "register", match: 88,
-      url: "https://store.prosci.com/training/adk1-vir-jun2226-us-en.html"
-    },
-    {
-      id: "ecm", title: "Enterprise Change Management Boot Camp", badge: "Boot Camp",
-      summary: "Build the structures to make change a repeatable organizational capability, not a one-off project.",
-      why: "If this transformation is the first of many, ECM keeps you from rebuilding the wheel each time.",
-      img: IMG + "e/c/ecm_bootcamp_9.jpg",
-      date: "Jun 12 - 15, 2026", where: "Fort Collins, CO", whereType: "place",
-      formats: ["In-Person"], audience: ["Practitioners", "Sponsors"], length: "Short",
-      price: "$1,050", was: "$1,200", avail: "waitlist", match: 74,
-      url: "https://store.prosci.com/training/ecm-vir-jun1226-us-en.html"
-    },
-    {
-      id: "iph", title: "Improve Project Health", badge: "Diagnostic Workshop",
-      summary: "Assess where a change effort is at risk and intervene before adoption slips further.",
-      why: "A quick way to pinpoint why adoption is stalling on a project already in motion.",
-      img: IMG + "i/m/improve_project_health_12.jpg",
-      date: "Jun 22, 2026", where: "Online", whereType: "online",
-      formats: ["Virtual"], audience: ["Practitioners"], length: "Short",
-      price: "$1,050", was: "", avail: "register", match: 68,
-      url: "https://store.prosci.com/training/iph-vir-jun2226-us-en.html"
-    },
-    {
-      id: "acp", title: "Achieve Change Performance", badge: "Outcomes Workshop",
-      summary: "Connect change activity to measurable adoption and performance outcomes.",
-      why: "Useful once you need to prove adoption is actually landing, not just track activity.",
-      img: IMG + "a/c/achieve_change_performance_14.jpg",
-      date: "Jun 15, 2026", where: "Online", whereType: "online",
-      formats: ["Virtual"], audience: ["Practitioners", "Sponsors"], length: "Short",
-      price: "$1,050", was: "", avail: "register", match: 61,
-      url: "https://store.prosci.com/training/acp-vir-jun1526-us-en.html"
-    },
-    {
-      id: "adk2", title: "ADKAR Mastery: Resolve Change Barriers", badge: "Focused Workshop",
-      summary: "Diagnose where individuals are stuck in ADKAR and unblock them.",
-      why: "Best after Level 1, for when resistance has already set in and you need to clear it.",
-      img: IMG + "a/d/adkar_resolve_persistent_barriers_workshop_13.jpg",
-      date: "Jun 26, 2026", where: "Online", whereType: "online",
-      formats: ["Virtual"], audience: ["Practitioners", "Managers"], length: "Short",
-      price: "$1,050", was: "", avail: "register", match: 57,
-      url: "https://store.prosci.com/training/adk2-vir-jun2626-us-en.html"
-    },
-    {
-      id: "ttt1", title: "Train-the-Trainer Level 1", badge: "Build Capability",
-      summary: "License to deliver Prosci programs in-house and scale change skills across your organization.",
-      why: "The route to internal capability if you want to stop depending on outside consultants.",
-      img: IMG + "t/r/train_the_trainer_10.jpg",
-      date: "Jul 7 - 9, 2026", where: "Online", whereType: "online",
-      formats: ["Virtual"], audience: ["Trainers"], length: "Multi",
-      price: "$4,000", was: "", avail: "register", match: 44,
-      url: "https://store.prosci.com/training/ttt1-vir-jul0726-us-en.html"
+      badge: "B",
+      file: "version-b.html",
+      thumb: "previews/version-b.png",
+      title: "Reasoning cards",
+      kicker: "Why this fits · filter panel",
+      desc: "Lavender-framed cards that lead with a 'Why this fits' rationale and an 'Add to path' action. Results are refined with a checkbox and radio filter panel.",
+      chips: ["Lavender cards", "Why this fits", "Add to path", "Checkbox panel"]
     }
   ];
 
-  var ANSWER =
-    "What you're describing is an <strong>adoption</strong> problem, not a rollout problem. People aren't short on " +
-    "information, they're short on <strong>Awareness</strong> of why the change matters and <strong>Desire</strong> to make it, the first two steps of ADKAR. " +
-    "Start by building those deliberately, then equip your managers to act as change sponsors with their own teams. " +
-    "The strongest path pairs a <strong>foundational program</strong> to give you the methodology with <strong>manager enablement</strong> so the change is led, not just announced.";
-  var ANSWER_MGR =
-    "When managers resist, it's usually because they were handed a change to <strong>enforce</strong> rather than <strong>lead</strong>. " +
-    "In ADKAR terms they're missing <strong>Desire</strong> and the <strong>Ability</strong> to sponsor it. " +
-    "Equip them to own the change with their teams first, then back it with foundational methodology so the approach is consistent across the org.";
-  var ANSWER_CAP =
-    "Building internal capability is an <strong>Enterprise Change Management</strong> goal: you're making change a repeatable organizational competency. " +
-    "Start by certifying a core of practitioners in the methodology, then license internal trainers so the capability compounds instead of leaving with a consultant.";
+  var arrow = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 
-  /* DOM */
-  var landing = document.getElementById("landing-page");
-  var shell = document.getElementById("shell");
-  var heroForm = document.getElementById("hero-form");
-  var heroQ = document.getElementById("hero-q");
-  var railForm = document.getElementById("rail-form");
-  var railQ = document.getElementById("rail-q");
-  var skeleton = document.getElementById("skeleton");
-  var results = document.getElementById("results");
-  var echo = document.getElementById("echo");
-  var aiBody = document.getElementById("ai-body");
-  var listEl = document.getElementById("course-list");
-  var countEl = document.getElementById("count");
-  var nomatch = document.getElementById("nomatch");
-  var moreWrap = document.getElementById("more-wrap");
-  var moreToggle = document.getElementById("more-toggle");
-  var moreList = document.getElementById("more-list");
-  var facets = document.getElementById("facets");
-  var followupBtn = document.getElementById("followup-btn");
-  var followupInput = document.getElementById("followup-q");
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]; }); }
 
-  var STRONG_THRESHOLD = 70;
-  var activeFilters = { format: [], audience: [], length: [] };
-  var hasSearched = false;
-  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  /* SVG snippets */
-  var ICON = {
-    cal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/></svg>',
-    online: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg>',
-    place: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="2.6"/></svg>',
-    badge: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5.5"/><path d="M8.5 13.5 7 22l5-2.6L17 22l-1.5-8.5"/></svg>',
-    info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 11v5M12 7.5h.01"/></svg>',
-    arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>'
-  };
-
-  function pickAnswer(text) {
-    var t = text.toLowerCase();
-    if (t.indexOf("manager") > -1 && t.indexOf("resist") > -1) return ANSWER_MGR;
-    if (t.indexOf("capability") > -1 || t.indexOf("consultant") > -1 || t.indexOf("in-house") > -1) return ANSWER_CAP;
-    return ANSWER;
-  }
-  function tierOf(m) {
-    if (m >= 90) return { cls: "tier-top", label: "Top match" };
-    if (m >= STRONG_THRESHOLD) return { cls: "tier-strong", label: "Strong match" };
-    return { cls: "tier-fair", label: "Possible" };
-  }
-  function matchesFilters(c) {
-    var f = activeFilters;
-    if (f.format.length && !f.format.some(function (v) { return c.formats.indexOf(v) > -1; })) return false;
-    if (f.audience.length && !f.audience.some(function (v) { return c.audience.indexOf(v) > -1; })) return false;
-    if (f.length.length && f.length.indexOf(c.length) === -1) return false;
-    return true;
-  }
-  function anyFilter() { return activeFilters.format.length || activeFilters.audience.length || activeFilters.length.length; }
-
-  function courseNode(c) {
-    var t = tierOf(c.match);
-    var el = document.createElement("article");
-    el.className = "course reveal";
-    el.setAttribute("data-available", c.avail);
-    var whereIcon = c.whereType === "place" ? ICON.place : ICON.online;
-    var ctaCls = c.avail === "waitlist" ? "cta cta-waitlist" : "cta cta-register";
-    var ctaText = c.avail === "waitlist" ? "Join Waitlist" : "Register Now";
-    var was = c.was ? '<span class="was">' + c.was + '</span>' : "";
-    el.innerHTML =
-      '<div class="course-photo">' +
-        '<img src="' + c.img + '" alt="" loading="lazy" decoding="async" />' +
-        '<span class="match-pill ' + t.cls + '"><span class="ico" aria-hidden="true"></span>' + t.label + ' · ' + c.match + '%</span>' +
-      '</div>' +
-      '<div class="course-content">' +
-        '<span class="badge">' + ICON.badge + c.badge + '</span>' +
-        '<h3 class="course-title">' + c.title + '</h3>' +
-        '<p class="course-desc">' + c.summary + '</p>' +
-        '<div class="why"><span class="dot" aria-hidden="true"></span><span><span class="label">Why this fits: </span>' + c.why + '</span></div>' +
-        '<hr class="card-divider" />' +
-        '<div class="meta-row">' +
-          '<span class="meta-item">' + ICON.cal + c.date + '</span>' +
-          '<span class="meta-item">' + whereIcon + c.where + '</span>' +
-        '</div>' +
-        '<hr class="card-divider" />' +
-        '<div class="price-row">' +
-          '<span class="price"><span class="now">' + c.price + '</span>' + was +
-            '<button type="button" class="info" aria-label="Member pricing shown; standard price struck through" title="Member pricing shown; standard price struck through">' + ICON.info + '</button>' +
-          '</span>' +
-          '<a class="' + ctaCls + '" href="' + c.url + '" target="_blank" rel="noopener">' + ctaText + '</a>' +
-        '</div>' +
-      '</div>';
-    return el;
-  }
-
-  function appendCourses(container, courses, animate) {
-    courses.forEach(function (c, i) {
-      var node = courseNode(c);
-      container.appendChild(node);
-      if (reduceMotion || !animate) { node.classList.add("in"); return; }
-      requestAnimationFrame(function () { setTimeout(function () { node.classList.add("in"); }, 60 + i * 55); });
-    });
-  }
-
-  function renderList() {
-    var matched = COURSES.filter(matchesFilters);
-    listEl.innerHTML = ""; moreList.innerHTML = "";
-    moreWrap.hidden = true; moreList.hidden = true; moreToggle.setAttribute("aria-expanded", "false");
-
-    if (!matched.length) { nomatch.hidden = false; countEl.textContent = ""; return; }
-    nomatch.hidden = true;
-
-    var strong = matched.filter(function (c) { return c.match >= STRONG_THRESHOLD; });
-    var possible = matched.filter(function (c) { return c.match < STRONG_THRESHOLD; });
-    var primary = strong.length ? strong : possible;
-    var extra = strong.length ? possible : [];
-
-    countEl.textContent = primary.length + (primary.length === 1 ? " strong match" : " strong matches") +
-      (anyFilter() ? " after filters" : ", best first");
-    appendCourses(listEl, primary, true);
-
-    if (extra.length) {
-      moreWrap.hidden = false;
-      moreToggle._extra = extra;
-      moreToggle.innerHTML = "Show " + extra.length + " more possible match" + (extra.length === 1 ? "" : "es") + " " + ICON.arrow;
-    }
-  }
-
-  moreToggle.addEventListener("click", function () {
-    var open = moreToggle.getAttribute("aria-expanded") === "true";
-    if (open) {
-      moreList.hidden = true; moreList.innerHTML = "";
-      moreToggle.setAttribute("aria-expanded", "false");
-      moreToggle.innerHTML = "Show " + moreToggle._extra.length + " more possible match" + (moreToggle._extra.length === 1 ? "" : "es") + " " + ICON.arrow;
-    } else {
-      moreList.hidden = false;
-      appendCourses(moreList, moreToggle._extra, true);
-      moreToggle.setAttribute("aria-expanded", "true");
-      moreToggle.innerHTML = "Hide possible matches " + ICON.arrow;
-    }
-  });
-
-  function revealStatic() {
-    results.querySelectorAll(".query-echo, .ai-answer").forEach(function (n, i) {
-      if (reduceMotion) { n.classList.add("in"); return; }
-      requestAnimationFrame(function () { setTimeout(function () { n.classList.add("in"); }, i * 90); });
-    });
-  }
-
-  function runSearch(text) {
-    var q = (text || "").trim();
-    if (!q) { (shell.hidden ? heroQ : railQ).focus(); return; }
-    hasSearched = true;
-    railQ.value = q;
-
-    // Move to split view
-    landing.hidden = true;
-    shell.hidden = false;
-    window.scrollTo({ top: 0, behavior: "auto" });
-
-    results.hidden = true;
-    skeleton.hidden = false;
-    skeleton.setAttribute("aria-hidden", "false");
-
-    var delay = reduceMotion ? 200 : 850;
-    setTimeout(function () {
-      skeleton.hidden = true;
-      skeleton.setAttribute("aria-hidden", "true");
-      echo.textContent = q;
-      aiBody.innerHTML = pickAnswer(q);
-      results.hidden = false;
-      renderList();
-      revealStatic();
-    }, delay);
-  }
-
-  /* Auto-grow hero textarea */
-  function grow(el) { el.style.height = "auto"; el.style.height = Math.min(Math.max(el.scrollHeight, 54), 160) + "px"; }
-  heroQ.addEventListener("input", function () { grow(heroQ); });
-  function scrollToSearch() { window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" }); setTimeout(function () { heroQ.focus(); }, reduceMotion ? 0 : 320); }
-  document.querySelectorAll(".to-search").forEach(function (btn) { btn.addEventListener("click", function (e) { e.preventDefault(); scrollToSearch(); }); });
-
-  /* Mobile header menu */
-  var navToggle = document.querySelector(".nav-toggle");
-  var navSearchIcon = document.querySelector(".nav-search-icon");
-  var mobileMenu = document.getElementById("mobile-menu");
-  function setMenu(open) {
-    if (!mobileMenu || !navToggle) return;
-    if (open) { mobileMenu.removeAttribute("hidden"); } else { mobileMenu.setAttribute("hidden", ""); }
-    navToggle.setAttribute("aria-expanded", open ? "true" : "false");
-  }
-  if (navToggle) navToggle.addEventListener("click", function () { setMenu(mobileMenu.hasAttribute("hidden")); });
-  if (navSearchIcon) navSearchIcon.addEventListener("click", function () {
-    setMenu(true);
-    var mi = mobileMenu.querySelector(".mobile-search input");
-    if (mi) mi.focus();
-  });
-  if (mobileMenu) mobileMenu.querySelectorAll("a").forEach(function (a) { a.addEventListener("click", function () { setMenu(false); }); });
-
-  /* Events */
-  heroForm.addEventListener("submit", function (e) { e.preventDefault(); runSearch(heroQ.value); });
-  railForm.addEventListener("submit", function (e) { e.preventDefault(); runSearch(railQ.value); });
-
-  heroQ.addEventListener("keydown", function (e) {
-    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); runSearch(heroQ.value); }
-  });
-  railQ.addEventListener("keydown", function (e) {
-    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); runSearch(railQ.value); }
-  });
-
-  document.querySelectorAll(".ex-pill").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      var q = btn.getAttribute("data-q");
-      heroQ.value = q; grow(heroQ);
-      runSearch(q);
-    });
-  });
-
-  facets.addEventListener("click", function (e) {
-    var chip = e.target.closest(".chip");
-    if (!chip) return;
-    var group = chip.parentElement.getAttribute("data-facet");
-    var value = chip.getAttribute("data-value");
-    var on = chip.getAttribute("aria-pressed") === "true";
-    chip.setAttribute("aria-pressed", on ? "false" : "true");
-    var arr = activeFilters[group];
-    if (on) { arr.splice(arr.indexOf(value), 1); } else { arr.push(value); }
-    if (hasSearched) renderList();
-  });
-
-  function applyFollowup() {
-    var extra = followupInput.value.trim();
-    if (!extra) return;
-    var base = railQ.value.trim();
-    railQ.value = base ? base + " " + extra : extra;
-    followupInput.value = "";
-    runSearch(railQ.value);
-  }
-  followupBtn.addEventListener("click", applyFollowup);
-  followupInput.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); applyFollowup(); } });
-})();
+  var grid = document.getElementById("grid");
+  grid.innerHTML = VERSIONS.map(function (v) {
+    var chips = v.chips.map(function (c) { return '<span class="chip">' + esc(c) + "</span>"; }).join("");
+    return '' +
+      '<article class="card">' +
+        '<div class="thumb">' +
+          '<span class="badge" aria-hidden="true">' + esc(v.badge) + "</span>" +
+          '<img src="' + esc(v.thumb) + '" alt="Preview of the ' + esc(v.title) + ' version" loading="lazy" />' +
+        "</div>" +
+        '<div class="body">' +
+          '<p class="kicker">Version ' + esc(v.badge) + " · " + esc(v.kicker) + "</p>" +
+          "<h2>" + esc(v.title) + "</h2>" +
+          "<p>" + esc(v.desc) + "</p>" +
+          '<div class="chips">' + chips + "</div>" +
+          '<a class="open" href="' + esc(v.file) + '"><span class="stretched" aria-label="Open the ' + esc(v.title) + ' version"></span>Open version ' + arrow + "</a>" +
+        "</div>" +
+      "</article>";
+  }).join("");
 </script>
+
 </body>
 </html>
