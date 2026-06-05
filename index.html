@@ -3,37 +3,31 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Prosci Course Finder — Design Review</title>
-<meta name="description" content="Concept directions for the Prosci Course Finder. One shared design system, several distinct designs." />
+<title>Prosci Course Finder · Swarming</title>
+<meta name="description" content="Concept directions for the Prosci Course Finder, built by Swarming. One shared design system, several distinct designs." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --damson: #350944;
-    --damson-deep: #26063a;
-    --purple: #5c1761;
-    --pink: #ff1aa3;
-    --pink-ink: #c30d79;
-    --lilac: #b5bbdb;
-    --gold: #836434;
-    --white: #fffefa;
-    --linen: #f6f4ed;
-    --sand: #f2e8de;
-    --paper: #ffffff;
-    --ink: #1a0d1f;
-    --ink-2: #3e3e3e;
-    --muted: #7d7385;
-    --line: rgba(53, 9, 68, 0.10);
-    --line-strong: rgba(53, 9, 68, 0.16);
-    --serif: "Baskervville", Cambria, Georgia, serif;
-    --sans: "Instrument Sans", Arial, ui-sans-serif, system-ui, sans-serif;
-    --r-card: 10px;
-    --r-input: 8px;
+    /* Swarming brand */
+    --bg: #181712;          /* warm near-black canvas */
+    --bg-2: #211f18;        /* raised panel / card body */
+    --bg-3: #2a2820;        /* hover / inset */
+    --yellow: #e5bc10;      /* signature accent */
+    --yellow-bright: #f4cb1f;
+    --cream: #f6f5ef;       /* primary text on dark */
+    --beige: #e2e0d7;       /* warm secondary */
+    --muted: #a3a194;       /* muted text on dark */
+    --charcoal: #2a2924;    /* text on yellow */
+    --line: rgba(246, 245, 239, 0.12);
+    --line-2: rgba(246, 245, 239, 0.22);
+    --sans: "Lexend", ui-sans-serif, system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+    --r-card: 14px;
     --r-pill: 999px;
-    --shadow-card: 0 10px 30px -16px rgba(53, 9, 68, 0.22);
-    --shadow-lift: 0 26px 60px -24px rgba(53, 9, 68, 0.34);
-    --shadow-ring: 0 0 0 4px rgba(255, 26, 163, 0.16);
+    --shadow-card: 0 14px 34px -20px rgba(0, 0, 0, 0.7);
+    --shadow-lift: 0 34px 70px -34px rgba(0, 0, 0, 0.82);
+    --shadow-ring: 0 0 0 3px rgba(229, 188, 16, 0.55);
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
   }
   *, *::before, *::after { box-sizing: border-box; }
@@ -41,83 +35,92 @@
   html { -webkit-text-size-adjust: 100%; }
   body {
     margin: 0; font-family: var(--sans); font-size: 16px; line-height: 1.6;
-    color: var(--ink-2); background: var(--white);
+    color: var(--beige); background: var(--bg);
     -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; min-height: 100vh;
   }
+  /* faint warm glow drifting in from the top-right, behind the swarm */
   body::before {
-    content: ""; position: fixed; inset: -20% -10% auto -10%; height: 640px;
+    content: ""; position: fixed; inset: -10% -8% auto -8%; height: 720px;
     background:
-      radial-gradient(58% 70% at 80% 4%, rgba(255, 26, 163, 0.08), transparent 60%),
-      radial-gradient(52% 80% at 10% 0%, rgba(181, 187, 219, 0.34), transparent 62%),
-      radial-gradient(42% 60% at 92% 26%, rgba(131, 100, 52, 0.07), transparent 60%);
-    z-index: -1; pointer-events: none;
+      radial-gradient(46% 70% at 86% 2%, rgba(229, 188, 16, 0.16), transparent 60%),
+      radial-gradient(60% 90% at 96% 18%, rgba(229, 188, 16, 0.06), transparent 64%);
+    z-index: 0; pointer-events: none;
   }
-  a { color: var(--damson); text-decoration: none; }
-  ::selection { background: rgba(255, 26, 163, 0.18); }
-  :focus-visible { outline: none; box-shadow: var(--shadow-ring); border-radius: var(--r-input); }
+  a { color: var(--yellow); text-decoration: none; }
+  ::selection { background: rgba(229, 188, 16, 0.30); color: var(--cream); }
+  :focus-visible { outline: none; box-shadow: var(--shadow-ring); border-radius: 8px; }
 
-  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 32px); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 32px); position: relative; z-index: 2; }
 
   /* Masthead */
-  .top { padding: 22px 0; }
+  .top { padding: 22px 0; position: relative; z-index: 2; }
   .top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-  .logo { font-family: var(--sans); font-weight: 700; font-size: 1.5rem; letter-spacing: -0.035em; color: var(--damson); }
-  .top .tag { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .brand { display: inline-flex; align-items: center; gap: 11px; }
+  .brand svg { width: 26px; height: 26px; display: block; }
+  .logo { font-family: var(--sans); font-weight: 700; font-size: 1.45rem; letter-spacing: -0.03em; color: var(--cream); }
+  .top .tag { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted); }
 
   /* Hero */
-  .hero { padding: clamp(36px, 7vh, 72px) 0 clamp(28px, 4vw, 44px); }
+  .hero { position: relative; padding: clamp(40px, 8vh, 84px) 0 clamp(28px, 4vw, 48px); overflow: hidden; }
+  .swarm { position: absolute; top: -60px; right: 0; bottom: -60px; left: 28%; z-index: 0; pointer-events: none; }
+  .swarm span {
+    position: absolute; border-radius: var(--r-pill); will-change: transform;
+    animation: drift ease-in-out infinite alternate;
+  }
+  @keyframes drift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-6px, -9px, 0); } }
+
   .eyebrow {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-size: 0.74rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
-    color: var(--pink-ink); margin-bottom: 20px;
+    display: inline-flex; align-items: center; gap: 9px;
+    font-size: 0.74rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--yellow); margin-bottom: 22px;
   }
-  .eyebrow svg { width: 16px; height: 16px; }
+  .eyebrow svg { width: 20px; height: 20px; }
   .hero h1 {
-    font-family: var(--serif); font-weight: 400; color: var(--damson);
-    font-size: clamp(2.4rem, 5vw, 3.7rem); line-height: 1.05; letter-spacing: -0.015em;
-    margin: 0 0 18px; max-width: 18ch;
+    font-family: var(--sans); font-weight: 800; color: var(--cream);
+    font-size: clamp(2.5rem, 5.4vw, 4rem); line-height: 1.02; letter-spacing: -0.03em;
+    margin: 0 0 20px; max-width: 16ch;
   }
-  .hero h1 em { font-style: italic; color: var(--pink); }
-  .hero p { font-size: 1.12rem; line-height: 1.6; color: var(--ink-2); margin: 0; max-width: 64ch; }
-  .hero .note { margin-top: 16px; font-size: 0.96rem; color: var(--muted); max-width: 64ch; }
+  .hero h1 em { font-style: normal; color: var(--yellow); }
+  .hero p { font-size: 1.14rem; line-height: 1.62; color: var(--beige); margin: 0; max-width: 60ch; }
+  .hero .note { margin-top: 16px; font-size: 0.96rem; color: var(--muted); max-width: 60ch; }
 
   /* Version grid */
-  .versions { padding: 8px 0 clamp(56px, 9vw, 104px); }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 28px; }
+  .versions { padding: 12px 0 clamp(56px, 9vw, 104px); position: relative; z-index: 2; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 26px; }
   .card {
     position: relative;
-    display: flex; flex-direction: column; background: var(--paper);
-    border: 1px solid var(--sand); border-radius: var(--r-card); overflow: hidden;
+    display: flex; flex-direction: column; background: var(--bg-2);
+    border: 1px solid var(--line); border-radius: var(--r-card); overflow: hidden;
     transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s var(--ease);
   }
-  .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); border-color: var(--line-strong); }
+  .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lift); border-color: var(--line-2); }
   .card:focus-within { box-shadow: var(--shadow-ring); }
-  .thumb { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--linen); border-bottom: 1px solid var(--sand); }
+  .thumb { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--bg-3); border-bottom: 1px solid var(--line); }
   .thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; transition: transform 0.4s var(--ease); }
-  .card:hover .thumb img { transform: scale(1.025); }
+  .card:hover .thumb img { transform: scale(1.03); }
   .badge {
     position: absolute; top: 14px; left: 14px;
     width: 38px; height: 38px; border-radius: var(--r-pill);
-    background: var(--damson); color: var(--white);
-    display: grid; place-items: center; font-family: var(--serif); font-size: 1.25rem; line-height: 1;
-    box-shadow: 0 4px 14px -4px rgba(38, 6, 58, 0.6);
+    background: var(--yellow); color: var(--charcoal);
+    display: grid; place-items: center; font-family: var(--sans); font-weight: 800; font-size: 1.05rem; line-height: 1;
+    box-shadow: 0 6px 18px -6px rgba(229, 188, 16, 0.7);
   }
   .body { display: flex; flex-direction: column; flex: 1; padding: 24px clamp(20px, 2.4vw, 28px) 26px; }
-  .body h2 { font-family: var(--serif); font-weight: 400; color: var(--damson); font-size: 1.6rem; line-height: 1.12; margin: 0 0 6px; }
-  .kicker { font-size: 0.74rem; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
-  .body p { font-size: 1rem; line-height: 1.58; color: var(--ink-2); margin: 0 0 18px; }
+  .body h2 { font-family: var(--sans); font-weight: 700; color: var(--cream); font-size: 1.5rem; line-height: 1.14; letter-spacing: -0.02em; margin: 0 0 6px; }
+  .body .kicker { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--yellow); margin-bottom: 14px; }
+  .body p { font-size: 0.98rem; line-height: 1.58; color: var(--beige); margin: 0 0 18px; }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
   .chip {
-    font-size: 0.8rem; font-weight: 500; color: var(--damson);
-    background: var(--linen); border: 1px solid var(--line); border-radius: var(--r-pill); padding: 5px 12px;
+    font-size: 0.78rem; font-weight: 500; color: var(--beige);
+    background: rgba(246, 245, 239, 0.05); border: 1px solid var(--line); border-radius: var(--r-pill); padding: 5px 12px;
   }
   .open {
     margin-top: auto; align-self: flex-start; display: inline-flex; align-items: center; gap: 9px;
-    font-family: var(--sans); font-weight: 600; font-size: 0.95rem; line-height: 1;
-    background: var(--damson); color: var(--white); border-radius: var(--r-input); padding: 13px 20px;
+    font-family: var(--sans); font-weight: 700; font-size: 0.92rem; line-height: 1; letter-spacing: 0.01em;
+    background: var(--yellow); color: var(--charcoal); border-radius: var(--r-pill); padding: 13px 22px;
     transition: background 0.18s var(--ease), transform 0.18s var(--ease);
   }
-  .card:hover .open { background: var(--purple); }
+  .card:hover .open { background: var(--yellow-bright); }
   .open:active { transform: translateY(1px); }
   .open svg { width: 16px; height: 16px; transition: transform 0.18s var(--ease); }
   .card:hover .open svg { transform: translateX(3px); }
@@ -125,16 +128,21 @@
   .stretched { position: absolute; inset: 0; z-index: 1; }
 
   /* Footer */
-  .foot { border-top: 1px solid var(--line); padding: 28px 0 56px; }
+  .foot { border-top: 1px solid var(--line); padding: 28px 0 56px; position: relative; z-index: 2; }
   .foot .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
   .foot p { margin: 0; font-size: 0.9rem; color: var(--muted); }
-  .foot a { font-weight: 600; color: var(--damson); }
+  .foot .links { display: inline-flex; gap: 20px; }
+  .foot a { font-weight: 600; }
+  .foot a:hover { color: var(--yellow-bright); }
 
   @media (max-width: 720px) {
     .grid { grid-template-columns: 1fr; gap: 22px; }
+    .swarm { left: 8%; opacity: 0.75; }
+    .top .tag { display: none; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { transition-duration: 0.001ms !important; }
+    .swarm span { animation: none !important; }
   }
 </style>
 </head>
@@ -142,19 +150,35 @@
 
 <header class="top">
   <div class="wrap">
-    <span class="logo">Prosci</span>
-    <span class="tag">Course Finder &middot; Design Review</span>
+    <span class="brand">
+      <svg viewBox="0 0 28 28" aria-hidden="true">
+        <circle cx="9" cy="11" r="3.1" fill="#e5bc10"/>
+        <circle cx="18" cy="7.5" r="2.1" fill="#f6f5ef" opacity="0.85"/>
+        <circle cx="20.5" cy="15" r="2.6" fill="#e5bc10"/>
+        <circle cx="13.5" cy="17.5" r="1.7" fill="#f6f5ef" opacity="0.7"/>
+        <circle cx="23.5" cy="9.5" r="1.3" fill="#e5bc10" opacity="0.8"/>
+        <circle cx="6.5" cy="19" r="1.5" fill="#f6f5ef" opacity="0.6"/>
+      </svg>
+      <span class="logo">swarming</span>
+    </span>
+    <span class="tag">Prosci Course Finder &middot; Concept Review</span>
   </div>
 </header>
 
 <section class="hero">
+  <div class="swarm" id="swarm" aria-hidden="true"></div>
   <div class="wrap">
     <span class="eyebrow">
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18.7851 12.5213L13.4501 10.5499L11.485 5.21081C11.3686 4.89466 11.158 4.6218 10.8817 4.42907C10.6054 4.23634 10.2766 4.133 9.93971 4.133C9.60281 4.133 9.27402 4.23634 8.99771 4.42907C8.72139 4.6218 8.51083 4.89466 8.39446 5.21081L6.41687 10.5499L1.07781 12.515C0.761654 12.6314 0.488802 12.842 0.29607 13.1183C0.103338 13.3946 0 13.7234 0 14.0603C0 14.3972 0.103338 14.726 0.29607 15.0023C0.488802 15.2786 0.761654 15.4892 1.07781 15.6055L6.41687 17.5831L8.38205 22.9222C8.49842 23.2383 8.70897 23.5112 8.98529 23.7039C9.26161 23.8967 9.5904 24 9.92729 24C10.2642 24 10.593 23.8967 10.8693 23.7039C11.1456 23.5112 11.3562 23.2383 11.4725 22.9222L13.4501 17.5831L18.7892 15.618C19.1053 15.5016 19.3782 15.291 19.5709 15.0147C19.7637 14.7384 19.867 14.4096 19.867 14.0727C19.867 13.7358 19.7637 13.407 19.5709 13.1307C19.3782 12.8544 19.1053 12.6438 18.7892 12.5275L18.7851 12.5213ZM12.5193 16.1579C12.4069 16.1993 12.3049 16.2645 12.2203 16.3492C12.1357 16.4338 12.0704 16.5358 12.029 16.6481L9.9335 22.3254L7.84214 16.6523C7.80081 16.5388 7.73514 16.4357 7.64973 16.3503C7.56432 16.2649 7.46124 16.1992 7.34775 16.1579L1.6746 14.0665L7.34775 11.9751C7.46124 11.9338 7.56432 11.8681 7.64973 11.7827C7.73514 11.6973 7.80081 11.5942 7.84214 11.4807L9.9335 5.8076L12.0249 11.4807C12.0663 11.5931 12.1315 11.6951 12.2162 11.7797C12.3008 11.8643 12.4028 11.9296 12.5151 11.971L18.1924 14.0665L12.5193 16.1579ZM13.2433 3.30976C13.2433 3.09031 13.3304 2.87985 13.4856 2.72468C13.6408 2.5695 13.8513 2.48232 14.0707 2.48232H15.7256V0.827441C15.7256 0.60799 15.8128 0.397527 15.9679 0.242352C16.1231 0.0871766 16.3336 0 16.553 0C16.7725 0 16.9829 0.0871766 17.1381 0.242352C17.2933 0.397527 17.3805 0.60799 17.3805 0.827441V2.48232H19.0354C19.2548 2.48232 19.4653 2.5695 19.6204 2.72468C19.7756 2.87985 19.8628 3.09031 19.8628 3.30976C19.8628 3.52922 19.7756 3.73968 19.6204 3.89485C19.4653 4.05003 19.2548 4.13721 19.0354 4.13721H17.3805V5.79209C17.3805 6.01154 17.2933 6.222 17.1381 6.37718C16.9829 6.53235 16.7725 6.61953 16.553 6.61953C16.3336 6.61953 16.1231 6.53235 15.9679 6.37718C15.8128 6.222 15.7256 6.01154 15.7256 5.79209V4.13721H14.0707C13.8513 4.13721 13.6408 4.05003 13.4856 3.89485C13.3304 3.73968 13.2433 3.52922 13.2433 3.30976ZM24 8.27441C24 8.49386 23.9128 8.70433 23.7576 8.8595C23.6025 9.01468 23.392 9.10185 23.1726 9.10185H22.3451V9.92929C22.3451 10.1487 22.2579 10.3592 22.1028 10.5144C21.9476 10.6696 21.7371 10.7567 21.5177 10.7567C21.2982 10.7567 21.0878 10.6696 20.9326 10.5144C20.7774 10.3592 20.6902 10.1487 20.6902 9.92929V9.10185H19.8628C19.6433 9.10185 19.4329 9.01468 19.2777 8.8595C19.1225 8.70433 19.0354 8.49386 19.0354 8.27441C19.0354 8.05496 19.1225 7.8445 19.2777 7.68932C19.4329 7.53415 19.6433 7.44697 19.8628 7.44697H20.6902V6.61953C20.6902 6.40008 20.7774 6.18962 20.9326 6.03444C21.0878 5.87927 21.2982 5.79209 21.5177 5.79209C21.7371 5.79209 21.9476 5.87927 22.1028 6.03444C22.2579 6.18962 22.3451 6.40008 22.3451 6.61953V7.44697H23.1726C23.392 7.44697 23.6025 7.53415 23.7576 7.68932C23.9128 7.8445 24 8.05496 24 8.27441Z" fill="#FF1AA3"/></svg>
-      Concept review
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="7" cy="9" r="2.4" fill="currentColor"/>
+        <circle cx="15.5" cy="6" r="1.8" fill="currentColor" opacity="0.7"/>
+        <circle cx="13" cy="15" r="3" fill="currentColor"/>
+        <circle cx="19.5" cy="13" r="1.5" fill="currentColor" opacity="0.6"/>
+      </svg>
+      See what the buzz is about
     </span>
     <h1>Pick a direction to <em>review</em>.</h1>
-    <p>Each option below is a distinct take on the Prosci Course Finder. They share one design system, derived from the live store, but diverge deliberately in how courses are presented and refined.</p>
+    <p>Each option below is a distinct take on the Prosci Course Finder. They share one design system, derived from the live Prosci store, but diverge deliberately in how courses are presented and refined.</p>
     <p class="note">Open any version to walk the full flow: describe a challenge, get the Prosci Advisor recommendation, and see the ranked programs.</p>
   </div>
 </section>
@@ -167,8 +191,11 @@
 
 <footer class="foot">
   <div class="wrap">
-    <p>Front-end prototype &middot; AI recommendation and matching are demo data.</p>
-    <p><a href="https://github.com/briansteinseifer/prosci" rel="noopener">View source on GitHub</a></p>
+    <p>A Swarming prototype &middot; AI recommendation and matching are demo data.</p>
+    <span class="links">
+      <a href="https://swarming.agency" rel="noopener">swarming.agency</a>
+      <a href="https://github.com/briansteinseifer/prosci" rel="noopener">View source</a>
+    </span>
   </div>
 </footer>
 
@@ -236,6 +263,32 @@
         "</div>" +
       "</article>";
   }).join("");
+
+  /* Swarm particle field: a scattered cluster that thins to the left, echoing the
+     Swarming brand mark. Positions are organic; motion respects reduced-motion. */
+  (function () {
+    var swarm = document.getElementById("swarm");
+    if (!swarm) return;
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var dots = [];
+    for (var i = 0; i < 170; i++) {
+      var x = Math.pow(Math.random(), 0.75);          // bias toward the right
+      if (Math.random() > 0.30 + x * 0.70) continue;  // thin out the left edge
+      var y = Math.random();
+      var size = (1 + Math.random() * Math.random() * 4.5).toFixed(1);
+      var op = (0.10 + Math.random() * 0.55).toFixed(2);
+      var yellow = Math.random() < 0.17;
+      var anim = reduce ? "" :
+        "animation-duration:" + (6 + Math.random() * 9).toFixed(2) + "s;" +
+        "animation-delay:" + (-Math.random() * 9).toFixed(2) + "s;";
+      dots.push(
+        '<span style="left:' + (x * 100).toFixed(2) + "%;top:" + (y * 100).toFixed(2) +
+        "%;width:" + size + "px;height:" + size + "px;opacity:" + op +
+        ";background:" + (yellow ? "var(--yellow)" : "var(--cream)") + ";" + anim + '"></span>'
+      );
+    }
+    swarm.innerHTML = dots.join("");
+  })();
 </script>
 
 </body>
