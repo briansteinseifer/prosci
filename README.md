@@ -20,9 +20,10 @@ live Prosci store) but diverge deliberately in how courses are presented and ref
 - **`version-c.html`** — *Conversational.* A guided chat advisor that asks a couple
   of questions, then synthesizes a best-fit "Why this fits" recommendation with
   supporting courses and a running path you build as you go. (Tailwind CDN based.)
-- **`version-d.html`** — *Ask the advisor.* A full-page ask experience: one prominent
+- **`version-d/`** — *Ask the advisor.* A full-page ask experience: one prominent
   box to describe the challenge, then a written advisor read, a placement on the ADKAR
-  model, and a recommended training path. (Self-contained bundled build; ~2MB.)
+  model, and a recommended training path. (React source, in-browser Babel; loads React,
+  Babel and Lucide from a pinned CDN, so it needs a connection. Course photos are local.)
 
 ## Context
 
@@ -38,8 +39,9 @@ live Prosci store) but diverge deliberately in how courses are presented and ref
 
 ## Viewing
 
-Open `index.html` in a browser, or visit the live build. Course imagery hotlinks
-from the Prosci store CDN, so an internet connection is needed for photos to load.
+Open `index.html` in a browser, or visit the live build. Versions A and B hotlink
+course imagery from the Prosci store CDN, and version D loads React, Babel and Lucide
+from a pinned CDN, so a connection is needed. Versions C and D use local course photos.
 
 ## Notes for review
 
