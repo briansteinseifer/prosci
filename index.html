@@ -82,13 +82,13 @@
   .versions { padding: 12px 0 clamp(56px, 9vw, 104px); position: relative; z-index: 2; }
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 26px; }
   .card {
-    position: relative;
+    position: relative; cursor: pointer; text-decoration: none; color: inherit;
     display: flex; flex-direction: column; background: var(--bg-2);
     border: 1px solid var(--line); border-radius: var(--r-card); overflow: hidden;
     transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s var(--ease);
   }
   .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lift); border-color: var(--line-2); }
-  .card:focus-within { box-shadow: var(--shadow-ring); }
+  .card:focus-visible { outline: none; box-shadow: var(--shadow-ring); }
   .thumb { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--bg-3); border-bottom: 1px solid var(--line); }
   .thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; transition: transform 0.4s var(--ease); }
   .card:hover .thumb img { transform: scale(1.03); }
@@ -118,8 +118,6 @@
   .open:active { transform: translateY(1px); }
   .open svg { width: 16px; height: 16px; transition: transform 0.18s var(--ease); }
   .card:hover .open svg { transform: translateX(3px); }
-
-  .stretched { position: absolute; inset: 0; z-index: 1; }
 
   /* Footer */
   .foot { border-top: 1px solid var(--line); padding: 28px 0 56px; position: relative; z-index: 2; }
@@ -208,7 +206,7 @@
     },
     {
       badge: "D",
-      file: "version-d/",
+      file: "version-d/index.html",
       thumb: "previews/version-d.png",
       title: "Ask the advisor",
       kicker: "Single ask box · ADKAR read",
@@ -225,7 +223,7 @@
   grid.innerHTML = VERSIONS.map(function (v) {
     var chips = v.chips.map(function (c) { return '<span class="chip">' + esc(c) + "</span>"; }).join("");
     return '' +
-      '<article class="card">' +
+      '<a class="card" href="' + esc(v.file) + '" aria-label="Open the ' + esc(v.title) + ' version">' +
         '<div class="thumb">' +
           '<span class="badge" aria-hidden="true">' + esc(v.badge) + "</span>" +
           '<img src="' + esc(v.thumb) + '" alt="Preview of the ' + esc(v.title) + ' version" loading="lazy" />' +
@@ -235,9 +233,9 @@
           "<h2>" + esc(v.title) + "</h2>" +
           "<p>" + esc(v.desc) + "</p>" +
           '<div class="chips">' + chips + "</div>" +
-          '<a class="open" href="' + esc(v.file) + '"><span class="stretched" aria-label="Open the ' + esc(v.title) + ' version"></span>Open version ' + arrow + "</a>" +
+          '<span class="open">Open version ' + arrow + "</span>" +
         "</div>" +
-      "</article>";
+      "</a>";
   }).join("");
 
   /* Swarm particle field: a scattered cluster that thins to the left, echoing the
