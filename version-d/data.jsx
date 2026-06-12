@@ -272,7 +272,7 @@ const SEGMENTS = {
     lead: "Since you're building your own change-management skills, this path centers on certification and the hands-on ADKAR workshops you can apply right away.",
   },
 };
-function segBias(seg, active) { return seg === active ? SEG_BONUS : seg === "both" ? 0 : -SEG_PENALTY; }
+function segBias(courseTag, activeTag) { return courseTag === activeTag ? SEG_BONUS : courseTag === "both" ? 0 : -SEG_PENALTY; }
 function clampScore(n) { return Math.max(0, Math.min(99, n)); } // cap at 99 — never imply a perfect match
 
 function getCourse(id) { return CATALOG.find((c) => c.id === id); }

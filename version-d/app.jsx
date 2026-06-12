@@ -118,11 +118,11 @@ function Thinking({ query }) {
 }
 
 /* ---------------- segment toggle ---------------- */
-function SegmentToggle({ value, onChange, align = "center" }) {
+function SegmentToggle({ value, onChange, align = "center", helpId = "seg-help" }) {
   const opts = [["enterprise", "Enterprise"], ["individual", "Individual"]];
   return (
     <div style={{ textAlign: align }}>
-      <fieldset aria-describedby="seg-help" style={{ display: "inline-flex", gap: 4, padding: 4, margin: 0, border: "1px solid var(--border-default)", borderRadius: 999, background: "var(--surface-sand)" }}>
+      <fieldset aria-describedby={helpId} style={{ display: "inline-flex", gap: 4, padding: 4, margin: 0, border: "1px solid var(--border-default)", borderRadius: 999, background: "var(--surface-sand)" }}>
         <legend style={{ position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0 0 0 0)", border: 0 }}>Who is this training for?</legend>
         {opts.map(([val, label]) => {
           const on = value === val;
@@ -133,7 +133,7 @@ function SegmentToggle({ value, onChange, align = "center" }) {
             </label>);
         })}
       </fieldset>
-      <p id="seg-help" style={{ fontFamily: "var(--font-sans)", fontSize: 14, color: "var(--text-muted)", margin: "12px 0 0" }}>{SEGMENTS[value].help}</p>
+      <p id={helpId} style={{ fontFamily: "var(--font-sans)", fontSize: 14, color: "var(--text-muted)", margin: "12px 0 0" }}>{SEGMENTS[value].help}</p>
     </div>);
 }
 
@@ -217,7 +217,7 @@ function Results({ query, data, t, onNewSearch, onFollowup, segment, onSegment }
     setTimeout(() => setStep((s) => Math.max(s, i)), dur + i * 360)
     );
     return () => timers.forEach(clearTimeout);
-  }, [query, t.detail]);
+  }, [query, t.detail, data]);
 
   const compact = t.density === "compact";
   const grid = t.layout === "grid";
@@ -237,7 +237,7 @@ function Results({ query, data, t, onNewSearch, onFollowup, segment, onSegment }
 
       {/* audience segment */}
       <div style={{ marginBottom: 30 }}>
-        <SegmentToggle value={segment} onChange={onSegment} align="left" />
+        <SegmentToggle value={segment} onChange={onSegment} align="left" helpId="seg-help-results" />
       </div>
 
       {/* answer */}
