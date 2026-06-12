@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Self-contained build of Version C (Ask the advisor). Generated from
+     index.html + *.jsx, inlined so Babel needs no fetch (works on file://).
+     Edit version-d/*.jsx as the source of truth, then regenerate. -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Prosci Course Finder · Ask Prosci Advisor</title>
+<style>
+/* inlined from colors_and_type.css */
+/* ============================================================================
+   PROSCI — Colours & Type foundations
+   Source of truth: "📏 Prosci Design system.fig"
+   Typefaces: Baskervville (serif display) · Instrument Sans (sans / UI + body)
+   ----------------------------------------------------------------------------
+   Fonts: Baskervville + Instrument Sans are self-hosted from /fonts (user-supplied
+   variable TTFs). Open Sans loads from Google Fonts as a fallback only. Neue Haas
+   Grotesk Display (eyebrow in the original) is SUBSTITUTED with Instrument Sans
+   uppercase + tracking — flagged to the user.
+============================================================================ */
+
+/* Open Sans from Google Fonts (fallback family; no local file uploaded). */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
+/* Baskervville — self-hosted variable fonts (user-supplied). Weight axis only. */
+@font-face {
+  font-family: "Baskervville";
+  src: url("fonts/Baskervville-VariableFont_wght.ttf") format("truetype-variations");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Baskervville";
+  src: url("fonts/Baskervville-Italic-VariableFont_wght.ttf") format("truetype-variations");
+  font-weight: 400 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Instrument Sans — self-hosted variable fonts (cover weights 400–700, width axis
+   75%–100% i.e. Condensed→Normal, + italics). The uploaded static instances
+   (Regular/Medium/SemiBold/Bold, Condensed & SemiCondensed) are the same family and are
+   fully represented by these two variable files. */
+@font-face {
+  font-family: "Instrument Sans";
+  src: url("fonts/InstrumentSans-VariableFont_wdth_wght.ttf") format("truetype-variations");
+  font-weight: 400 700;
+  font-stretch: 75% 100%;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Instrument Sans";
+  src: url("fonts/InstrumentSans-Italic-VariableFont_wdth_wght.ttf") format("truetype-variations");
+  font-weight: 400 700;
+  font-stretch: 75% 100%;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  /* ---- Brand / Primary ------------------------------------------------- */
+  --prosci-purple:        #350944;  /* Damson — signature deep purple, primary */
+  --prosci-purple-700:    #4A1359;  /* hover / lifted Damson */
+  --prosci-purple-deep:   #5C1761;  /* Purple — secondary */
+  --prosci-purple-ink:    #2A0735;  /* pressed / darkest */
+
+  /* ---- Surfaces / Neutrals (warm) ------------------------------------- */
+  --surface-white:        #FFFFFF;  /* pure white */
+  --surface-cream:        #FFFEFA;  /* White — brand off-white, default page bg */
+  --surface-sand:         #F6F4ED;  /* Linen — warm cream panel */
+  --surface-beige:        #F2E8DE;  /* Sand — beige block */
+  --surface-lavender:     #E7E0EC;  /* pale purple tint block */
+  --surface-grey:         #EEEEEE;  /* neutral grey field bg */
+
+  /* ---- Text ----------------------------------------------------------- */
+  --text-ink:             #000000;  /* primary body text — black */
+  --text-strong:          #2A0735;  /* headings on light = purple ink */
+  --text-muted:           #626262; /* secondary text */
+  --text-muted-grey:      #6B6B6B;  /* tertiary / meta */
+  --text-disabled:        #B3B3B3;  /* placeholder / disabled */
+  --text-on-dark:         #FFFEFA;  /* text on purple / dark */
+  --text-on-dark-soft:    rgba(255,254,250,0.72);
+
+  /* ---- Accents -------------------------------------------------------- */
+  /* ---- Accents (official palette) ------------------------------------- */
+  --accent-green:         #D2F7A9;  /* Green */
+  --accent-green-700:     #A8D86F;  /* darker green — hover / checks */
+  --accent-pink:          #FF1AA3;  /* Pink — emphasis, eyebrows, links */
+  --accent-orange:        #F3902D;  /* Orange */
+  --accent-lilac:         #B5BBDB;  /* Lilac */
+  --accent-periwinkle:    #B5BBDB;  /* alias of Lilac (legacy name) */
+  --accent-magenta:       var(--accent-pink); /* legacy alias → Pink */
+
+  /* ---- Semantic ------------------------------------------------------- */
+  --success:              #80ED99;
+  --success-bg:           #EAFCEE;
+  --success-ink:          #1E7A3D;
+  --error:                #DE351B;
+  --error-bg:             #FBE7E3;
+
+  /* ---- Borders -------------------------------------------------------- */
+  --border-hairline:      #E3DED4;  /* on cream */
+  --border-default:       #D8D2C6;
+  --border-strong:        #B3B3B3;
+  --border-on-dark:       rgba(255,254,250,0.24);
+
+  /* ====================================================================
+     TYPE — families
+  ==================================================================== */
+  --font-serif:  "Baskervville", "Noto Serif", Georgia, serif;       /* display / headings */
+  --font-sans:   "Instrument Sans", "Open Sans", system-ui, sans-serif; /* UI + body */
+  --font-eyebrow:"Instrument Sans", system-ui, sans-serif;            /* SUB for Neue Haas Grotesk */
+
+  /* ---- Desktop type scale (style → size / line-height) ---------------- */
+  --h1-size: 70px;   --h1-lh: 1.1;
+  --h2-size: 55px;   --h2-lh: 1.1;
+  --h3-size: 40px;   --h3-lh: 1.1;
+  --h4-size: 30px;   --h4-lh: 1.1;
+  --h5-size: 26px;   --h5-lh: 1.1;
+  --h6-size: 22px;   --h6-lh: 1.1;
+  --highlight-size: 60px; --highlight-lh: 1.1;
+
+  --p-xl-size: 24px; --p-lg-size: 20px; --p-size: 16px;
+  --p-sm-size: 14px; --p-xs-size: 11px;
+  --body-lh: 1.5;
+
+  --eyebrow-size: 14px; --eyebrow-track: 0.14em;
+
+  /* ---- Weights -------------------------------------------------------- */
+  --w-regular: 400; --w-medium: 500; --w-semibold: 600; --w-bold: 700;
+
+  /* ====================================================================
+     RADII · SPACING · ELEVATION
+  ==================================================================== */
+  --radius-button: 3px;   /* buttons */
+  --radius-sm: 6px;       /* chips, small media */
+  --radius-md: 6px;       /* cards, panels, inputs */
+  --radius-lg: 6px;
+  --radius-pill: 999px;   /* tags, icon buttons, portal logo */
+
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 24px; --space-6: 32px; --space-7: 40px; --space-8: 56px;
+  --space-9: 80px; /* section padding / container gutter */
+
+  --container-max: 1440px;
+  --container-gutter: 80px;
+
+  --shadow-sm: 0 1px 2px rgba(42,7,53,0.06);
+  --shadow-md: 0 8px 24px rgba(42,7,53,0.10);
+  --shadow-lg: 0 18px 48px rgba(42,7,53,0.14);
+  --shadow-card-hover: 0 14px 36px rgba(42,7,53,0.16);
+}
+
+/* ============================================================================
+   SEMANTIC TYPE CLASSES  (desktop)
+   Headings = Baskervville. Body / UI = Instrument Sans.
+   Mobile sizes available via .is-mobile container or @media below.
+============================================================================ */
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6, .highlight {
+  font-family: var(--font-serif);
+  font-weight: var(--w-regular);
+  color: var(--text-strong);
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+  margin: 0;
+}
+h1, .h1 { font-size: var(--h1-size); line-height: var(--h1-lh); }
+h2, .h2 { font-size: var(--h2-size); line-height: var(--h2-lh); }
+h3, .h3 { font-size: var(--h3-size); line-height: var(--h3-lh); }
+h4, .h4 { font-size: var(--h4-size); line-height: var(--h4-lh); }
+h5, .h5 { font-size: var(--h5-size); line-height: var(--h5-lh); }
+h6, .h6 { font-size: var(--h6-size); line-height: var(--h6-lh); }
+.highlight { font-size: var(--highlight-size); line-height: var(--highlight-lh); font-style: italic; }
+
+.eyebrow {
+  font-family: var(--font-eyebrow);
+  font-size: var(--eyebrow-size);
+  font-weight: var(--w-semibold);
+  letter-spacing: var(--eyebrow-track);
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: var(--accent-magenta);
+}
+
+p, .p { font-family: var(--font-sans); font-size: var(--p-size); line-height: var(--body-lh); color: var(--text-ink); margin: 0; }
+.p-xl { font-family: var(--font-sans); font-size: var(--p-xl-size); line-height: var(--body-lh); color: var(--text-ink); }
+.p-lg { font-family: var(--font-sans); font-size: var(--p-lg-size); line-height: var(--body-lh); color: var(--text-ink); }
+.p-sm { font-family: var(--font-sans); font-size: var(--p-sm-size); line-height: var(--body-lh); color: var(--text-ink); }
+.p-xs { font-family: var(--font-sans); font-size: var(--p-xs-size); line-height: var(--body-lh); color: var(--text-ink); }
+.strong { font-weight: var(--w-semibold); }
+em, .italic { font-style: italic; }
+
+@media (max-width: 768px) {
+  :root {
+    --h1-size: 39px; --h2-size: 33px; --h3-size: 25px; --h4-size: 24px;
+    --h5-size: 22px; --h6-size: 20px; --highlight-size: 39px;
+    --p-xl-size: 20px; --p-lg-size: 18px; --p-size: 14px; --p-sm-size: 12px; --p-xs-size: 10px;
+  }
+}
+
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--surface-cream); }
+  body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  ::selection { background: color-mix(in oklab, var(--accent-green) 70%, transparent); }
+  button { font-family: var(--font-sans); }
+  textarea::placeholder { color: var(--text-disabled); }
+  @keyframes blink { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
+  @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: .5; } }
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 12px; height: 12px; }
+  ::-webkit-scrollbar-thumb { background: var(--border-default); border-radius: 999px; border: 3px solid var(--surface-cream); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-from="data.jsx">
+// data.jsx: Prosci course catalog + scripted AI response engine
+// The "AI advisor" (Kaiya) returns a structured recommendation for a natural-language query.
+
+/* ============================ COURSE CATALOG ============================ */
+const CATALOG = [
+  {
+    id: "ccp",
+    title: "Prosci Change Management Certification Program",
+    blurb: "The flagship 3-day experience. Your team leaves certified, with a tailored change plan for a real project in hand.",
+    formats: ["In-person", "Virtual"],
+    duration: "3 days",
+    level: "Practitioner",
+    audience: "Change practitioners & project leads",
+    price: "£3,300",
+    priceWas: "£3,800",
+    phases: ["Prepare", "Manage", "Sustain"],
+    tone: "warm",
+    credential: "3-Day Certification",
+    nextDate: "Nov 11 – 13, 2026",
+    location: "Fort Collins, CO",
+    availability: "open",
+  },
+  {
+    id: "lyt",
+    title: "Leading Your Team Through Change",
+    blurb: "Equips people managers to coach their direct reports through the messy middle, the single biggest lever on adoption.",
+    formats: ["Virtual"],
+    duration: "Half day",
+    level: "People managers",
+    audience: "Front-line & mid-level managers",
+    price: "£900",
+    priceWas: "£1,100",
+    phases: ["Manage", "Sustain"],
+    tone: "lav",
+    credential: "Manager Workshop",
+    nextDate: "Dec 3, 2026",
+    location: null,
+    availability: "open",
+  },
+  {
+    id: "tcc",
+    title: "Taking Charge of Change",
+    blurb: "A foundational primer that gives everyone a shared language for change before the heavy lifting begins.",
+    formats: ["Virtual", "On-demand"],
+    duration: "1 day",
+    level: "Foundational",
+    audience: "Anyone impacted by change",
+    price: "£1,200",
+    priceWas: null,
+    phases: ["Prepare", "Manage"],
+    tone: "cool",
+    credential: "Foundations",
+    nextDate: "On-demand",
+    location: null,
+    availability: "open",
+  },
+  {
+    id: "dpr",
+    title: "Delivering Project Results",
+    blurb: "Bridges project management and change management so your delivery teams build adoption into the plan, not after it.",
+    formats: ["Virtual"],
+    duration: "1 day",
+    level: "Project teams",
+    audience: "PMs & delivery leads",
+    price: "£1,200",
+    priceWas: "£1,400",
+    phases: ["Manage"],
+    tone: "warm",
+    credential: "1-Day Program",
+    nextDate: "Jan 14, 2027",
+    location: null,
+    availability: "open",
+  },
+  {
+    id: "spb",
+    title: "Change Management Sponsor Briefing",
+    blurb: "A focused executive session on the sponsor's role: Prosci research names active sponsorship the #1 contributor to success.",
+    formats: ["In-person", "Virtual"],
+    duration: "2 hours",
+    level: "Executive",
+    audience: "Sponsors & senior leaders",
+    price: "£1,200",
+    priceWas: "£1,500",
+    phases: ["Prepare"],
+    tone: "lav",
+    credential: "Executive Briefing",
+    nextDate: "By arrangement",
+    location: "London, UK",
+    availability: "open",
+  },
+  {
+    id: "epp",
+    title: "Experienced Practitioner Program",
+    blurb: "For certified practitioners scaling change across a portfolio: advanced diagnostics, enterprise readiness and reinforcement.",
+    formats: ["Virtual"],
+    duration: "2 days",
+    level: "Advanced",
+    audience: "Experienced change leaders",
+    price: "£3,300",
+    priceWas: null,
+    phases: ["Sustain"],
+    tone: "cool",
+    credential: "Advanced Program",
+    nextDate: "Feb 2027 cohort",
+    location: null,
+    availability: "open",
+  },
+];
+
+/* ===================== RELATED RESOURCES ===================== */
+const RESOURCES = [
+  { kind: "Article", read: "6 min", title: "Why adoption stalls at the ADKAR barrier point", phase: "Ability" },
+  { kind: "Webinar", read: "On-demand", title: "Building reinforcement that actually sticks", phase: "Reinforcement" },
+  { kind: "Guide", read: "PDF", title: "AI Change Readiness Guide", phase: "Prepare" },
+  { kind: "Research", read: "8 min", title: "The manager's role in driving employee adoption", phase: "Knowledge" },
+];
+
+/* ===================== ADKAR phases ===================== */
+const ADKAR = [
+  { key: "A", label: "Awareness", of: "of the need to change" },
+  { key: "D", label: "Desire", of: "to support the change" },
+  { key: "K", label: "Knowledge", of: "of how to change" },
+  { key: "A2", label: "Ability", of: "to implement new skills" },
+  { key: "R", label: "Reinforcement", of: "to sustain the change" },
+];
+
+/* ===================== RESPONSE ENGINE ===================== */
+// Light keyword routing so the demo feels responsive to what's typed.
+function classify(q) {
+  const s = (q || "").toLowerCase();
+  if (/(resist|pushback|buy-?in|skeptic|morale|fear)/.test(s)) return "resistance";
+  if (/(sponsor|executive|leader|c-?suite|board|senior)/.test(s)) return "sponsorship";
+  if (/(ai|artificial intelligence|automation|digital)/.test(s)) return "ai";
+  if (/(start|begin|new to|where do i|first|basics|foundation)/.test(s)) return "starting";
+  return "adoption";
+}
+
+const VARIANTS = {
+  adoption: {
+    emphasis: ["K", "A2", "R"],
+    short:
+      "Adoption lives in the back half of the ADKAR® journey: **Knowledge, Ability and Reinforcement**. People won't sustain new processes until they know *how* to work differently, feel *able* to do it day-to-day, and see that change reinforced by their managers.",
+    long:
+      "Adoption lives in the back half of the ADKAR® journey: **Knowledge, Ability and Reinforcement**. People won't sustain new processes until they know *how* to work differently, feel *able* to do it day-to-day, and see that change reinforced by their managers.\n\nThe most common failure isn't desire; it's the **Ability barrier**: employees want to change but can't make it stick without coaching, practice and time. So I've built a path that puts a certified plan at the centre, activates the people managers who drive adoption locally, and equips your sponsors to reinforce it from the top.",
+    pathLabel: "A path to drive adoption",
+    path: [
+      { step: "01", course: "ccp", role: "Build the plan", note: "Certify your core team so adoption is engineered, not hoped for." },
+      { step: "02", course: "lyt", role: "Activate managers", note: "Managers are the #1 channel for adoption: give them the coaching playbook." },
+      { step: "03", course: "spb", role: "Reinforce from the top", note: "Visible, active sponsorship is what makes new behaviour stick." },
+    ],
+    order: ["ccp", "lyt", "spb", "dpr", "tcc", "epp"],
+    scores: { ccp: 96, lyt: 93, spb: 88, dpr: 81, tcc: 74, epp: 68 },
+    why: {
+      ccp: "Directly builds the adoption plan your transformation needs.",
+      lyt: "Targets the manager behaviours that move employees up the ADKAR curve.",
+      spb: "Closes the reinforcement gap most adoption efforts miss.",
+      dpr: "Bakes adoption into delivery so it isn't bolted on at go-live.",
+      tcc: "Gives impacted employees a shared language before the change lands.",
+      epp: "For scaling adoption across multiple initiatives at once.",
+    },
+    followups: ["We're a 5,000-person org. How does this scale?", "How long to roll this out?", "What does it cost end-to-end?"],
+  },
+  resistance: {
+    emphasis: ["A", "D"],
+    short:
+      "Resistance is almost always a signal, not an obstacle. It usually means people are stuck at **Awareness or Desire**: they don't yet see why the change matters *to them*. The fix is rarely more communication; it's the right communication from the right messenger.",
+    long:
+      "Resistance is almost always a signal, not an obstacle. It usually means people are stuck at **Awareness or Desire**: they don't yet see why the change matters *to them*. The fix is rarely more communication; it's the right communication from the right messenger.\n\nProsci research is clear on who that messenger is: the *why* lands best from senior sponsors, while the *what's-in-it-for-me* lands best from a person's own manager. The path below builds that two-channel approach into your plan.",
+    pathLabel: "A path to address resistance",
+    path: [
+      { step: "01", course: "ccp", role: "Diagnose the source", note: "Certification gives you tools to pinpoint where resistance really sits." },
+      { step: "02", course: "spb", role: "Land the why", note: "Sponsors carry the business case; this briefing prepares them." },
+      { step: "03", course: "lyt", role: "Land the WIIFM", note: "Managers translate change into what it means for each person." },
+    ],
+    order: ["ccp", "spb", "lyt", "tcc", "dpr", "epp"],
+    scores: { ccp: 94, spb: 91, lyt: 89, tcc: 78, dpr: 72, epp: 66 },
+    why: {
+      ccp: "Resistance-management planning is a core certification skill.",
+      spb: "Active sponsorship is the antidote to org-wide resistance.",
+      lyt: "Managers resolve resistance one conversation at a time.",
+      tcc: "Builds early awareness so resistance never compounds.",
+      dpr: "Aligns the project team on managing resistance proactively.",
+      epp: "Advanced diagnostics for persistent, structural resistance.",
+    },
+    followups: ["The resistance is from middle management", "How do we measure resistance?", "Just the sponsor briefing"],
+  },
+  sponsorship: {
+    emphasis: ["A", "R"],
+    short:
+      "If you're leading from the top, your highest-leverage move is **active and visible sponsorship**. Prosci's research has named it the #1 contributor to change success for over a decade, ahead of budget, methodology or tooling.",
+    long:
+      "If you're leading from the top, your highest-leverage move is **active and visible sponsorship**. Prosci's research has named it the #1 contributor to change success for over a decade, ahead of budget, methodology or tooling.\n\nThe gap is rarely willingness; it's knowing what good sponsorship actually looks like day-to-day. The path below starts with the sponsor playbook, then equips the team and managers who turn executive intent into front-line behaviour.",
+    pathLabel: "A path for change leaders",
+    path: [
+      { step: "01", course: "spb", role: "Master the sponsor role", note: "The ABCs of sponsorship: be active, build a coalition, communicate." },
+      { step: "02", course: "ccp", role: "Resource the work", note: "Stand up a certified team to execute behind your sponsorship." },
+      { step: "03", course: "lyt", role: "Cascade through managers", note: "Extend your sponsorship into every team via their managers." },
+    ],
+    order: ["spb", "ccp", "lyt", "epp", "dpr", "tcc"],
+    scores: { spb: 97, ccp: 90, lyt: 85, epp: 79, dpr: 71, tcc: 64 },
+    why: {
+      spb: "Purpose-built for executives sponsoring transformation.",
+      ccp: "Gives you a certified team to deliver on your vision.",
+      lyt: "Turns your managers into an extension of your sponsorship.",
+      epp: "Enterprise-scale readiness for portfolio sponsors.",
+      dpr: "Connects your sponsorship to project delivery.",
+      tcc: "Foundational alignment for the wider organisation.",
+    },
+    followups: ["What should I say at kickoff?", "How do I build a sponsor coalition?", "Brief my exec team"],
+  },
+  ai: {
+    emphasis: ["D", "K", "A2"],
+    short:
+      "AI-driven change is different. The technology moves faster than people can absorb it, so the bottleneck shifts hard toward **Desire, Knowledge and Ability**: trust in the tools, fluency in using them, and the confidence to change how work gets done.",
+    long:
+      "AI-driven change is different. The technology moves faster than people can absorb it, so the bottleneck shifts hard toward **Desire, Knowledge and Ability**: trust in the tools, fluency in using them, and the confidence to change how work gets done.\n\nThat means heavier investment in hands-on enablement and continuous reinforcement than a typical process change. The path below pairs a certified change approach with manager-led enablement, and points you to Prosci's AI-specific research.",
+    pathLabel: "A path for AI adoption",
+    path: [
+      { step: "01", course: "ccp", role: "Engineer the approach", note: "A structured plan keeps fast-moving AI change people-centred." },
+      { step: "02", course: "tcc", role: "Build AI confidence", note: "Foundational fluency so the whole org speaks the same language." },
+      { step: "03", course: "lyt", role: "Coach the new way", note: "Managers help teams build real ability with the new tools." },
+    ],
+    order: ["ccp", "tcc", "lyt", "dpr", "spb", "epp"],
+    scores: { ccp: 95, tcc: 88, lyt: 86, dpr: 80, spb: 76, epp: 70 },
+    why: {
+      ccp: "Anchors fast AI change in a proven, repeatable method.",
+      tcc: "Builds the shared AI literacy adoption depends on.",
+      lyt: "Managers turn AI tools into everyday ability.",
+      dpr: "Aligns AI delivery teams with adoption goals.",
+      spb: "Keeps leaders visibly behind the AI transformation.",
+      epp: "Scales AI adoption across multiple business units.",
+    },
+    followups: ["See the AI Change Readiness Guide", "How is AI change different?", "We're piloting in one team first"],
+  },
+  starting: {
+    emphasis: ["A", "D", "K"],
+    short:
+      "Starting out, the goal is a **shared foundation**: get everyone using the same language for change before you build plans. That front-loads **Awareness and Desire** so the harder work later has somewhere to land.",
+    long:
+      "Starting out, the goal is a **shared foundation**: get everyone using the same language for change before you build plans. That front-loads **Awareness and Desire** so the harder work later has somewhere to land.\n\nStart broad and shallow, then go deep with a certified core team. The path below does exactly that: a foundational primer for the many, certification for the few who'll lead.",
+    pathLabel: "A path to get started",
+    path: [
+      { step: "01", course: "tcc", role: "Build a shared base", note: "Everyone learns the same change vocabulary first." },
+      { step: "02", course: "ccp", role: "Certify your core", note: "A small expert team to lead the real work." },
+      { step: "03", course: "lyt", role: "Bring managers along", note: "Equip the managers who'll carry it day-to-day." },
+    ],
+    order: ["tcc", "ccp", "lyt", "spb", "dpr", "epp"],
+    scores: { tcc: 95, ccp: 92, lyt: 84, spb: 77, dpr: 73, epp: 62 },
+    why: {
+      tcc: "The ideal entry point, no prior change experience needed.",
+      ccp: "Builds your first certified, capable change team.",
+      lyt: "Prepares managers before the change reaches their teams.",
+      spb: "Gets leadership aligned from day one.",
+      dpr: "Connects early to your project delivery.",
+      epp: "For later, once you're scaling beyond the first initiative.",
+    },
+    followups: ["What order should people take these?", "We have no change team yet", "Just the basics for now"],
+  },
+};
+
+function getCourse(id) { return CATALOG.find((c) => c.id === id); }
+
+function buildResponse(query) {
+  const variant = VARIANTS[classify(query)];
+  const courses = variant.order.map((id) => ({ ...getCourse(id), score: variant.scores[id], why: variant.why[id] }));
+  return { variant, courses, resources: RESOURCES, adkar: ADKAR };
+}
+
+const EXAMPLE_PROMPTS = [
+  "My company is going through a major transformation. How do I get employees to adopt new processes?",
+  "My team is pushing back hard on a new system. How do I deal with the resistance?",
+  "I'm a VP sponsoring a big reorg. What's my role and where do I start?",
+  "We're rolling out AI tools across the business. How is that change different?",
+];
+
+Object.assign(window, { CATALOG, RESOURCES, ADKAR, buildResponse, EXAMPLE_PROMPTS, getCourse });
+
+</script>
+<script type="text/babel" data-from="components.jsx">
+// components.jsx — shared Prosci primitives for the Course Finder
+const { useState, useEffect, useRef } = React;
+
+/* ---------- Brand wordmark (real glyph paths) ---------- */
+function Wordmark({ color = "var(--prosci-purple)", size = 26 }) {
+  return (
+    <svg viewBox="0 0 100 32" height={size} style={{ display: "block", color, width: "auto" }} aria-label="Prosci">
+      <g fill="currentColor">
+        <path d="M0 0.292099C0 0.130174 0.130528 0 0.292891 0H10.1748C17.4493 0 21.3747 3.69251 21.3747 10.5473C21.3747 17.4021 16.7776 21.3613 9.46165 21.3613H7.96855C7.80618 21.3613 7.67566 21.4915 7.67566 21.6534V30.4195C7.67566 30.5815 7.54513 30.7116 7.38277 30.7116H0.292891C0.130528 30.7116 0 30.5815 0 30.4195V0.292099ZM9.68451 15.9765C12.2282 15.9765 13.6099 14.062 13.6099 10.6362C13.6099 7.21039 12.3619 5.38477 9.72908 5.38477H7.96855C7.80618 5.38477 7.67566 5.51495 7.67566 5.67687V15.6876C7.67566 15.8495 7.80618 15.9797 7.96855 15.9797H9.68451V15.9765Z"/>
+        <path d="M23.0048 8.45533H29.3847C29.5471 8.45533 29.6776 8.58551 29.6776 8.74743V11.77C29.6776 12.0875 30.117 12.1732 30.2379 11.878C31.1962 9.53166 32.6829 8.18864 34.765 8.18864C35.0038 8.18864 35.2266 8.20769 35.4113 8.23626C35.5546 8.25531 35.6564 8.37914 35.6564 8.52518V14.5354C35.6564 14.7101 35.5036 14.8466 35.3285 14.8244C34.9847 14.7831 34.5135 14.7355 34.0933 14.7355C31.0593 14.7355 29.6744 16.4722 29.6744 20.1647V30.4199C29.6744 30.5818 29.5439 30.712 29.3816 30.712H23.0016C22.8393 30.712 22.7087 30.5818 22.7087 30.4199V8.74743C22.7087 8.58551 22.8393 8.45533 23.0016 8.45533H23.0048Z"/>
+        <path d="M35.7422 19.6694C35.7422 12.6368 39.311 8.09979 45.6941 8.09979C52.0772 8.09979 55.1112 12.4622 55.1112 19.5805C55.1112 26.6989 51.6315 31.0613 45.3376 31.0613C39.0436 31.0613 35.7422 26.7433 35.7422 19.6694ZM48.0595 19.4027C48.0595 14.8625 47.3464 12.7734 45.5158 12.7734C43.6853 12.7734 42.8384 14.8657 42.8384 19.4472C42.8384 24.0287 43.5516 26.2131 45.3821 26.2131C47.3464 26.2131 48.0595 24.1208 48.0595 19.4027Z"/>
+        <path d="M55.8628 23.9866H61.8447C61.9976 23.9866 62.1185 24.1041 62.1344 24.2565C62.2968 25.8694 63.1755 26.7901 64.6145 26.7901C65.8179 26.7901 66.4896 26.1234 66.4896 25.0534C66.4896 23.9834 65.8211 23.2278 64.3025 22.6499L60.6 21.1799C57.878 20.1131 55.8691 18.1986 55.8691 14.9062C55.8691 10.766 59.2151 8.14027 64.3916 8.14027C69.5681 8.14027 72.4652 10.5564 72.7231 14.6426C72.7326 14.8077 72.5958 14.9506 72.4302 14.9506H66.6329C66.4832 14.9506 66.3527 14.8363 66.3432 14.6871C66.2381 13.2361 65.6014 12.3249 64.1688 12.3249C62.9654 12.3249 62.2491 12.9472 62.2491 13.9727C62.2491 14.9982 62.9622 15.6205 64.659 16.2873L68.1833 17.6239C71.351 18.8241 73.0478 20.8275 73.0478 23.9866C73.0478 28.4379 69.7019 31.0192 64.4808 31.0192C59.6799 31.0192 55.8596 28.8475 55.5699 24.2946C55.5603 24.1295 55.6972 23.9898 55.8628 23.9898V23.9866Z"/>
+        <path d="M73.4488 19.7583C73.4488 12.7257 76.8839 8.18864 83.1333 8.18864C88.7842 8.18864 91.5093 11.1445 91.7768 16.4722C91.7863 16.6373 91.6494 16.777 91.4839 16.777H85.3204C85.1676 16.777 85.0435 16.6595 85.0307 16.5071C84.8174 14.0116 84.0343 13.3067 82.9996 13.3067C81.3919 13.3067 80.5005 15.1768 80.5005 19.6249C80.5005 24.0731 81.3027 25.9432 82.8659 25.9432C84.117 25.9432 84.7856 24.6128 85.0275 22.0697C85.0435 21.9204 85.1676 21.803 85.3172 21.803H91.5125C91.6844 21.803 91.8213 21.9554 91.8054 22.1236C91.1878 28.1339 88.0424 31.0136 82.955 31.0136C76.6197 31.0136 73.4488 26.829 73.4488 19.7551V19.7583Z"/>
+        <path d="M93.3304 0H99.7103C99.8727 0 100.003 0.130174 100.003 0.292099V5.62925C100.003 5.79117 99.8727 5.92135 99.7103 5.92135H93.3304C93.168 5.92135 93.0375 5.79117 93.0375 5.62925V0.292099C93.0375 0.130174 93.168 0 93.3304 0ZM93.3304 8.45498H99.7103C99.8727 8.45498 100.003 8.58516 100.003 8.74708V30.4164C100.003 30.5783 99.8727 30.7085 99.7103 30.7085H93.3304C93.168 30.7085 93.0375 30.5783 93.0375 30.4164V8.74708C93.0375 8.58516 93.168 8.45498 93.3304 8.45498Z"/>
+      </g>
+    </svg>
+  );
+}
+
+function Icon({ name, size = 20, stroke = 1.8, color, style }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    if (ref.current && window.lucide) {
+      ref.current.innerHTML = "";
+      const e = document.createElement("i");
+      e.setAttribute("data-lucide", name);
+      ref.current.appendChild(e);
+      window.lucide.createIcons({ attrs: { width: size, height: size, "stroke-width": stroke } });
+    }
+  }, [name, size, stroke]);
+  return <span ref={ref} style={{ display: "inline-flex", lineHeight: 0, color, ...style }} />;
+}
+
+/* ---------- Kaiya AI mark — a small spark/asterisk glyph in a purple disc ---------- */
+function KaiyaMark({ size = 34, glow = false, accent = "var(--accent-green)" }) {
+  return (
+    <span style={{
+      width: size, height: size, borderRadius: 999, flex: "none",
+      background: "radial-gradient(120% 120% at 30% 25%, var(--prosci-purple-deep), var(--prosci-purple) 60%, var(--prosci-purple-ink))",
+      display: "grid", placeItems: "center", position: "relative",
+      boxShadow: glow ? `0 0 0 4px color-mix(in oklab, ${accent} 28%, transparent)` : "var(--shadow-sm)",
+      transition: "box-shadow .3s",
+    }}>
+      <svg width={size * 0.56} height={size * 0.56} viewBox="0 0 256 256" style={{ display: "block" }}>
+        {/* Phosphor "Sparkle" (fill) — nudged to optically centre in the disc */}
+        <path d="M208,144a15.78,15.78,0,0,1-10.42,14.94l-51.65,19-19,51.61a15.92,15.92,0,0,1-29.88,0L78,178l-51.62-19a15.92,15.92,0,0,1,0-29.88L78,110l19-51.65a15.92,15.92,0,0,1,29.88,0l19,51.65,51.65,19A15.78,15.78,0,0,1,208,144Z" transform="translate(11 -12)" fill={accent}/>
+      </svg>
+    </span>
+  );
+}
+
+/* ---------- Button (uppercase, 3px radius) ---------- */
+function Button({ children, variant = "primary", onClick, dark = false, size = "md", icon }) {
+  const [h, setH] = useState(false);
+  const pad = size === "sm" ? "10px 18px" : "14px 26px";
+  const v = {
+    primary: { background: "var(--prosci-purple)", color: "var(--surface-cream)", border: "1.5px solid transparent" },
+    secondary: { background: "transparent", color: dark ? "var(--surface-cream)" : "var(--prosci-purple)", border: `1.5px solid ${dark ? "rgba(255,254,250,.55)" : "var(--prosci-purple)"}` },
+    accent: { background: "var(--accent-green)", color: "var(--prosci-purple-ink)", border: "1.5px solid transparent" },
+  }[variant];
+  const hov = h ? (variant === "primary" ? { background: "var(--prosci-purple-700)" } : variant === "accent" ? { background: "var(--accent-green-700)" } : { background: dark ? "rgba(255,254,250,.1)" : "rgba(53,9,68,.05)" }) : {};
+  return (
+    <button onClick={onClick} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
+      style={{ ...v, ...hov, display: "inline-flex", alignItems: "center", gap: 9, fontFamily: "var(--font-sans)", fontSize: 12.5, fontWeight: 600, letterSpacing: ".09em", textTransform: "uppercase", borderRadius: 3, padding: pad, cursor: "pointer", lineHeight: 1, transition: "background .18s", whiteSpace: "nowrap" }}>
+      {children}{icon && <Icon name={icon} size={15} stroke={2.2} />}
+    </button>
+  );
+}
+
+const Serif = ({ children, size = 44, color = "var(--text-strong)", italic = false, style, as = "h2" }) => {
+  const Tag = as;
+  return <Tag style={{ fontFamily: "var(--font-serif)", fontWeight: 400, fontStyle: italic ? "italic" : "normal", fontSize: size, lineHeight: 1.12, color, margin: 0, letterSpacing: "-0.005em", ...style }}>{children}</Tag>;
+};
+
+const Eyebrow = ({ children, color = "var(--accent-pink)", style }) => (
+  <span style={{ fontFamily: "var(--font-sans)", fontSize: 13, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color, ...style }}>{children}</span>
+);
+
+/* ---------- Header (slim tool-page chrome) ---------- */
+const NAV = ["Change Management", "Methodology", "Solutions", "Resources"];
+function Header({ onReset }) {
+  return (
+    <header style={{ position: "sticky", top: 0, zIndex: 50, fontFamily: "var(--font-sans)" }}>
+      <div style={{ background: "var(--prosci-purple)", color: "var(--surface-cream)", display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 22, padding: "0 40px", height: 38, fontSize: 12.5 }}>
+        <a style={uLink}>Training</a>
+        <a style={uLink}>Suite Account</a>
+        <a style={{ ...uLink, display: "inline-flex", alignItems: "center", gap: 5 }}><Icon name="globe" size={13} /> English</a>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "rgba(255,254,250,.12)", border: "1px solid rgba(255,254,250,.3)", borderRadius: 999, padding: "4px 13px", cursor: "pointer" }}>
+          <Icon name="layout-grid" size={13} /> Prosci Portal
+        </span>
+      </div>
+      <div style={{ background: "var(--surface-cream)", borderBottom: "1px solid var(--border-hairline)", display: "flex", alignItems: "center", gap: 28, padding: "0 40px", height: 66 }}>
+        <button onClick={onReset} style={{ background: "none", border: 0, padding: 0, cursor: "pointer", display: "flex", alignItems: "center", gap: 12 }}>
+          <Wordmark size={25} />
+          <span style={{ width: 1, height: 22, background: "var(--border-default)" }} />
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 7 }}>
+            <KaiyaMark size={22} />
+            <span style={{ fontFamily: "var(--font-sans)", fontSize: 15, fontWeight: 600, color: "var(--text-strong)", letterSpacing: "-0.01em" }}>Course Finder</span>
+          </span>
+        </button>
+        <nav style={{ display: "flex", gap: 22, marginLeft: 10 }}>
+          {NAV.map((n) => <button key={n} style={navItem}>{n}<Icon name="chevron-down" size={13} stroke={2} /></button>)}
+        </nav>
+        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 16 }}>
+          <Button variant="secondary" size="sm">Talk to an advisor</Button>
+        </div>
+      </div>
+    </header>
+  );
+}
+const uLink = { color: "var(--surface-cream)", textDecoration: "none", cursor: "pointer" };
+const navItem = { background: "none", border: 0, cursor: "pointer", fontFamily: "var(--font-sans)", fontSize: 14, fontWeight: 500, color: "var(--text-ink)", display: "inline-flex", alignItems: "center", gap: 3 };
+
+Object.assign(window, { Wordmark, Icon, KaiyaMark, Button, Serif, Eyebrow, Header });
+
+</script>
+<script type="text/babel" data-from="results.jsx">
+// results.jsx — result sections: ADKAR map, learning path, course cards, resources
+const { useState: useStateR } = React;
+
+/* renders **bold** and *italic* inline markup from the scripted answer */
+function RichText({ text, style }) {
+  const parts = [];
+  let rem = text,key = 0;
+  const re = /(\*\*[^*]+\*\*|\*[^*]+\*|ADKAR®)/;
+  while (rem.length) {
+    const m = rem.match(re);
+    if (!m) {parts.push(<span key={key++}>{rem}</span>);break;}
+    if (m.index > 0) parts.push(<span key={key++}>{rem.slice(0, m.index)}</span>);
+    const tok = m[0];
+    if (tok.startsWith("**")) parts.push(<strong key={key++} style={{ fontWeight: 600, color: "var(--text-strong)" }}>{tok.slice(2, -2)}</strong>);else
+    if (tok === "ADKAR®") parts.push(<span key={key++} style={{ fontWeight: 600, color: "var(--prosci-purple)" }}>ADKAR®</span>);else
+    parts.push(<em key={key++} style={{ fontStyle: "italic" }}>{tok.slice(1, -1)}</em>);
+    rem = rem.slice(m.index + tok.length);
+  }
+  return <span style={style}>{parts}</span>;
+}
+
+/* ---------- ADKAR journey ---------- */
+function AdkarMap({ adkar, emphasis, accent }) {
+  const n = adkar.length;
+  const inset = `calc(50% / ${n})`; // centre the rail on first/last circle
+  return (
+    <div style={{ position: "relative", paddingTop: 4 }}>
+      {/* connecting rail behind the circles */}
+      <div style={{ position: "absolute", top: 40, left: inset, right: inset, height: 2, background: "var(--border-hairline)", zIndex: 0 }} />
+      <div style={{ position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: `repeat(${n}, 1fr)`, alignItems: "start" }}>
+        {adkar.map((p) => {
+          const on = emphasis.includes(p.key);
+          return (
+            <div key={p.key} style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", padding: "0 6px" }}>
+              {/* milestone circle */}
+              <div style={{
+                width: 72, height: 72, borderRadius: "50%", display: "grid", placeItems: "center",
+                background: on ? "var(--prosci-purple)" : "var(--accent-lilac)",
+                boxShadow: on ? `0 0 0 4px var(--surface-cream), 0 0 0 6px ${accent}` : "none",
+                transition: "all .3s"
+              }}>
+                <span style={{ fontFamily: "var(--font-serif)", fontSize: 34, lineHeight: 1, color: on ? "var(--surface-cream)" : "var(--prosci-purple)" }}>{p.key.replace("2", "")}</span>
+              </div>
+              {/* focus chip — reserves height so labels stay aligned */}
+              <div style={{ height: 22, display: "flex", alignItems: "center", marginTop: 12 }}>
+                {on &&
+                <span style={{ fontFamily: "var(--font-sans)", fontSize: 9.5, fontWeight: 700, letterSpacing: ".12em", textTransform: "uppercase", color: "var(--prosci-purple)", background: accent, borderRadius: "var(--radius-pill)", padding: "3px 9px" }}>Focus</span>
+                }
+              </div>
+              <span style={{ fontFamily: "var(--font-sans)", fontSize: 15, fontWeight: 600, color: "var(--text-strong)", marginTop: 6 }}>{p.label}</span>
+              <p style={{ fontFamily: "var(--font-sans)", fontSize: 12.5, lineHeight: 1.4, margin: "4px 0 0", color: "var(--text-muted)", maxWidth: 150 }}>{p.of}</p>
+            </div>);
+
+        })}
+      </div>
+    </div>);
+
+}
+
+/* ---------- Match ring ---------- */
+function MatchRing({ score, accent }) {
+  const r = 17,c = 2 * Math.PI * r,off = c * (1 - score / 100);
+  return (
+    <div style={{ position: "relative", width: 44, height: 44, flex: "none" }}>
+      <svg width="44" height="44" viewBox="0 0 44 44" style={{ transform: "rotate(-90deg)" }}>
+        <circle cx="22" cy="22" r={r} fill="none" stroke="var(--surface-beige)" strokeWidth="3.5" />
+        <circle cx="22" cy="22" r={r} fill="none" stroke={accent} strokeWidth="3.5" strokeLinecap="round" strokeDasharray={c} strokeDashoffset={off} style={{ transition: "stroke-dashoffset .8s ease" }} />
+      </svg>
+      <span style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 700, color: "var(--prosci-purple)" }}>{score}</span>
+    </div>);
+
+}
+
+const FMT_ICON = { "In-person": "users", "Virtual": "video", "On-demand": "play-circle" };
+
+/* local course photography (shared with the other versions) */
+const COURSE_IMG = {
+  ccp: "../course-images/certification_program_1_1.jpg",
+  lyt: "../course-images/leading_your_team_through_change_7.jpg",
+  tcc: "../course-images/achieve_change_performance_14.jpg",
+  dpr: "../course-images/improve_project_health_12.jpg",
+  spb: "../course-images/ecm_bootcamp_9.jpg",
+  epp: "../course-images/train_the_trainer_10.webp",
+};
+
+/* ---------- Course card ---------- */
+function CourseCard({ course, rank, t, compact }) {
+  const [h, setH] = useStateR(false);
+  const accent = t.accent;
+  const waitlist = course.availability === "waitlist";
+  const imgH = compact ? 156 : 196;
+  const pad = compact ? 20 : 26;
+  const titleColor = waitlist ? "var(--accent-lilac)" : "var(--text-strong)";
+  const bodyColor = waitlist ? "var(--text-muted)" : "var(--text-ink)";
+  const divider = { height: 1, background: "var(--border-hairline)", margin: "0 0" };
+
+  return (
+    <article onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
+    style={{
+      background: "var(--surface-sand)", border: "1px solid var(--border-hairline)",
+      overflow: "hidden", display: "flex", flexDirection: "column", position: "relative",
+      boxShadow: h ? "var(--shadow-card-hover)" : "var(--shadow-sm)", transform: h ? "translateY(-3px)" : "none",
+      transition: "box-shadow .2s, transform .2s", borderRadius: "6px", backgroundColor: "rgb(246, 244, 237)"
+    }}>
+      {/* image header */}
+      <div style={{ position: "relative", width: "100%", height: imgH, overflow: "hidden", background: "var(--surface-lavender)" }}>
+        <img
+          src={COURSE_IMG[course.id]}
+          alt={course.title}
+          loading="lazy"
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: waitlist ? "grayscale(.5)" : "none" }} />
+        {waitlist && <div style={{ position: "absolute", inset: 0, background: "color-mix(in oklab, var(--prosci-purple) 32%, transparent)", pointerEvents: "none" }} />}
+        {t.showScores &&
+        <span style={{ position: "absolute", top: 12, left: 12, display: "inline-flex", alignItems: "center", gap: 6, fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 700, color: "var(--prosci-purple)", background: accent, borderRadius: "var(--radius-pill)", padding: "4px 11px", boxShadow: "var(--shadow-sm)" }}>
+            {course.score}% match
+          </span>
+        }
+      </div>
+
+      {/* body */}
+      <div style={{ ...{ padding: pad, display: "flex", flexDirection: "column", flex: 1 }, padding: "24px", alignItems: "stretch" }}>
+        {/* credential badge */}
+        <span style={{
+          alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 8,
+          fontFamily: "var(--font-sans)", fontSize: 13, fontWeight: 600,
+          color: waitlist ? "var(--accent-lilac)" : "var(--prosci-purple)",
+          border: `1.5px solid ${waitlist ? "color-mix(in oklab, var(--accent-pink) 35%, var(--border-hairline))" : "var(--accent-pink)"}`,
+          borderRadius: "var(--radius-button)", padding: "7px 13px", marginBottom: compact ? 14 : 18
+        }}>
+          <Icon name="award" size={16} stroke={1.8} /> {course.credential}
+        </span>
+
+        <Serif as="h3" size={compact ? 22 : 26} style={{ color: titleColor, lineHeight: 1.12, marginBottom: 12 }}>{course.title}</Serif>
+
+        {/* AI rationale — the advisor's reason */}
+        <span style={{ fontFamily: "var(--font-sans)", fontSize: 11, fontWeight: 700, letterSpacing: ".12em", textTransform: "uppercase", color: waitlist ? "var(--text-muted)" : "var(--accent-pink)", display: "inline-flex", alignItems: "center", gap: 7, marginBottom: 7 }}>
+          <KaiyaMark size={17} accent="var(--prosci-purple)" /> Why this fits
+        </span>
+        <p style={{ fontFamily: "var(--font-sans)", fontSize: 14.5, lineHeight: 1.55, color: bodyColor, margin: "0 0 22px" }}>{course.why}</p>
+
+        <div style={{ ...divider, marginTop: "auto" }} />
+
+        {/* meta: date + delivery */}
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 22, fontFamily: "var(--font-sans)", fontSize: 14.5, color: waitlist ? "var(--text-muted)" : "var(--text-strong)", padding: compact ? "16px 0" : "20px 0" }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}><Icon name="calendar" size={17} stroke={1.7} color={waitlist ? "var(--text-muted)" : "var(--prosci-purple)"} /> {course.nextDate}</span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+            <Icon name={course.location ? "map-pin" : "monitor"} size={17} stroke={1.7} color={waitlist ? "var(--text-muted)" : "var(--prosci-purple)"} /> {course.location || "Online"}
+          </span>
+        </div>
+
+        <div style={divider} />
+
+        {/* footer: price + CTA */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap", marginTop: compact ? 16 : 22, paddingTop: 2 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+            {/[£$€]/.test(course.price) ?
+            <span style={{ display: "inline-flex", alignItems: "baseline", gap: 9 }}>
+                <span style={{ fontFamily: "var(--font-sans)", fontSize: 22, fontWeight: 700, color: titleColor, letterSpacing: "-0.01em" }}>{course.price}</span>
+                {course.priceWas && <span style={{ fontFamily: "var(--font-sans)", fontSize: 16, color: "var(--text-muted)", textDecoration: "line-through" }}>{course.priceWas}</span>}
+              </span> :
+
+            <span style={{ fontFamily: "var(--font-sans)", fontSize: 15, fontWeight: 600, color: titleColor }}>{course.price}</span>
+            }
+            <span title="Pricing details" style={{ width: 22, height: 22, flex: "none", borderRadius: "var(--radius-pill)", background: "var(--prosci-purple)", color: "var(--surface-cream)", display: "grid", placeItems: "center", cursor: "help" }}>
+              <Icon name="info" size={13} stroke={2.2} />
+            </span>
+          </div>
+          {waitlist ?
+          <button style={{ display: "inline-flex", alignItems: "center", gap: 8, background: h ? "var(--surface-lavender)" : "transparent", color: "var(--prosci-purple)", border: "2px solid var(--prosci-purple)", borderRadius: "var(--radius-button)", padding: "11px 20px", fontFamily: "var(--font-sans)", fontSize: 12.5, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", cursor: "pointer", transition: "background .18s" }}>
+              Join waitlist
+            </button> :
+
+          <button style={{ display: "inline-flex", alignItems: "center", gap: 8, background: h ? "var(--prosci-purple-700)" : "var(--prosci-purple)", color: "var(--surface-cream)", border: "2px solid transparent", borderRadius: "var(--radius-button)", padding: "11px 22px", fontFamily: "var(--font-sans)", fontSize: 12.5, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", cursor: "pointer", transition: "background .18s" }}>
+              Register now
+            </button>
+          }
+        </div>
+      </div>
+    </article>);
+
+}
+
+/* ---------- Learning path ---------- */
+function LearningPath({ variant, accent }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, position: "relative" }}>
+      {variant.path.map((p, i) => {
+        const course = getCourse(p.course);
+        return (
+          <div key={p.step} style={{ position: "relative", background: "var(--surface-white)", border: "1px solid var(--border-hairline)", borderRadius: 6, padding: "20px 20px 22px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+              <span style={{ width: 30, height: 30, borderRadius: 999, background: "var(--prosci-purple)", color: accent, display: "grid", placeItems: "center", fontFamily: "var(--font-sans)", fontSize: 13, fontWeight: 700 }}>{i + 1}</span>
+              <span style={{ fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", color: "var(--text-muted)" }}>{p.role}</span>
+            </div>
+            <Serif as="h4" size={18} style={{ color: "var(--text-strong)", marginBottom: 8 }}>{course.title}</Serif>
+            <p style={{ fontFamily: "var(--font-sans)", fontSize: 13, lineHeight: 1.5, color: "var(--text-muted)", margin: 0 }}>{p.note}</p>
+            {i < variant.path.length - 1 &&
+            <div style={{ position: "absolute", right: -12, top: "50%", transform: "translateY(-50%)", zIndex: 2, width: 24, height: 24, borderRadius: 999, background: "var(--surface-cream)", border: "1px solid var(--border-hairline)", display: "grid", placeItems: "center" }}>
+                <Icon name="chevron-right" size={14} stroke={2.2} color="var(--prosci-purple)" />
+              </div>
+            }
+          </div>);
+
+      })}
+    </div>);
+
+}
+
+/* ---------- Resources rail ---------- */
+const RES_ICON = { Article: "file-text", Webinar: "video", Guide: "book-open", Research: "line-chart" };
+function ResourceRow({ r }) {
+  const [h, setH] = useStateR(false);
+  return (
+    <a onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
+    style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", borderRadius: 6, background: h ? "var(--surface-sand)" : "transparent", cursor: "pointer", transition: "background .15s", textDecoration: "none" }}>
+      <span style={{ width: 38, height: 38, flex: "none", borderRadius: 6, background: "var(--surface-lavender)", display: "grid", placeItems: "center", color: "var(--prosci-purple)" }}>
+        <Icon name={RES_ICON[r.kind]} size={18} stroke={1.8} />
+      </span>
+      <div style={{ flex: 1 }}>
+        <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 2 }}>
+          <span style={{ fontFamily: "var(--font-sans)", fontSize: 11, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--accent-pink)" }}>{r.kind}</span>
+          <span style={{ fontFamily: "var(--font-sans)", fontSize: 12, color: "var(--text-muted)" }}>· {r.read}</span>
+        </div>
+        <span style={{ fontFamily: "var(--font-sans)", fontSize: 14.5, fontWeight: 500, color: "var(--text-strong)", lineHeight: 1.35 }}>{r.title}</span>
+      </div>
+      <Icon name="arrow-up-right" size={16} stroke={2} color={h ? "var(--prosci-purple)" : "var(--text-disabled)"} />
+    </a>);
+
+}
+
+Object.assign(window, { RichText, AdkarMap, MatchRing, CourseCard, LearningPath, ResourceRow });
+</script>
+<script type="text/babel" data-from="tweaks-shim.jsx">
+// tweaks-shim.jsx: review build.
+// The original Claude Design authoring panel (tweaks-panel.jsx) is intentionally
+// omitted for the review. This shim keeps the app's API surface intact:
+// useTweaks returns the fixed defaults, and every Tweak* control renders nothing.
+function useTweaks(defaults) {
+  return [defaults, function noop() {}];
+}
+const __none = () => null;
+const TweaksPanel = __none;
+const TweakSection = __none;
+const TweakRow = __none;
+const TweakSlider = __none;
+const TweakToggle = __none;
+const TweakRadio = __none;
+const TweakSelect = __none;
+const TweakText = __none;
+const TweakNumber = __none;
+const TweakColor = __none;
+const TweakButton = __none;
+
+Object.assign(window, {
+  useTweaks, TweaksPanel, TweakSection, TweakRow,
+  TweakSlider, TweakToggle, TweakRadio, TweakSelect,
+  TweakText, TweakNumber, TweakColor, TweakButton,
+});
+
+</script>
+<script type="text/babel" data-from="app.jsx">
+// app.jsx — Prosci Course Finder: landing → thinking → streaming results
+const { useState, useEffect, useRef, useMemo } = React;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accent": "#D2F7A9",
+  "showScores": true,
+  "density": "comfortable",
+  "layout": "grid",
+  "detail": "detailed",
+  "showAdkar": true,
+  "showPath": true
+} /*EDITMODE-END*/;
+
+/* ---------------- tokenizer + streaming answer ---------------- */
+function tokenize(text) {
+  const segs = [];
+  text.split("\n\n").forEach((para, pi) => {
+    if (pi > 0) segs.push({ kind: "break" });
+    let rem = para;
+    const re = /(\*\*[^*]+\*\*|\*[^*]+\*|ADKAR®)/;
+    while (rem.length) {
+      const m = rem.match(re);
+      if (!m) {segs.push({ kind: "plain", text: rem });break;}
+      if (m.index > 0) segs.push({ kind: "plain", text: rem.slice(0, m.index) });
+      const tok = m[0];
+      if (tok.startsWith("**")) segs.push({ kind: "bold", text: tok.slice(2, -2) });else
+      if (tok === "ADKAR®") segs.push({ kind: "adkar", text: "ADKAR®" });else
+      segs.push({ kind: "italic", text: tok.slice(1, -1) });
+      rem = rem.slice(m.index + tok.length);
+    }
+  });
+  return segs;
+}
+const SEG_STYLE = {
+  plain: {},
+  bold: { fontWeight: 600, color: "var(--text-strong)" },
+  italic: { fontStyle: "italic" },
+  adkar: { fontWeight: 600, color: "var(--prosci-purple)" }
+};
+
+function StreamingAnswer({ text, onDone, speed = 12 }) {
+  const segs = useMemo(() => tokenize(text), [text]);
+  const total = useMemo(() => segs.reduce((n, s) => n + (s.kind === "break" ? 1 : s.text.length), 0), [segs]);
+  const [vis, setVis] = useState(0);
+  useEffect(() => {
+    setVis(0);
+    const dur = Math.min(2600, total * 9); // wall-clock pacing — robust to tab throttling
+    const start = performance.now();
+    const id = setInterval(() => {
+      const n = Math.min(total, Math.round((performance.now() - start) / dur * total));
+      setVis(n);
+      if (n >= total) {clearInterval(id);onDone && onDone();}
+    }, speed);
+    return () => clearInterval(id);
+  }, [text]);
+
+  let used = 0;
+  const out = [];
+  for (let i = 0; i < segs.length; i++) {
+    const s = segs[i];
+    if (s.kind === "break") {if (used < vis) out.push(<span key={i} style={{ display: "block", height: 16 }} />);used += 1;continue;}
+    const remain = vis - used;
+    if (remain <= 0) break;
+    const shown = s.text.slice(0, remain);
+    out.push(<span key={i} style={SEG_STYLE[s.kind]}>{shown}</span>);
+    used += s.text.length;
+  }
+  const done = vis >= total;
+  return (
+    <p style={{ fontFamily: "var(--font-sans)", fontSize: 17, lineHeight: 1.62, color: "var(--text-ink)", margin: 0 }}>
+      {out}
+      {!done && <span style={{ display: "inline-block", width: 8, height: 18, marginLeft: 2, background: "var(--prosci-purple)", verticalAlign: "text-bottom", animation: "blink 1s step-end infinite" }} />}
+    </p>);
+
+}
+
+/* ---------------- reveal wrapper ---------------- */
+function Reveal({ show, delay = 0, children }) {
+  return (
+    <div style={{ opacity: show ? 1 : 0, transform: show ? "translateY(0)" : "translateY(14px)", transition: `opacity .5s ease ${delay}ms, transform .5s ease ${delay}ms`, pointerEvents: show ? "auto" : "none" }}>
+      {children}
+    </div>);
+
+}
+
+/* ---------------- thinking steps ---------------- */
+const STEPS = ["Reading your challenge", "Mapping it to the ADKAR® model", "Matching courses & building a path", "Pulling supporting research"];
+function Thinking({ query }) {
+  const [step, setStep] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setStep((s) => Math.min(s + 1, STEPS.length)), 560);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <div style={{ maxWidth: 720, margin: "0 auto", padding: "80px 24px" }}>
+      <div style={{ display: "flex", gap: 14, alignItems: "center", marginBottom: 28 }}>
+        <KaiyaMark size={42} glow />
+        <div>
+          <span style={{ fontFamily: "var(--font-sans)", fontSize: 13, fontWeight: 700, letterSpacing: ".12em", textTransform: "uppercase", color: "var(--accent-pink)" }}>Prosci Advisor is thinking</span>
+          <p style={{ fontFamily: "var(--font-serif)", fontSize: 24, color: "var(--text-strong)", margin: "2px 0 0", fontStyle: "italic" }}>Working through your question…</p>
+        </div>
+      </div>
+      <div style={{ background: "var(--surface-sand)", border: "1px solid var(--border-hairline)", borderRadius: 6, padding: "10px 20px" }}>
+        {STEPS.map((s, i) => {
+          const done = i < step,active = i === step;
+          return (
+            <div key={s} style={{ display: "flex", alignItems: "center", gap: 13, padding: "13px 0", borderBottom: i < STEPS.length - 1 ? "1px solid var(--border-hairline)" : 0, opacity: done || active ? 1 : 0.4, transition: "opacity .4s" }}>
+              <span style={{ width: 22, height: 22, borderRadius: 999, flex: "none", display: "grid", placeItems: "center", background: done ? "var(--prosci-purple)" : "transparent", border: done ? "0" : "1.5px solid var(--border-default)" }}>
+                {done ? <Icon name="check" size={13} stroke={3} color="var(--accent-green)" /> : active ? <span style={{ width: 8, height: 8, borderRadius: 999, background: "var(--accent-pink)", animation: "pulse 1s ease-in-out infinite" }} /> : null}
+              </span>
+              <span style={{ fontFamily: "var(--font-sans)", fontSize: 15, fontWeight: done || active ? 600 : 500, color: done || active ? "var(--text-strong)" : "var(--text-muted)" }}>{s}</span>
+            </div>);
+
+        })}
+      </div>
+    </div>);
+
+}
+
+/* ---------------- landing ---------------- */
+function Landing({ onSubmit }) {
+  const [val, setVal] = useState("");
+  const ref = useRef(null);
+  const grow = (el) => {if (!el) return;el.style.height = "auto";el.style.height = Math.min(el.scrollHeight, 220) + "px";};
+  return (
+    <div style={{ position: "relative", overflow: "hidden" }}>
+      <img src={(window.__resources && window.__resources.radialBurst) || "assets/radial-burst.svg"} alt="" style={{ position: "absolute", top: -120, right: -160, width: 620, opacity: 0.07, pointerEvents: "none" }} />
+      <div style={{ maxWidth: 880, margin: "0 auto", padding: "76px 24px 90px", position: "relative" }}>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 22 }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--surface-sand)", border: "1px solid var(--border-hairline)", borderRadius: 999, padding: "7px 16px 7px 8px" }}>
+            <KaiyaMark size={24} />
+            <span style={{ fontFamily: "var(--font-sans)", fontSize: 13, fontWeight: 600, color: "var(--text-strong)" }}>Powered by Prosci Advisor</span>
+          </span>
+        </div>
+        <Serif as="h1" size={58} style={{ textAlign: "center", letterSpacing: "-0.015em", marginBottom: 18 }}>
+          Describe your change challenge.<br /><span style={{ fontStyle: "italic", color: "var(--prosci-purple)" }}>We'll map the path.</span>
+        </Serif>
+        <p style={{ fontFamily: "var(--font-sans)", fontSize: 18, lineHeight: 1.55, color: "var(--text-muted)", textAlign: "center", maxWidth: 620, margin: "0 auto 36px" }}>
+          Tell us what you're navigating in plain language. Prosci Advisor maps it to the ADKAR® model and recommends the exact Prosci training, learning path and research to get it done.
+        </p>
+
+        {/* input */}
+        <div style={{ background: "var(--surface-white)", border: "1.5px solid var(--border-default)", borderRadius: 10, boxShadow: "var(--shadow-md)", padding: "18px 18px 16px", maxWidth: 760, margin: "0 auto" }}>
+          <textarea ref={ref} value={val} onChange={(e) => {setVal(e.target.value);grow(e.target);}}
+          onKeyDown={(e) => {if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && val.trim()) onSubmit(val.trim());}}
+          placeholder="e.g. My company is going through a major transformation. How do I get employees to adopt new processes?"
+          rows={2}
+          style={{ width: "100%", border: 0, outline: 0, resize: "none", fontFamily: "var(--font-sans)", fontSize: 17, lineHeight: 1.55, color: "var(--text-ink)", background: "transparent", display: "block" }} />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 12 }}>
+            <span style={{ fontFamily: "var(--font-sans)", fontSize: 12.5, color: "var(--text-disabled)" }}>Press ⌘↵ to ask</span>
+            <Button onClick={() => val.trim() && onSubmit(val.trim())} icon="arrow-right">Find my courses</Button>
+          </div>
+        </div>
+
+        {/* example prompts */}
+        <div style={{ marginTop: 30, textAlign: "center" }}>
+          <span style={{ fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 700, letterSpacing: ".12em", textTransform: "uppercase", color: "var(--text-muted)" }}>Try one of these</span>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center", marginTop: 16, maxWidth: 800, marginInline: "auto" }}>
+            {EXAMPLE_PROMPTS.map((p) => <PromptChip key={p} text={p} onClick={() => onSubmit(p)} />)}
+          </div>
+        </div>
+      </div>
+    </div>);
+
+}
+function PromptChip({ text, onClick }) {
+  const [h, setH] = useState(false);
+  return (
+    <button onClick={onClick} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
+    style={{ display: "inline-flex", alignItems: "center", gap: 8, maxWidth: 360, textAlign: "left", background: h ? "var(--surface-white)" : "var(--surface-sand)", border: `1px solid ${h ? "var(--prosci-purple)" : "var(--border-hairline)"}`, borderRadius: 999, padding: "9px 16px", cursor: "pointer", fontFamily: "var(--font-sans)", fontSize: 13.5, color: "var(--text-strong)", lineHeight: 1.35, transition: "all .15s", boxShadow: h ? "var(--shadow-sm)" : "none" }}>
+      <Icon name="sparkles" size={14} stroke={2} color="var(--accent-pink)" />
+      <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{text}</span>
+    </button>);
+
+}
+
+/* ---------------- results ---------------- */
+function Results({ query, data, t, onNewSearch, onFollowup }) {
+  const [answerDone, setAnswerDone] = useState(false);
+  const [step, setStep] = useState(0); // section reveal index
+  const { variant, courses, resources, adkar } = data;
+  const answer = t.detail === "detailed" ? variant.long : variant.short;
+
+  // Stagger the section reveals on a mount timer (independent of answer detection,
+  // with a guaranteed fallback so content can never stay stuck at opacity 0).
+  useEffect(() => {
+    setAnswerDone(false);
+    setStep(0);
+    const dur = t.detail === "detailed" ? 2600 : 1600; // matches answer stream length
+    const timers = [1, 2, 3, 4, 5, 6].map((i) =>
+    setTimeout(() => setStep((s) => Math.max(s, i)), dur + i * 360)
+    );
+    return () => timers.forEach(clearTimeout);
+  }, [query, t.detail]);
+
+  const compact = t.density === "compact";
+  const grid = t.layout === "grid";
+
+  return (
+    <div style={{ maxWidth: 940, margin: "0 auto", padding: "36px 24px 120px" }}>
+      {/* query recap bar */}
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 30 }}>
+        <div style={{ flex: 1, background: "var(--surface-white)", border: "1px solid var(--border-hairline)", borderRadius: 8, padding: "16px 20px", display: "flex", gap: 13, alignItems: "flex-start" }}>
+          <Icon name="message-square-quote" size={20} stroke={1.8} color="var(--prosci-purple)" style={{ marginTop: 2 }} />
+          <p style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: 19, lineHeight: 1.4, color: "var(--text-strong)", margin: 0 }}>{query}</p>
+        </div>
+        <button onClick={onNewSearch} style={{ flex: "none", display: "inline-flex", alignItems: "center", gap: 8, background: "transparent", border: "1.5px solid var(--prosci-purple)", borderRadius: 3, padding: "13px 18px", color: "var(--prosci-purple)", fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", cursor: "pointer", marginTop: 2 }}>
+          <Icon name="rotate-ccw" size={14} stroke={2.2} /> New search
+        </button>
+      </div>
+
+      {/* answer */}
+      <div style={{ display: "flex", gap: 16, marginBottom: 40 }}>
+        <KaiyaMark size={42} glow accent={t.accent} />
+        <div style={{ flex: 1 }}>
+          <span style={{ fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 700, letterSpacing: ".12em", textTransform: "uppercase", color: "var(--accent-pink)", display: "block", marginBottom: 10 }}>Prosci Advisor's read on this</span>
+          <StreamingAnswer text={answer} onDone={() => setAnswerDone(true)} />
+        </div>
+      </div>
+
+      {/* ADKAR map */}
+      {t.showAdkar &&
+      <Reveal show={step >= 1}>
+          <Section eyebrow="Where this sits" title="Your challenge on the ADKAR® journey" accent={t.accent}>
+            <AdkarMap adkar={adkar} emphasis={variant.emphasis} accent={t.accent} />
+          </Section>
+        </Reveal>
+      }
+
+      {/* learning path */}
+      {t.showPath &&
+      <Reveal show={step >= 2}>
+          <Section eyebrow="Recommended sequence" title={variant.pathLabel} accent={t.accent}>
+            <LearningPath variant={variant} accent={t.accent} />
+          </Section>
+        </Reveal>
+      }
+
+      {/* course matches */}
+      <Reveal show={step >= 3}>
+        <Section eyebrow="Matched training" title="Courses ranked for your challenge" accent={t.accent}>
+          <div style={{ display: "grid", gridTemplateColumns: grid ? "repeat(2, 1fr)" : "1fr", gap: 24 }}>
+            {courses.map((c, i) => <CourseCard key={c.id} course={c} rank={i + 1} t={t} compact={compact} />)}
+          </div>
+        </Section>
+      </Reveal>
+
+      {/* resources + follow up */}
+      <Reveal show={step >= 4}>
+        <div style={{ display: "grid", gridTemplateColumns: "1.1fr 1fr", gap: 40, marginTop: 56, alignItems: "start" }}>
+          <div>
+            <Section eyebrow="Supporting research" title="Read while you decide" accent={t.accent} tight>
+              <div style={{ marginTop: 4 }}>
+                {resources.map((r) => <ResourceRow key={r.title} r={r} />)}
+              </div>
+            </Section>
+          </div>
+          <div style={{ background: "var(--prosci-purple)", borderRadius: 8, padding: "30px 30px 32px", position: "relative", overflow: "hidden" }}>
+            <img src={(window.__resources && window.__resources.radialBurst) || "assets/radial-burst.svg"} alt="" style={{ position: "absolute", bottom: -90, right: -90, width: 320, opacity: 0.18, filter: "brightness(0) invert(1)" }} />
+            <div style={{ position: "relative" }}>
+              <span style={{ fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 700, letterSpacing: ".12em", textTransform: "uppercase", color: "var(--accent-green)" }}>Keep going</span>
+              <Serif size={26} color="var(--surface-cream)" style={{ margin: "10px 0 18px" }}>Refine your recommendation</Serif>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {variant.followups.map((f) =>
+                <button key={f} onClick={() => onFollowup(f)} style={{ textAlign: "left", background: "rgba(255,254,250,.08)", border: "1px solid rgba(255,254,250,.22)", borderRadius: 6, padding: "13px 15px", color: "var(--surface-cream)", fontFamily: "var(--font-sans)", fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, transition: "background .15s" }}
+                onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,254,250,.16)"} onMouseLeave={(e) => e.currentTarget.style.background = "rgba(255,254,250,.08)"}>
+                    {f} <Icon name="arrow-right" size={15} stroke={2.2} color="var(--accent-green)" />
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </Reveal>
+    </div>);
+
+}
+
+function Section({ eyebrow, title, children, accent, tight }) {
+  return (
+    <section style={{ marginBottom: tight ? 0 : 48 }}>
+      <div style={{ marginBottom: 18 }}>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 700, letterSpacing: ".12em", textTransform: "uppercase", color: "var(--accent-pink)", marginBottom: 8 }}>
+          <span style={{ width: 18, height: 2, background: accent }} />{eyebrow}
+        </span>
+        <Serif as="h2" size={28} style={{ color: "var(--text-strong)" }}>{title}</Serif>
+      </div>
+      {children}
+    </section>);
+
+}
+
+/* ---------------- root ---------------- */
+function App() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const [view, setView] = useState("landing"); // landing | thinking | results
+  const [query, setQuery] = useState("");
+  const [data, setData] = useState(null);
+
+  const ask = (q) => {
+    setQuery(q);
+    setView("thinking");
+    window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+    setTimeout(() => {setData(buildResponse(q));setView("results");}, 2500);
+  };
+  const reset = () => {setView("landing");setQuery("");setData(null);};
+
+  return (
+    <div style={{ minHeight: "100vh", background: "var(--surface-cream)" }}>
+      <Header onReset={reset} />
+      {view === "landing" && <Landing onSubmit={ask} />}
+      {view === "thinking" && <Thinking query={query} />}
+      {view === "results" && data && <Results query={query} data={data} t={t} onNewSearch={reset} onFollowup={ask} />}
+
+      <TweaksPanel>
+        <TweakSection label="Display" />
+        <TweakColor label="Accent" value={t.accent} options={["#D2F7A9", "#FF1AA3", "#B5BBDB", "#F3902D"]} onChange={(v) => setTweak("accent", v)} />
+        <TweakRadio label="Card density" value={t.density} options={["comfortable", "compact"]} onChange={(v) => setTweak("density", v)} />
+        <TweakRadio label="Course layout" value={t.layout} options={["list", "grid"]} onChange={(v) => setTweak("layout", v)} />
+        <TweakToggle label="Match scores" value={t.showScores} onChange={(v) => setTweak("showScores", v)} />
+        <TweakSection label="AI response" />
+        <TweakRadio label="Answer length" value={t.detail} options={["concise", "detailed"]} onChange={(v) => setTweak("detail", v)} />
+        <TweakToggle label="ADKAR mapping" value={t.showAdkar} onChange={(v) => setTweak("showAdkar", v)} />
+        <TweakToggle label="Learning path" value={t.showPath} onChange={(v) => setTweak("showPath", v)} />
+      </TweaksPanel>
+    </div>);
+
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+<script>window.addEventListener('load', () => { if (window.lucide) window.lucide.createIcons(); });</script>
+</body>
+</html>
