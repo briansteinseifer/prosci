@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Prosci Course Finder · Three Directions — Swarming</title>
-<meta name="description" content="A Swarming pitch: three design directions for the Prosci Course Finder, and our recommendation." />
+<meta name="description" content="A Swarming pitch: three design directions for the Prosci Course Finder." />
 <link rel="icon" type="image/svg+xml" href="assets/swarming-icon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -192,16 +192,6 @@
   .ctable .col-label { color: var(--muted); font-weight: 600; }
   .ctable td b { color: var(--cream); font-weight: 600; }
 
-  /* ===== Recommendation ===== */
-  .recogrid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(26px, 4vw, 56px); align-items: center; flex: 1; min-height: 0; }
-  .reasons { display: grid; gap: 18px; }
-  .reason { background: var(--bg-2); border: 1px solid var(--line); border-left: 3px solid var(--yellow); border-radius: 10px; padding: 16px 18px; }
-  .reason h3 { color: var(--cream); font-weight: 600; font-size: 1.04rem; margin-bottom: 4px; letter-spacing: -0.01em; }
-  .reason p { color: var(--beige); font-size: 0.93rem; }
-  .reason .tie { display: inline-block; margin-top: 7px; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; color: var(--yellow); }
-
-  .pill-rec { display: inline-flex; align-items: center; gap: 9px; background: var(--yellow); color: var(--charcoal); font-weight: 800; font-size: 0.86rem; letter-spacing: 0.02em; padding: 9px 16px; border-radius: 999px; margin-bottom: 18px; }
-
   /* ===== Next steps ===== */
   .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; flex: 1; align-content: center; }
   .step { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--r-card); padding: 26px 24px; display: flex; flex-direction: column; gap: 10px; }
@@ -257,7 +247,7 @@
         <p class="lead" style="margin-bottom:24px;">HR and L&amp;D leaders arrive with a real, time-pressured situation — <span class="accent">"we rolled out a new system and adoption is stalling"</span> — not a catalog query. Today they're left to guess which program fits.</p>
         <div class="points">
           <div class="point"><div class="n">1</div><div><h3>Describe, don't navigate</h3><p>Meet people in plain language instead of filters and taxonomy.</p></div></div>
-          <div class="point"><div class="n">2</div><div><h3>Reasoning is the product</h3><p>Every recommendation explains <em>why it fits</em> — not a bare results grid.</p></div></div>
+          <div class="point"><div class="n">2</div><div><h3>Reasoning is the product</h3><p>Every result explains <em>why it fits</em> — not a bare results grid.</p></div></div>
           <div class="point"><div class="n">3</div><div><h3>Confidence is the deliverable</h3><p>Success is a decisive choice, not time-on-page or browsing.</p></div></div>
         </div>
       </div>
@@ -359,7 +349,7 @@
 
   <!-- 6 · Direction C -->
   <section class="slide">
-    <div class="shead"><div class="eyebrow">Direction C · our recommendation</div><h2>Ask the advisor</h2></div>
+    <div class="shead"><div class="eyebrow">Direction C</div><h2>Ask the advisor</h2></div>
     <div class="split narrow-left" style="direction:rtl;">
       <div class="dmeta" style="direction:ltr;">
         <div class="badge-lg">C</div>
@@ -413,22 +403,6 @@
       </tbody>
     </table>
     <p class="muted" style="margin-top:18px; font-size:0.9rem;">All three are real, clickable prototypes built on the same system — the choice is a strategic one, not a technical one.</p>
-  </section>
-
-  <!-- 8 · Recommendation -->
-  <section class="slide">
-    <div class="recogrid">
-      <div>
-        <div class="pill-rec">★ Our recommendation</div>
-        <h2 style="margin-bottom:14px;">Lead with <em>Ask the advisor</em>.</h2>
-        <p class="lead">It's the only direction that delivers the job to be done end-to-end — and it's the one that turns "Prosci has courses" into "Prosci understood my problem." The card patterns from A and B fold neatly into its results.</p>
-      </div>
-      <div class="reasons">
-        <div class="reason"><h3>Describe, don't navigate</h3><p>One plain-language box replaces filters and taxonomy entirely.</p><span class="tie">Maps to principle 2</span></div>
-        <div class="reason"><h3>Reasoning is the whole product</h3><p>An advisor read plus an ADKAR placement — the rationale <em>is</em> the experience.</p><span class="tie">Maps to principle 1</span></div>
-        <div class="reason"><h3>Confidence is the deliverable</h3><p>A prescribed path, not a list to sift — the buyer leaves decided.</p><span class="tie">Maps to principle 4</span></div>
-      </div>
-    </div>
   </section>
 
 </div>
