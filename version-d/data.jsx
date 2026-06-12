@@ -4,7 +4,7 @@
 /* ============================ COURSE CATALOG ============================ */
 const CATALOG = [
   {
-    id: "ccp",
+    id: "ccp", seg: "both",
     title: "Prosci Change Management Certification Program",
     blurb: "The flagship 3-day experience. Your team leaves certified, with a tailored change plan for a real project in hand.",
     formats: ["In-person", "Virtual"],
@@ -21,7 +21,7 @@ const CATALOG = [
     availability: "open",
   },
   {
-    id: "lyt",
+    id: "lyt", seg: "ent",
     title: "Leading Your Team Through Change",
     blurb: "Equips people managers to coach their direct reports through the messy middle, the single biggest lever on adoption.",
     formats: ["Virtual"],
@@ -38,7 +38,7 @@ const CATALOG = [
     availability: "open",
   },
   {
-    id: "tcc",
+    id: "tcc", seg: "ind",
     title: "Taking Charge of Change",
     blurb: "A foundational primer that gives everyone a shared language for change before the heavy lifting begins.",
     formats: ["Virtual", "On-demand"],
@@ -55,7 +55,7 @@ const CATALOG = [
     availability: "open",
   },
   {
-    id: "dpr",
+    id: "dpr", seg: "ent",
     title: "Delivering Project Results",
     blurb: "Bridges project management and change management so your delivery teams build adoption into the plan, not after it.",
     formats: ["Virtual"],
@@ -72,7 +72,7 @@ const CATALOG = [
     availability: "open",
   },
   {
-    id: "spb",
+    id: "spb", seg: "ent",
     title: "Change Management Sponsor Briefing",
     blurb: "A focused executive session on the sponsor's role: Prosci research names active sponsorship the #1 contributor to success.",
     formats: ["In-person", "Virtual"],
@@ -89,7 +89,7 @@ const CATALOG = [
     availability: "open",
   },
   {
-    id: "epp",
+    id: "epp", seg: "ent",
     title: "Experienced Practitioner Program",
     blurb: "For certified practitioners scaling change across a portfolio: advanced diagnostics, enterprise readiness and reinforcement.",
     formats: ["Virtual"],
@@ -258,12 +258,36 @@ const VARIANTS = {
   },
 };
 
+/* ===================== AUDIENCE SEGMENT ===================== */
+const SEG_BONUS = 8, SEG_PENALTY = 12;
+const SEGMENTS = {
+  enterprise: {
+    label: "Enterprise",
+    help: "Rolling change out across a team or organization.",
+    lead: "Because you're driving this across an organization, this path leans on building internal capability and activating your managers and sponsors.",
+  },
+  individual: {
+    label: "Individual",
+    help: "Building your own change-management skill set.",
+    lead: "Since you're building your own change-management skills, this path centers on certification and the hands-on ADKAR workshops you can apply right away.",
+  },
+};
+function segBias(seg, active) { return seg === active ? SEG_BONUS : seg === "both" ? 0 : -SEG_PENALTY; }
+function clampScore(n) { return Math.max(0, Math.min(99, n)); } // cap at 99 — never imply a perfect match
+
 function getCourse(id) { return CATALOG.find((c) => c.id === id); }
 
-function buildResponse(query) {
+function buildResponse(query, segment) {
+  const seg = segment === "individual" ? "individual" : "enterprise";
+  const active = seg === "individual" ? "ind" : "ent";
   const variant = VARIANTS[classify(query)];
-  const courses = variant.order.map((id) => ({ ...getCourse(id), score: variant.scores[id], why: variant.why[id] }));
-  return { variant, courses, resources: RESOURCES, adkar: ADKAR };
+  const courses = variant.order
+    .map((id) => {
+      const c = getCourse(id);
+      return { ...c, score: clampScore(variant.scores[id] + segBias(c.seg, active)), why: variant.why[id] };
+    })
+    .sort((a, b) => b.score - a.score);
+  return { variant, courses, resources: RESOURCES, adkar: ADKAR, segLead: SEGMENTS[seg].lead };
 }
 
 const EXAMPLE_PROMPTS = [
@@ -273,4 +297,4 @@ const EXAMPLE_PROMPTS = [
   "We're rolling out AI tools across the business. How is that change different?",
 ];
 
-Object.assign(window, { CATALOG, RESOURCES, ADKAR, buildResponse, EXAMPLE_PROMPTS, getCourse });
+Object.assign(window, { CATALOG, RESOURCES, ADKAR, buildResponse, EXAMPLE_PROMPTS, getCourse, SEGMENTS });

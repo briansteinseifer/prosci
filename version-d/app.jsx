@@ -117,8 +117,28 @@ function Thinking({ query }) {
 
 }
 
+/* ---------------- segment toggle ---------------- */
+function SegmentToggle({ value, onChange, align = "center" }) {
+  const opts = [["enterprise", "Enterprise"], ["individual", "Individual"]];
+  return (
+    <div style={{ textAlign: align }}>
+      <fieldset aria-describedby="seg-help" style={{ display: "inline-flex", gap: 4, padding: 4, margin: 0, border: "1px solid var(--border-default)", borderRadius: 999, background: "var(--surface-sand)" }}>
+        <legend style={{ position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0 0 0 0)", border: 0 }}>Who is this training for?</legend>
+        {opts.map(([val, label]) => {
+          const on = value === val;
+          return (
+            <label key={val} style={{ position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "9px 18px", borderRadius: 999, cursor: "pointer", fontFamily: "var(--font-sans)", fontSize: 14, fontWeight: 600, background: on ? "var(--prosci-purple)" : "transparent", color: on ? "var(--surface-cream)" : "var(--text-muted)", transition: "background .16s, color .16s" }}>
+              <input type="radio" name="segment" value={val} checked={on} onChange={() => onChange(val)} style={{ position: "absolute", opacity: 0, width: 1, height: 1, margin: 0 }} />
+              {label}
+            </label>);
+        })}
+      </fieldset>
+      <p id="seg-help" style={{ fontFamily: "var(--font-sans)", fontSize: 14, color: "var(--text-muted)", margin: "12px 0 0" }}>{SEGMENTS[value].help}</p>
+    </div>);
+}
+
 /* ---------------- landing ---------------- */
-function Landing({ onSubmit }) {
+function Landing({ onSubmit, segment, onSegment }) {
   const [val, setVal] = useState("");
   const ref = useRef(null);
   const grow = (el) => {if (!el) return;el.style.height = "auto";el.style.height = Math.min(el.scrollHeight, 220) + "px";};
@@ -135,9 +155,14 @@ function Landing({ onSubmit }) {
         <Serif as="h1" size={58} style={{ textAlign: "center", letterSpacing: "-0.015em", marginBottom: 18 }}>
           Describe your change challenge.<br /><span style={{ fontStyle: "italic", color: "var(--prosci-purple)" }}>We'll map the path.</span>
         </Serif>
-        <p style={{ fontFamily: "var(--font-sans)", fontSize: 18, lineHeight: 1.55, color: "var(--text-muted)", textAlign: "center", maxWidth: 620, margin: "0 auto 36px" }}>
+        <p style={{ fontFamily: "var(--font-sans)", fontSize: 18, lineHeight: 1.55, color: "var(--text-muted)", textAlign: "center", maxWidth: 620, margin: "0 auto 28px" }}>
           Tell us what you're navigating in plain language. Prosci Advisor maps it to the ADKAR® model and recommends the exact Prosci training, learning path and research to get it done.
         </p>
+
+        {/* audience segment */}
+        <div style={{ marginBottom: 30 }}>
+          <SegmentToggle value={segment} onChange={onSegment} />
+        </div>
 
         {/* input */}
         <div style={{ background: "var(--surface-white)", border: "1.5px solid var(--border-default)", borderRadius: 10, boxShadow: "var(--shadow-md)", padding: "18px 18px 16px", maxWidth: 760, margin: "0 auto" }}>
@@ -175,11 +200,12 @@ function PromptChip({ text, onClick }) {
 }
 
 /* ---------------- results ---------------- */
-function Results({ query, data, t, onNewSearch, onFollowup }) {
+function Results({ query, data, t, onNewSearch, onFollowup, segment, onSegment }) {
   const [answerDone, setAnswerDone] = useState(false);
   const [step, setStep] = useState(0); // section reveal index
   const { variant, courses, resources, adkar } = data;
-  const answer = t.detail === "detailed" ? variant.long : variant.short;
+  const baseAnswer = t.detail === "detailed" ? variant.long : variant.short;
+  const answer = data.segLead ? baseAnswer + "\n\n" + data.segLead : baseAnswer;
 
   // Stagger the section reveals on a mount timer (independent of answer detection,
   // with a guaranteed fallback so content can never stay stuck at opacity 0).
@@ -207,6 +233,11 @@ function Results({ query, data, t, onNewSearch, onFollowup }) {
         <button onClick={onNewSearch} style={{ flex: "none", display: "inline-flex", alignItems: "center", gap: 8, background: "transparent", border: "1.5px solid var(--prosci-purple)", borderRadius: 3, padding: "13px 18px", color: "var(--prosci-purple)", fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", cursor: "pointer", marginTop: 2 }}>
           <Icon name="rotate-ccw" size={14} stroke={2.2} /> New search
         </button>
+      </div>
+
+      {/* audience segment */}
+      <div style={{ marginBottom: 30 }}>
+        <SegmentToggle value={segment} onChange={onSegment} align="left" />
       </div>
 
       {/* answer */}
@@ -296,21 +327,30 @@ function App() {
   const [view, setView] = useState("landing"); // landing | thinking | results
   const [query, setQuery] = useState("");
   const [data, setData] = useState(null);
+  const [segment, setSegment] = useState(() => {
+    try { const s = localStorage.getItem("prosci-segment"); if (s === "enterprise" || s === "individual") return s; } catch (e) {}
+    return "enterprise";
+  });
+  const chooseSegment = (s) => {
+    setSegment(s);
+    try { localStorage.setItem("prosci-segment", s); } catch (e) {}
+    if (view === "results" && query) setData(buildResponse(query, s));
+  };
 
   const ask = (q) => {
     setQuery(q);
     setView("thinking");
     window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
-    setTimeout(() => {setData(buildResponse(q));setView("results");}, 2500);
+    setTimeout(() => {setData(buildResponse(q, segment));setView("results");}, 2500);
   };
   const reset = () => {setView("landing");setQuery("");setData(null);};
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--surface-cream)" }}>
       <Header onReset={reset} />
-      {view === "landing" && <Landing onSubmit={ask} />}
+      {view === "landing" && <Landing onSubmit={ask} segment={segment} onSegment={chooseSegment} />}
       {view === "thinking" && <Thinking query={query} />}
-      {view === "results" && data && <Results query={query} data={data} t={t} onNewSearch={reset} onFollowup={ask} />}
+      {view === "results" && data && <Results query={query} data={data} t={t} onNewSearch={reset} onFollowup={ask} segment={segment} onSegment={chooseSegment} />}
 
       <TweaksPanel>
         <TweakSection label="Display" />
