@@ -229,7 +229,7 @@ em, .italic { font-style: italic; }
 /* ============================ COURSE CATALOG ============================ */
 const CATALOG = [
   {
-    id: "ccp",
+    id: "ccp", seg: "both",
     title: "Prosci Change Management Certification Program",
     blurb: "The flagship 3-day experience. Your team leaves certified, with a tailored change plan for a real project in hand.",
     formats: ["In-person", "Virtual"],
@@ -246,7 +246,7 @@ const CATALOG = [
     availability: "open",
   },
   {
-    id: "lyt",
+    id: "lyt", seg: "ent",
     title: "Leading Your Team Through Change",
     blurb: "Equips people managers to coach their direct reports through the messy middle, the single biggest lever on adoption.",
     formats: ["Virtual"],
@@ -263,7 +263,7 @@ const CATALOG = [
     availability: "open",
   },
   {
-    id: "tcc",
+    id: "tcc", seg: "ind",
     title: "Taking Charge of Change",
     blurb: "A foundational primer that gives everyone a shared language for change before the heavy lifting begins.",
     formats: ["Virtual", "On-demand"],
@@ -280,7 +280,7 @@ const CATALOG = [
     availability: "open",
   },
   {
-    id: "dpr",
+    id: "dpr", seg: "ent",
     title: "Delivering Project Results",
     blurb: "Bridges project management and change management so your delivery teams build adoption into the plan, not after it.",
     formats: ["Virtual"],
@@ -297,7 +297,7 @@ const CATALOG = [
     availability: "open",
   },
   {
-    id: "spb",
+    id: "spb", seg: "ent",
     title: "Change Management Sponsor Briefing",
     blurb: "A focused executive session on the sponsor's role: Prosci research names active sponsorship the #1 contributor to success.",
     formats: ["In-person", "Virtual"],
@@ -314,7 +314,7 @@ const CATALOG = [
     availability: "open",
   },
   {
-    id: "epp",
+    id: "epp", seg: "ent",
     title: "Experienced Practitioner Program",
     blurb: "For certified practitioners scaling change across a portfolio: advanced diagnostics, enterprise readiness and reinforcement.",
     formats: ["Virtual"],
@@ -483,12 +483,36 @@ const VARIANTS = {
   },
 };
 
+/* ===================== AUDIENCE SEGMENT ===================== */
+const SEG_BONUS = 8, SEG_PENALTY = 12;
+const SEGMENTS = {
+  enterprise: {
+    label: "Enterprise",
+    help: "Rolling change out across a team or organization.",
+    lead: "Because you're driving this across an organization, this path leans on building internal capability and activating your managers and sponsors.",
+  },
+  individual: {
+    label: "Individual",
+    help: "Building your own change-management skill set.",
+    lead: "Since you're building your own change-management skills, this path centers on certification and the hands-on ADKAR workshops you can apply right away.",
+  },
+};
+function segBias(courseTag, activeTag) { return courseTag === activeTag ? SEG_BONUS : courseTag === "both" ? 0 : -SEG_PENALTY; }
+function clampScore(n) { return Math.max(0, Math.min(99, n)); } // cap at 99 — never imply a perfect match
+
 function getCourse(id) { return CATALOG.find((c) => c.id === id); }
 
-function buildResponse(query) {
+function buildResponse(query, segment) {
+  const seg = segment === "individual" ? "individual" : "enterprise";
+  const active = seg === "individual" ? "ind" : "ent";
   const variant = VARIANTS[classify(query)];
-  const courses = variant.order.map((id) => ({ ...getCourse(id), score: variant.scores[id], why: variant.why[id] }));
-  return { variant, courses, resources: RESOURCES, adkar: ADKAR };
+  const courses = variant.order
+    .map((id) => {
+      const c = getCourse(id);
+      return { ...c, score: clampScore(variant.scores[id] + segBias(c.seg, active)), why: variant.why[id] };
+    })
+    .sort((a, b) => b.score - a.score);
+  return { variant, courses, resources: RESOURCES, adkar: ADKAR, segLead: SEGMENTS[seg].lead };
 }
 
 const EXAMPLE_PROMPTS = [
@@ -498,7 +522,7 @@ const EXAMPLE_PROMPTS = [
   "We're rolling out AI tools across the business. How is that change different?",
 ];
 
-Object.assign(window, { CATALOG, RESOURCES, ADKAR, buildResponse, EXAMPLE_PROMPTS, getCourse });
+Object.assign(window, { CATALOG, RESOURCES, ADKAR, buildResponse, EXAMPLE_PROMPTS, getCourse, SEGMENTS });
 
 </script>
 <script type="text/babel" data-from="components.jsx">
@@ -999,8 +1023,28 @@ function Thinking({ query }) {
 
 }
 
+/* ---------------- segment toggle ---------------- */
+function SegmentToggle({ value, onChange, align = "center", helpId = "seg-help" }) {
+  const opts = [["enterprise", "Enterprise"], ["individual", "Individual"]];
+  return (
+    <div style={{ textAlign: align }}>
+      <fieldset aria-describedby={helpId} style={{ display: "inline-flex", gap: 4, padding: 4, margin: 0, border: "1px solid var(--border-default)", borderRadius: 999, background: "var(--surface-sand)" }}>
+        <legend style={{ position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0 0 0 0)", border: 0 }}>Who is this training for?</legend>
+        {opts.map(([val, label]) => {
+          const on = value === val;
+          return (
+            <label key={val} style={{ position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "9px 18px", borderRadius: 999, cursor: "pointer", fontFamily: "var(--font-sans)", fontSize: 14, fontWeight: 600, background: on ? "var(--prosci-purple)" : "transparent", color: on ? "var(--surface-cream)" : "var(--text-muted)", transition: "background .16s, color .16s" }}>
+              <input type="radio" name="segment" value={val} checked={on} onChange={() => onChange(val)} style={{ position: "absolute", opacity: 0, width: 1, height: 1, margin: 0 }} />
+              {label}
+            </label>);
+        })}
+      </fieldset>
+      <p id={helpId} style={{ fontFamily: "var(--font-sans)", fontSize: 14, color: "var(--text-muted)", margin: "12px 0 0" }}>{SEGMENTS[value].help}</p>
+    </div>);
+}
+
 /* ---------------- landing ---------------- */
-function Landing({ onSubmit }) {
+function Landing({ onSubmit, segment, onSegment }) {
   const [val, setVal] = useState("");
   const ref = useRef(null);
   const grow = (el) => {if (!el) return;el.style.height = "auto";el.style.height = Math.min(el.scrollHeight, 220) + "px";};
@@ -1017,9 +1061,14 @@ function Landing({ onSubmit }) {
         <Serif as="h1" size={58} style={{ textAlign: "center", letterSpacing: "-0.015em", marginBottom: 18 }}>
           Describe your change challenge.<br /><span style={{ fontStyle: "italic", color: "var(--prosci-purple)" }}>We'll map the path.</span>
         </Serif>
-        <p style={{ fontFamily: "var(--font-sans)", fontSize: 18, lineHeight: 1.55, color: "var(--text-muted)", textAlign: "center", maxWidth: 620, margin: "0 auto 36px" }}>
+        <p style={{ fontFamily: "var(--font-sans)", fontSize: 18, lineHeight: 1.55, color: "var(--text-muted)", textAlign: "center", maxWidth: 620, margin: "0 auto 28px" }}>
           Tell us what you're navigating in plain language. Prosci Advisor maps it to the ADKAR® model and recommends the exact Prosci training, learning path and research to get it done.
         </p>
+
+        {/* audience segment */}
+        <div style={{ marginBottom: 30 }}>
+          <SegmentToggle value={segment} onChange={onSegment} />
+        </div>
 
         {/* input */}
         <div style={{ background: "var(--surface-white)", border: "1.5px solid var(--border-default)", borderRadius: 10, boxShadow: "var(--shadow-md)", padding: "18px 18px 16px", maxWidth: 760, margin: "0 auto" }}>
@@ -1057,11 +1106,12 @@ function PromptChip({ text, onClick }) {
 }
 
 /* ---------------- results ---------------- */
-function Results({ query, data, t, onNewSearch, onFollowup }) {
+function Results({ query, data, t, onNewSearch, onFollowup, segment, onSegment }) {
   const [answerDone, setAnswerDone] = useState(false);
   const [step, setStep] = useState(0); // section reveal index
   const { variant, courses, resources, adkar } = data;
-  const answer = t.detail === "detailed" ? variant.long : variant.short;
+  const baseAnswer = t.detail === "detailed" ? variant.long : variant.short;
+  const answer = data.segLead ? baseAnswer + "\n\n" + data.segLead : baseAnswer;
 
   // Stagger the section reveals on a mount timer (independent of answer detection,
   // with a guaranteed fallback so content can never stay stuck at opacity 0).
@@ -1073,7 +1123,7 @@ function Results({ query, data, t, onNewSearch, onFollowup }) {
     setTimeout(() => setStep((s) => Math.max(s, i)), dur + i * 360)
     );
     return () => timers.forEach(clearTimeout);
-  }, [query, t.detail]);
+  }, [query, t.detail, data]);
 
   const compact = t.density === "compact";
   const grid = t.layout === "grid";
@@ -1089,6 +1139,11 @@ function Results({ query, data, t, onNewSearch, onFollowup }) {
         <button onClick={onNewSearch} style={{ flex: "none", display: "inline-flex", alignItems: "center", gap: 8, background: "transparent", border: "1.5px solid var(--prosci-purple)", borderRadius: 3, padding: "13px 18px", color: "var(--prosci-purple)", fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", cursor: "pointer", marginTop: 2 }}>
           <Icon name="rotate-ccw" size={14} stroke={2.2} /> New search
         </button>
+      </div>
+
+      {/* audience segment */}
+      <div style={{ marginBottom: 30 }}>
+        <SegmentToggle value={segment} onChange={onSegment} align="left" helpId="seg-help-results" />
       </div>
 
       {/* answer */}
@@ -1178,21 +1233,30 @@ function App() {
   const [view, setView] = useState("landing"); // landing | thinking | results
   const [query, setQuery] = useState("");
   const [data, setData] = useState(null);
+  const [segment, setSegment] = useState(() => {
+    try { const s = localStorage.getItem("prosci-segment"); if (s === "enterprise" || s === "individual") return s; } catch (e) {}
+    return "enterprise";
+  });
+  const chooseSegment = (s) => {
+    setSegment(s);
+    try { localStorage.setItem("prosci-segment", s); } catch (e) {}
+    if (view === "results" && query) setData(buildResponse(query, s));
+  };
 
   const ask = (q) => {
     setQuery(q);
     setView("thinking");
     window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
-    setTimeout(() => {setData(buildResponse(q));setView("results");}, 2500);
+    setTimeout(() => {setData(buildResponse(q, segment));setView("results");}, 2500);
   };
   const reset = () => {setView("landing");setQuery("");setData(null);};
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--surface-cream)" }}>
       <Header onReset={reset} />
-      {view === "landing" && <Landing onSubmit={ask} />}
+      {view === "landing" && <Landing onSubmit={ask} segment={segment} onSegment={chooseSegment} />}
       {view === "thinking" && <Thinking query={query} />}
-      {view === "results" && data && <Results query={query} data={data} t={t} onNewSearch={reset} onFollowup={ask} />}
+      {view === "results" && data && <Results query={query} data={data} t={t} onNewSearch={reset} onFollowup={ask} segment={segment} onSegment={chooseSegment} />}
 
       <TweaksPanel>
         <TweakSection label="Display" />
