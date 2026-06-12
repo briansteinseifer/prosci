@@ -728,11 +728,11 @@
   <p class="lede">Describe your situation in plain language. Prosci's AI reads it for the change challenge underneath, then points you to the programs that solve it, with the reasoning behind each one.</p>
 
   <div class="seg-wrap">
-    <fieldset class="seg" aria-label="Who is this training for?">
+    <fieldset class="seg" aria-label="Who is this training for?" aria-describedby="seg-help-hero">
       <label class="seg-opt"><input class="seg-input" type="radio" name="segment-hero" value="enterprise" checked /> Enterprise</label>
       <label class="seg-opt"><input class="seg-input" type="radio" name="segment-hero" value="individual" /> Individual</label>
     </fieldset>
-    <p class="seg-help">Rolling change out across a team or organization.</p>
+    <p class="seg-help" id="seg-help-hero">Rolling change out across a team or organization.</p>
   </div>
 
   <form class="hero-search" id="hero-form">
@@ -901,11 +901,11 @@
 
     <div class="rail-card seg-rail">
       <span class="rail-eyebrow" aria-hidden="true">Finding for</span>
-      <fieldset class="seg" aria-label="Who is this training for?">
+      <fieldset class="seg" aria-label="Who is this training for?" aria-describedby="seg-help-rail">
         <label class="seg-opt"><input class="seg-input" type="radio" name="segment-rail" value="enterprise" /> Enterprise</label>
         <label class="seg-opt"><input class="seg-input" type="radio" name="segment-rail" value="individual" /> Individual</label>
       </fieldset>
-      <p class="seg-help">Rolling change out across a team or organization.</p>
+      <p class="seg-help" id="seg-help-rail">Rolling change out across a team or organization.</p>
     </div>
 
     <div class="rail-card facets" id="facets">
@@ -1130,8 +1130,11 @@
     try { var s = localStorage.getItem("prosci-segment"); if (s === "enterprise" || s === "individual") return s; } catch (e) {}
     return "enterprise";
   }
-  function segBias(seg) { return seg === currentSeg ? SEG_BONUS : seg === "both" ? 0 : -SEG_PENALTY; }
-  function segScore(c) { return Math.max(0, Math.min(99, c.match + segBias(c.seg))); }
+  function segBias(seg) {
+    if (seg === "both") return 0;
+    return seg === (currentSeg === "individual" ? "ind" : "ent") ? SEG_BONUS : -SEG_PENALTY;
+  }
+  function segScore(c) { return Math.max(0, Math.min(99, c.match + segBias(c.seg))); } // cap at 99 — never imply a perfect match
   function setSegment(seg, rerender) {
     currentSeg = seg;
     try { localStorage.setItem("prosci-segment", seg); } catch (e) {}
@@ -1276,7 +1279,8 @@
   }
 
   function courseNode(c) {
-    var t = tierOf(segScore(c));
+    var score = segScore(c);
+    var t = tierOf(score);
     var el = document.createElement("article");
     el.className = "course reveal";
     el.setAttribute("data-available", c.avail);
@@ -1287,7 +1291,7 @@
     el.innerHTML =
       '<div class="course-photo">' +
         '<img src="' + c.img + '" alt="" loading="lazy" decoding="async" />' +
-        '<span class="match-pill ' + t.cls + '"><span class="ico" aria-hidden="true"></span>' + t.label + ' · ' + segScore(c) + '%</span>' +
+        '<span class="match-pill ' + t.cls + '"><span class="ico" aria-hidden="true"></span>' + t.label + ' · ' + score + '%</span>' +
       '</div>' +
       '<div class="course-content">' +
         '<span class="badge">' + ICON.badge + c.badge + '</span>' +
