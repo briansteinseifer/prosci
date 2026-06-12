@@ -205,6 +205,27 @@
   .btn-secondary:hover { background: var(--linen); border-color: var(--damson); }
   .btn-sm { padding: 9px 15px; font-size: 0.88rem; }
 
+  /* ---- Audience segment selector ---- */
+  .seg-wrap { margin: 0 auto 34px; }
+  .seg {
+    display: inline-flex; gap: 4px; padding: 4px; min-width: 0;
+    border: 1px solid var(--line-strong); border-radius: var(--r-pill); background: var(--linen);
+  }
+  .seg-opt {
+    position: relative; display: inline-flex; align-items: center; justify-content: center;
+    padding: 9px 18px; border-radius: var(--r-pill);
+    font-family: var(--sans); font-size: 0.92rem; font-weight: 600; color: var(--muted);
+    cursor: pointer; transition: color 0.16s var(--ease), background 0.16s var(--ease);
+  }
+  .seg-opt input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+  .seg-opt:has(input:checked) { background: var(--damson); color: var(--white); }
+  .seg-opt:has(input:focus-visible) { box-shadow: var(--shadow-ring); }
+  .seg-help { margin: 12px auto 0; font-size: 0.9rem; color: var(--muted); }
+  .seg-rail { margin-bottom: 18px; }
+  .seg-rail .seg { display: flex; }
+  .seg-rail .seg-opt { flex: 1; }
+  .seg-rail .seg-help { text-align: left; margin-left: 2px; }
+
   /* ============================================================
      LANDING — search as the focal point
      ============================================================ */
@@ -706,6 +727,14 @@
   <h1 id="landing-h">Find the perfect course, <em>naturally</em>.</h1>
   <p class="lede">Describe your situation in plain language. Prosci's AI reads it for the change challenge underneath, then points you to the programs that solve it, with the reasoning behind each one.</p>
 
+  <div class="seg-wrap">
+    <fieldset class="seg" aria-label="Who is this training for?">
+      <label class="seg-opt"><input class="seg-input" type="radio" name="segment-hero" value="enterprise" checked /> Enterprise</label>
+      <label class="seg-opt"><input class="seg-input" type="radio" name="segment-hero" value="individual" /> Individual</label>
+    </fieldset>
+    <p class="seg-help">Rolling change out across a team or organization.</p>
+  </div>
+
   <form class="hero-search" id="hero-form">
     <span class="hero-spark" aria-hidden="true">
       <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-spark"/></svg>
@@ -870,6 +899,15 @@
       </form>
     </div>
 
+    <div class="rail-card seg-rail">
+      <span class="rail-eyebrow" aria-hidden="true">Finding for</span>
+      <fieldset class="seg" aria-label="Who is this training for?">
+        <label class="seg-opt"><input class="seg-input" type="radio" name="segment-rail" value="enterprise" /> Enterprise</label>
+        <label class="seg-opt"><input class="seg-input" type="radio" name="segment-rail" value="individual" /> Individual</label>
+      </fieldset>
+      <p class="seg-help">Rolling change out across a team or organization.</p>
+    </div>
+
     <div class="rail-card facets" id="facets">
       <div class="filters-head">
         <h2>Filters</h2>
@@ -960,7 +998,7 @@
       img: IMG + "c/e/certification_program_1_1.jpg",
       date: "Jun 8 - 12, 2026", where: "Online", whereType: "online",
       formats: ["Virtual", "In-Person"], audience: ["Practitioners"], length: "Multi",
-      price: "$4,500", was: "$4,850", avail: "register", match: 96,
+      price: "$4,500", was: "$4,850", avail: "register", match: 96, seg: "both",
       url: "https://store.prosci.com/training/cert-vir-jun0826-us-en.html"
     },
     {
@@ -970,7 +1008,7 @@
       img: IMG + "l/e/leading_your_team_through_change_7.jpg",
       date: "Self-paced", where: "Online", whereType: "online",
       formats: ["On-Demand"], audience: ["Managers"], length: "Self",
-      price: "$1,050", was: "", avail: "register", match: 91,
+      price: "$1,050", was: "", avail: "register", match: 91, seg: "ent",
       url: "https://store.prosci.com/training/lyttc-vir-jul1026-us-en.html"
     },
     {
@@ -980,7 +1018,7 @@
       img: IMG + "p/r/prevent_change_resistance_13.jpg",
       date: "Jun 22 - 23, 2026", where: "Online", whereType: "online",
       formats: ["Virtual"], audience: ["Practitioners", "Managers"], length: "Short",
-      price: "$1,050", was: "", avail: "register", match: 88,
+      price: "$1,050", was: "", avail: "register", match: 88, seg: "ind",
       url: "https://store.prosci.com/training/adk1-vir-jun2226-us-en.html"
     },
     {
@@ -990,7 +1028,7 @@
       img: IMG + "e/c/ecm_bootcamp_9.jpg",
       date: "Jun 12 - 15, 2026", where: "Fort Collins, CO", whereType: "place",
       formats: ["In-Person"], audience: ["Practitioners", "Sponsors"], length: "Short",
-      price: "$1,050", was: "$1,200", avail: "waitlist", match: 74,
+      price: "$1,050", was: "$1,200", avail: "waitlist", match: 74, seg: "ent",
       url: "https://store.prosci.com/training/ecm-vir-jun1226-us-en.html"
     },
     {
@@ -1000,7 +1038,7 @@
       img: IMG + "i/m/improve_project_health_12.jpg",
       date: "Jun 22, 2026", where: "Online", whereType: "online",
       formats: ["Virtual"], audience: ["Practitioners"], length: "Short",
-      price: "$1,050", was: "", avail: "register", match: 68,
+      price: "$1,050", was: "", avail: "register", match: 68, seg: "both",
       url: "https://store.prosci.com/training/iph-vir-jun2226-us-en.html"
     },
     {
@@ -1010,7 +1048,7 @@
       img: IMG + "a/c/achieve_change_performance_14.jpg",
       date: "Jun 15, 2026", where: "Online", whereType: "online",
       formats: ["Virtual"], audience: ["Practitioners", "Sponsors"], length: "Short",
-      price: "$1,050", was: "", avail: "register", match: 61,
+      price: "$1,050", was: "", avail: "register", match: 61, seg: "ent",
       url: "https://store.prosci.com/training/acp-vir-jun1526-us-en.html"
     },
     {
@@ -1020,7 +1058,7 @@
       img: IMG + "a/d/adkar_resolve_persistent_barriers_workshop_13.jpg",
       date: "Jun 26, 2026", where: "Online", whereType: "online",
       formats: ["Virtual"], audience: ["Practitioners", "Managers"], length: "Short",
-      price: "$1,050", was: "", avail: "register", match: 57,
+      price: "$1,050", was: "", avail: "register", match: 57, seg: "ind",
       url: "https://store.prosci.com/training/adk2-vir-jun2626-us-en.html"
     },
     {
@@ -1030,7 +1068,7 @@
       img: IMG + "t/r/train_the_trainer_10.jpg",
       date: "Jul 7 - 9, 2026", where: "Online", whereType: "online",
       formats: ["Virtual"], audience: ["Trainers"], length: "Multi",
-      price: "$4,000", was: "", avail: "register", match: 44,
+      price: "$4,000", was: "", avail: "register", match: 44, seg: "ent",
       url: "https://store.prosci.com/training/ttt1-vir-jul0726-us-en.html"
     }
   ];
@@ -1074,6 +1112,33 @@
 
   var STRONG_THRESHOLD = 70;
   var hasSearched = false;
+
+  /* ---- Audience segment (Enterprise / Individual) ---- */
+  var SEG_BONUS = 8, SEG_PENALTY = 12;
+  var SEG = {
+    enterprise: {
+      help: "Rolling change out across a team or organization.",
+      lead: " <strong>Because you're driving this across an organization,</strong> this path leans on building internal capability and activating your managers and sponsors."
+    },
+    individual: {
+      help: "Building your own change-management skill set.",
+      lead: " <strong>Since you're building your own change-management skills,</strong> this path centers on certification and the hands-on ADKAR workshops you can apply right away."
+    }
+  };
+  var currentSeg = "enterprise";
+  function loadSegment() {
+    try { var s = localStorage.getItem("prosci-segment"); if (s === "enterprise" || s === "individual") return s; } catch (e) {}
+    return "enterprise";
+  }
+  function segBias(seg) { return seg === currentSeg ? SEG_BONUS : seg === "both" ? 0 : -SEG_PENALTY; }
+  function segScore(c) { return Math.max(0, Math.min(99, c.match + segBias(c.seg))); }
+  function setSegment(seg, rerender) {
+    currentSeg = seg;
+    try { localStorage.setItem("prosci-segment", seg); } catch (e) {}
+    document.querySelectorAll(".seg-input").forEach(function (i) { i.checked = (i.value === seg); });
+    document.querySelectorAll(".seg-help").forEach(function (h) { h.textContent = SEG[seg].help; });
+    if (rerender && hasSearched) { aiBody.innerHTML = pickAnswer(railQ.value); renderList(); }
+  }
   function count(pred) { return COURSES.filter(pred).length; }
 
   /* Filter model (functional groups wired to data; region/focus/lang are placeholders) */
@@ -1175,9 +1240,10 @@
 
   function pickAnswer(text) {
     var t = text.toLowerCase();
-    if (t.indexOf("manager") > -1 && t.indexOf("resist") > -1) return ANSWER_MGR;
-    if (t.indexOf("capability") > -1 || t.indexOf("consultant") > -1 || t.indexOf("in-house") > -1) return ANSWER_CAP;
-    return ANSWER;
+    var base = ANSWER;
+    if (t.indexOf("manager") > -1 && t.indexOf("resist") > -1) base = ANSWER_MGR;
+    else if (t.indexOf("capability") > -1 || t.indexOf("consultant") > -1 || t.indexOf("in-house") > -1) base = ANSWER_CAP;
+    return base + SEG[currentSeg].lead;
   }
   function tierOf(m) {
     if (m >= 90) return { cls: "tier-top", label: "Top match" };
@@ -1210,7 +1276,7 @@
   }
 
   function courseNode(c) {
-    var t = tierOf(c.match);
+    var t = tierOf(segScore(c));
     var el = document.createElement("article");
     el.className = "course reveal";
     el.setAttribute("data-available", c.avail);
@@ -1221,7 +1287,7 @@
     el.innerHTML =
       '<div class="course-photo">' +
         '<img src="' + c.img + '" alt="" loading="lazy" decoding="async" />' +
-        '<span class="match-pill ' + t.cls + '"><span class="ico" aria-hidden="true"></span>' + t.label + ' · ' + c.match + '%</span>' +
+        '<span class="match-pill ' + t.cls + '"><span class="ico" aria-hidden="true"></span>' + t.label + ' · ' + segScore(c) + '%</span>' +
       '</div>' +
       '<div class="course-content">' +
         '<span class="badge">' + ICON.badge + c.badge + '</span>' +
@@ -1255,14 +1321,15 @@
 
   function renderList() {
     var matched = COURSES.filter(matchesFilters);
+    matched.sort(function (a, b) { return segScore(b) - segScore(a); });
     listEl.innerHTML = ""; moreList.innerHTML = "";
     moreWrap.hidden = true; moreList.hidden = true; moreToggle.setAttribute("aria-expanded", "false");
 
     if (!matched.length) { nomatch.hidden = false; countEl.textContent = ""; return; }
     nomatch.hidden = true;
 
-    var strong = matched.filter(function (c) { return c.match >= STRONG_THRESHOLD; });
-    var possible = matched.filter(function (c) { return c.match < STRONG_THRESHOLD; });
+    var strong = matched.filter(function (c) { return segScore(c) >= STRONG_THRESHOLD; });
+    var possible = matched.filter(function (c) { return segScore(c) < STRONG_THRESHOLD; });
     var primary = strong.length ? strong : possible;
     var extra = strong.length ? possible : [];
 
@@ -1366,6 +1433,12 @@
       runSearch(q);
     });
   });
+
+  /* Audience segment toggle */
+  document.querySelectorAll(".seg-input").forEach(function (i) {
+    i.addEventListener("change", function () { if (i.checked) setSegment(i.value, true); });
+  });
+  setSegment(loadSegment(), false);
 
   /* Filters */
   renderFilters();
