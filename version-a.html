@@ -385,20 +385,42 @@
   .rail-actions { margin-top: 12px; }
   .rail-actions .btn-primary { width: 100%; justify-content: center; }
 
-  .facets { display: flex; flex-direction: column; gap: 20px; }
-  .facet-group-title {
-    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--muted); margin: 0 0 11px;
-  }
-  .facet-list { display: flex; flex-wrap: wrap; gap: 8px; }
-  .chip {
-    font-family: var(--sans); font-size: 0.85rem; font-weight: 500; color: var(--ink-2);
-    background: var(--linen); border: 1px solid transparent; border-radius: var(--r-pill);
-    padding: 7px 13px; cursor: pointer;
-    transition: background 0.16s var(--ease), color 0.16s var(--ease), border-color 0.16s var(--ease);
-  }
-  .chip:hover { border-color: var(--line-strong); }
-  .chip[aria-pressed="true"] { background: var(--damson); color: var(--white); }
+  /* ---- Filter panel (ported from Version B) ---- */
+  .facets { display: block; }
+  .filters-head { display: flex; align-items: center; gap: 10px; padding-bottom: 16px; border-bottom: 1.5px solid var(--line-strong); margin-bottom: 6px; }
+  .filters-head h2 { font-family: var(--sans); font-weight: 600; font-size: 1.3rem; color: var(--ink); margin: 0; letter-spacing: -0.01em; }
+  .filter-count { display: none; min-width: 24px; height: 24px; padding: 0 7px; border-radius: var(--r-pill); background: var(--damson); color: var(--white); font-size: 0.82rem; font-weight: 700; align-items: center; justify-content: center; }
+  .filter-count.on { display: inline-flex; }
+  .clear-all { margin-left: auto; display: inline-flex; align-items: center; gap: 5px; background: none; border: 0; cursor: pointer; font-family: var(--sans); font-size: 0.9rem; font-weight: 600; color: var(--purple); padding: 4px; }
+  .clear-all:hover { color: var(--pink-ink); }
+  .clear-all svg { width: 14px; height: 14px; }
+  .clear-all[hidden] { display: none; }
+
+  .fsection { border-bottom: 1px solid var(--line); }
+  .fsection:last-child { border-bottom: 0; }
+  .fsection-head { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; background: none; border: 0; cursor: pointer; padding: 18px 0 16px; font-family: var(--sans); font-size: 1.05rem; font-weight: 600; color: var(--damson); }
+  .fsection-head .chev { width: 18px; height: 18px; color: var(--muted); transition: transform 0.2s var(--ease); flex: none; }
+  .fsection-head[aria-expanded="true"] .chev { transform: rotate(180deg); }
+  .fsection-body { display: flex; flex-direction: column; gap: 4px; padding-bottom: 18px; }
+
+  .opt { display: flex; align-items: flex-start; gap: 11px; padding: 8px 2px; cursor: pointer; border-radius: var(--r-input); }
+  .opt:hover { background: rgba(53, 9, 68, 0.035); }
+  .opt input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .opt .box, .opt .radio { flex: none; width: 21px; height: 21px; border: 1.6px solid var(--damson); background: var(--white); display: grid; place-items: center; margin-top: 1px; transition: background 0.14s var(--ease), border-color 0.14s var(--ease); }
+  .opt .box { border-radius: 4px; }
+  .opt .radio { border-radius: 50%; }
+  .opt .box svg { width: 13px; height: 13px; color: var(--white); opacity: 0; transition: opacity 0.12s var(--ease); }
+  .opt input:checked ~ .box { background: var(--damson); }
+  .opt input:checked ~ .box svg { opacity: 1; }
+  .opt .radio::after { content: ""; width: 11px; height: 11px; border-radius: 50%; background: var(--pink); transform: scale(0); transition: transform 0.16s var(--ease); }
+  .opt input:checked ~ .radio { border-color: var(--pink); }
+  .opt input:checked ~ .radio::after { transform: scale(1); }
+  .opt input:focus-visible ~ .box, .opt input:focus-visible ~ .radio { box-shadow: var(--shadow-ring); }
+  .opt-label { flex: 1; font-size: 0.96rem; line-height: 1.35; color: var(--ink-2); }
+  .opt input:checked ~ .opt-label { font-weight: 600; color: var(--ink); }
+  .opt .count { font-size: 0.92rem; color: var(--muted); flex: none; }
+  .opt input:disabled ~ .opt-label, .opt:has(input:disabled) { color: var(--muted); cursor: default; }
+  .opt:has(input:disabled):hover { background: none; }
   .rail-divider { height: 1px; background: var(--line); border: 0; margin: 0; }
   .followup label {
     display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em;
@@ -849,33 +871,15 @@
     </div>
 
     <div class="rail-card facets" id="facets">
-      <div class="facet-group">
-        <p class="facet-group-title">Format</p>
-        <div class="facet-list" data-facet="format">
-          <button type="button" class="chip" aria-pressed="false" data-value="Virtual">Virtual</button>
-          <button type="button" class="chip" aria-pressed="false" data-value="In-Person">In-Person</button>
-          <button type="button" class="chip" aria-pressed="false" data-value="On-Demand">On-Demand</button>
-        </div>
+      <div class="filters-head">
+        <h2>Filters</h2>
+        <span class="filter-count" id="filter-count">0</span>
+        <button type="button" class="clear-all" id="clear-all" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+          Clear all
+        </button>
       </div>
-      <hr class="rail-divider" />
-      <div class="facet-group">
-        <p class="facet-group-title">Audience</p>
-        <div class="facet-list" data-facet="audience">
-          <button type="button" class="chip" aria-pressed="false" data-value="Practitioners">Practitioners</button>
-          <button type="button" class="chip" aria-pressed="false" data-value="Managers">Managers</button>
-          <button type="button" class="chip" aria-pressed="false" data-value="Sponsors">Sponsors</button>
-          <button type="button" class="chip" aria-pressed="false" data-value="Trainers">Trainers</button>
-        </div>
-      </div>
-      <hr class="rail-divider" />
-      <div class="facet-group">
-        <p class="facet-group-title">Commitment</p>
-        <div class="facet-list" data-facet="length">
-          <button type="button" class="chip" aria-pressed="false" data-value="Short">Half / 1 day</button>
-          <button type="button" class="chip" aria-pressed="false" data-value="Multi">Multi-day</button>
-          <button type="button" class="chip" aria-pressed="false" data-value="Self">Self-paced</button>
-        </div>
-      </div>
+      <div id="filter-body"></div>
       <hr class="rail-divider" />
       <div class="followup">
         <label for="followup-q">Refine your question</label>
@@ -1062,12 +1066,99 @@
   var moreToggle = document.getElementById("more-toggle");
   var moreList = document.getElementById("more-list");
   var facets = document.getElementById("facets");
+  var filterBody = document.getElementById("filter-body");
+  var filterCount = document.getElementById("filter-count");
+  var clearAll = document.getElementById("clear-all");
   var followupBtn = document.getElementById("followup-btn");
   var followupInput = document.getElementById("followup-q");
 
   var STRONG_THRESHOLD = 70;
-  var activeFilters = { format: [], audience: [], length: [] };
   var hasSearched = false;
+  function count(pred) { return COURSES.filter(pred).length; }
+
+  /* Filter model (functional groups wired to data; region/focus/lang are placeholders) */
+  var SECTIONS = [
+    { key: "format", title: "Format", type: "check", expanded: true, options: [
+      { v: "Virtual", label: "Virtual", n: count(function(c){return c.formats.indexOf("Virtual")>-1;}) },
+      { v: "In-Person", label: "In-Person", n: count(function(c){return c.formats.indexOf("In-Person")>-1;}) },
+      { v: "On-Demand", label: "On-Demand", n: count(function(c){return c.formats.indexOf("On-Demand")>-1;}) }
+    ]},
+    { key: "audience", title: "Audience", type: "check", expanded: true, options: [
+      { v: "Practitioners", label: "Practitioners", n: count(function(c){return c.audience.indexOf("Practitioners")>-1;}) },
+      { v: "Managers", label: "Managers", n: count(function(c){return c.audience.indexOf("Managers")>-1;}) },
+      { v: "Sponsors", label: "Sponsors", n: count(function(c){return c.audience.indexOf("Sponsors")>-1;}) },
+      { v: "Trainers", label: "Trainers", n: count(function(c){return c.audience.indexOf("Trainers")>-1;}) }
+    ]},
+    { key: "length", title: "Commitment", type: "check", expanded: true, options: [
+      { v: "Short", label: "Half / 1 day", n: count(function(c){return c.length==="Short";}) },
+      { v: "Multi", label: "Multi-day", n: count(function(c){return c.length==="Multi";}) },
+      { v: "Self", label: "Self-paced", n: count(function(c){return c.length==="Self";}) }
+    ]},
+    { key: "avail", title: "Availability", type: "check", expanded: true, options: [
+      { v: "register", label: "Open / Registering", n: count(function(c){return c.avail==="register";}) },
+      { v: "waitlist", label: "Waitlist", n: count(function(c){return c.avail==="waitlist";}) }
+    ]},
+    { key: "course", title: "Training Courses", type: "check", expanded: false,
+      options: COURSES.map(function(c){ return { v: c.id, label: c.title, n: 1 }; }) },
+    { key: "region", title: "Region", type: "radio", expanded: true, options: [
+      { v: "us", label: "United States", n: COURSES.length, checked: true },
+      { v: "asia", label: "Asia", n: 0, disabled: true },
+      { v: "anz", label: "Australia & New Zealand", n: 0, disabled: true },
+      { v: "ca", label: "Canada & the Caribbean", n: 0, disabled: true },
+      { v: "csa", label: "Central & South America", n: 0, disabled: true },
+      { v: "eu", label: "Europe", n: 0, disabled: true },
+      { v: "mea", label: "Middle East & Africa", n: 0, disabled: true },
+      { v: "uk", label: "United Kingdom", n: 0, disabled: true }
+    ]},
+    { key: "focus", title: "Certification Focus", type: "check", expanded: false, options: [
+      { v: "ai", label: "AI Adoption", n: 0, disabled: true },
+      { v: "digital", label: "Digital Transformation", n: 0, disabled: true },
+      { v: "highered", label: "Higher Education", n: 0, disabled: true }
+    ]},
+    { key: "lang", title: "Language", type: "check", expanded: false, options: [
+      { v: "en", label: "English", n: COURSES.length, disabled: true },
+      { v: "es", label: "Spanish", n: 0, disabled: true }
+    ]}
+  ];
+
+  function renderFilters() {
+    filterBody.innerHTML = "";
+    SECTIONS.forEach(function (s) {
+      var sec = document.createElement("div");
+      sec.className = "fsection";
+      var bodyId = "fsec-" + s.key;
+      sec.innerHTML =
+        '<button type="button" class="fsection-head" aria-expanded="' + s.expanded + '" aria-controls="' + bodyId + '">' +
+          s.title + ICON.chev +
+        '</button>' +
+        '<div class="fsection-body" id="' + bodyId + '"' + (s.expanded ? "" : " hidden") + '></div>';
+      var body = sec.querySelector(".fsection-body");
+      s.options.forEach(function (o) {
+        var inputType = s.type === "radio" ? "radio" : "checkbox";
+        var nameAttr = s.type === "radio" ? ' name="region"' : "";
+        var control = s.type === "radio" ? '<span class="radio" aria-hidden="true"></span>'
+                                          : '<span class="box" aria-hidden="true">' + ICON.check + '</span>';
+        var label = document.createElement("label");
+        label.className = "opt";
+        label.innerHTML =
+          '<input type="' + inputType + '"' + nameAttr +
+            ' data-group="' + s.key + '" value="' + o.v + '"' +
+            (o.checked ? " checked" : "") + (o.disabled ? " disabled" : "") + ' />' +
+          control +
+          '<span class="opt-label">' + o.label + '</span>' +
+          '<span class="count">(' + (o.n || "") + ')</span>';
+        body.appendChild(label);
+      });
+      filterBody.appendChild(sec);
+    });
+  }
+
+  function getChecked(group) {
+    return Array.prototype.map.call(
+      filterBody.querySelectorAll('input[data-group="' + group + '"]:checked'),
+      function (el) { return el.value; }
+    );
+  }
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* SVG snippets */
@@ -1077,7 +1168,9 @@
     place: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="2.6"/></svg>',
     badge: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5.5"/><path d="M8.5 13.5 7 22l5-2.6L17 22l-1.5-8.5"/></svg>',
     info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 11v5M12 7.5h.01"/></svg>',
-    arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>'
+    arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>',
+    chev: '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 6"/></svg>'
   };
 
   function pickAnswer(text) {
@@ -1092,13 +1185,29 @@
     return { cls: "tier-fair", label: "Possible" };
   }
   function matchesFilters(c) {
-    var f = activeFilters;
-    if (f.format.length && !f.format.some(function (v) { return c.formats.indexOf(v) > -1; })) return false;
-    if (f.audience.length && !f.audience.some(function (v) { return c.audience.indexOf(v) > -1; })) return false;
-    if (f.length.length && f.length.indexOf(c.length) === -1) return false;
+    var fmt = getChecked("format");
+    if (fmt.length && !fmt.some(function (v) { return c.formats.indexOf(v) > -1; })) return false;
+    var aud = getChecked("audience");
+    if (aud.length && !aud.some(function (v) { return c.audience.indexOf(v) > -1; })) return false;
+    var len = getChecked("length");
+    if (len.length && len.indexOf(c.length) === -1) return false;
+    var av = getChecked("avail");
+    if (av.length && av.indexOf(c.avail) === -1) return false;
+    var cr = getChecked("course");
+    if (cr.length && cr.indexOf(c.id) === -1) return false;
     return true;
   }
-  function anyFilter() { return activeFilters.format.length || activeFilters.audience.length || activeFilters.length.length; }
+  function activeFilterCount() {
+    return getChecked("format").length + getChecked("audience").length + getChecked("length").length +
+           getChecked("avail").length + getChecked("course").length;
+  }
+  function anyFilter() { return activeFilterCount() > 0; }
+  function updateFilterChrome() {
+    var n = activeFilterCount();
+    filterCount.textContent = n;
+    filterCount.classList.toggle("on", n > 0);
+    clearAll.hidden = n === 0;
+  }
 
   function courseNode(c) {
     var t = tierOf(c.match);
@@ -1258,17 +1367,29 @@
     });
   });
 
-  facets.addEventListener("click", function (e) {
-    var chip = e.target.closest(".chip");
-    if (!chip) return;
-    var group = chip.parentElement.getAttribute("data-facet");
-    var value = chip.getAttribute("data-value");
-    var on = chip.getAttribute("aria-pressed") === "true";
-    chip.setAttribute("aria-pressed", on ? "false" : "true");
-    var arr = activeFilters[group];
-    if (on) { arr.splice(arr.indexOf(value), 1); } else { arr.push(value); }
+  /* Filters */
+  renderFilters();
+  filterBody.addEventListener("change", function (e) {
+    if (!e.target.matches('input[data-group]')) return;
+    updateFilterChrome();
     if (hasSearched) renderList();
   });
+  filterBody.addEventListener("click", function (e) {
+    var head = e.target.closest(".fsection-head");
+    if (!head) return;
+    var open = head.getAttribute("aria-expanded") === "true";
+    head.setAttribute("aria-expanded", open ? "false" : "true");
+    var body = document.getElementById(head.getAttribute("aria-controls"));
+    if (body) body.hidden = open;
+  });
+  clearAll.addEventListener("click", function () {
+    filterBody.querySelectorAll('input[type="checkbox"]').forEach(function (el) { el.checked = false; });
+    var us = filterBody.querySelector('input[data-group="region"][value="us"]');
+    if (us) us.checked = true;
+    updateFilterChrome();
+    if (hasSearched) renderList();
+  });
+  updateFilterChrome();
 
   function applyFollowup() {
     var extra = followupInput.value.trim();
