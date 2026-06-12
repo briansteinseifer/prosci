@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Prosci Course Finder · Three Directions — Swarming</title>
+<meta name="description" content="A Swarming pitch: three design directions for the Prosci Course Finder, and our recommendation." />
+<link rel="icon" type="image/svg+xml" href="assets/swarming-icon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #181712;
+    --bg-2: #211f18;
+    --bg-3: #2a2820;
+    --yellow: #e5bc10;
+    --yellow-bright: #f4cb1f;
+    --cream: #f6f5ef;
+    --beige: #e2e0d7;
+    --muted: #a3a194;
+    --charcoal: #2a2924;
+    --line: rgba(246, 245, 239, 0.12);
+    --line-2: rgba(246, 245, 239, 0.22);
+    --sans: "Lexend", ui-sans-serif, system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+    --r-card: 14px;
+    --r-pill: 999px;
+    --shadow-card: 0 14px 34px -20px rgba(0, 0, 0, 0.7);
+    --shadow-lift: 0 34px 70px -34px rgba(0, 0, 0, 0.82);
+    --shadow-ring: 0 0 0 3px rgba(229, 188, 16, 0.55);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: var(--sans); color: var(--beige); background: var(--bg);
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    overflow: hidden;
+  }
+  ::selection { background: rgba(229, 188, 16, 0.30); color: var(--cream); }
+
+  /* ===== Deck shell — 16:9, letterboxed ===== */
+  .deck { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+  @media (min-width: 769px) {
+    .deck {
+      max-width: calc(100vh * 16 / 9);
+      max-height: calc(100vw * 9 / 16);
+      margin: auto; position: absolute; inset: 0;
+    }
+  }
+  .slide {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: clamp(34px, 5.2vw, 84px);
+    opacity: 0; visibility: hidden; transition: opacity 0.4s var(--ease);
+    background: var(--bg); overflow: hidden;
+  }
+  .slide.active { opacity: 1; visibility: visible; }
+
+  /* warm glow, top-right */
+  .slide::before {
+    content: ""; position: absolute; inset: -12% -8% auto -8%; height: 60%;
+    background:
+      radial-gradient(46% 70% at 86% 2%, rgba(229,188,16,0.15), transparent 60%),
+      radial-gradient(60% 90% at 96% 18%, rgba(229,188,16,0.05), transparent 64%);
+    z-index: 0; pointer-events: none;
+  }
+  .slide > * { position: relative; z-index: 1; }
+
+  /* ===== Type ===== */
+  .eyebrow {
+    font-size: clamp(0.66rem, 0.9vw, 0.78rem); font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--yellow);
+    margin-bottom: 18px;
+  }
+  h1 {
+    font-weight: 800; color: var(--cream); letter-spacing: -0.03em; line-height: 1.02;
+    font-size: clamp(2.2rem, 5.2vw, 4.2rem);
+  }
+  h2 {
+    font-weight: 800; color: var(--cream); letter-spacing: -0.025em; line-height: 1.05;
+    font-size: clamp(1.7rem, 3.4vw, 2.9rem); margin-bottom: 8px;
+  }
+  h1 em, h2 em, .accent { font-style: normal; color: var(--yellow); }
+  .lead { font-size: clamp(1.02rem, 1.5vw, 1.34rem); line-height: 1.6; color: var(--beige); max-width: 64ch; }
+  .muted { color: var(--muted); }
+  p { line-height: 1.6; }
+
+  /* ===== Cover ===== */
+  .cover { justify-content: center; }
+  .cover .swarm { position: absolute; inset: -60px 0 -60px 36%; z-index: 0; pointer-events: none; }
+  .swarm span { position: absolute; border-radius: 999px; will-change: transform; animation: drift ease-in-out infinite alternate; }
+  @keyframes drift { from { transform: translate3d(0,0,0);} to { transform: translate3d(-6px,-9px,0);} }
+  .cover .brandrow { display: flex; align-items: center; gap: 14px; margin-bottom: 30px; }
+  .cover .brandrow img { height: 38px; }
+  .cover .brandrow .x { color: var(--muted); font-weight: 300; font-size: 1.3rem; }
+  .cover .brandrow .client { font-weight: 700; color: var(--cream); font-size: 1.25rem; letter-spacing: -0.01em; }
+  .cover h1 { max-width: 18ch; margin-bottom: 22px; }
+  .cover .lead { max-width: 56ch; }
+  .cover .meta { margin-top: 40px; display: flex; gap: 26px; flex-wrap: wrap; font-size: 0.86rem; color: var(--muted); }
+  .cover .meta b { color: var(--beige); font-weight: 600; }
+
+  /* ===== Slide header (non-cover) ===== */
+  .shead { margin-bottom: clamp(20px, 3vh, 40px); }
+
+  /* ===== Two-col layouts ===== */
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 4vw, 64px); align-items: center; flex: 1; min-height: 0; }
+  .split.narrow-left { grid-template-columns: 0.85fr 1.15fr; }
+
+  /* ===== Stat / point blocks ===== */
+  .points { display: grid; gap: 16px; }
+  .point { display: flex; gap: 14px; align-items: flex-start; }
+  .point .n {
+    flex: 0 0 auto; width: 30px; height: 30px; border-radius: 999px;
+    background: rgba(229,188,16,0.14); color: var(--yellow); border: 1px solid rgba(229,188,16,0.4);
+    display: grid; place-items: center; font-weight: 700; font-size: 0.86rem;
+  }
+  .point h3 { color: var(--cream); font-weight: 600; font-size: 1.06rem; margin-bottom: 2px; letter-spacing: -0.01em; }
+  .point p { color: var(--beige); font-size: 0.96rem; }
+
+  .bignum { font-weight: 800; color: var(--yellow); font-size: clamp(3rem, 7vw, 5.4rem); line-height: 0.95; letter-spacing: -0.03em; }
+
+  /* ===== Browser frame for screenshots ===== */
+  .frame {
+    background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--r-card);
+    overflow: hidden; box-shadow: var(--shadow-lift); width: 100%;
+  }
+  .frame .bar { display: flex; align-items: center; gap: 7px; padding: 11px 14px; border-bottom: 1px solid var(--line); background: rgba(0,0,0,0.18); }
+  .frame .bar i { width: 10px; height: 10px; border-radius: 999px; background: var(--bg-3); display: block; }
+  .frame .bar .url { margin-left: 10px; font-size: 0.74rem; color: var(--muted); letter-spacing: 0.01em; }
+  .frame img { display: block; width: 100%; height: auto; }
+  .frame.cropped { aspect-ratio: 16/10.2; }
+  .frame.cropped img { height: 100%; object-fit: cover; object-position: top center; }
+
+  /* ===== Design-slide right column ===== */
+  .dmeta { display: grid; gap: 18px; }
+  .badge-lg {
+    width: 46px; height: 46px; border-radius: 999px; background: var(--yellow); color: var(--charcoal);
+    display: grid; place-items: center; font-weight: 800; font-size: 1.3rem; box-shadow: 0 6px 18px -6px rgba(229,188,16,0.7);
+  }
+  .kv { display: grid; gap: 12px; }
+  .kv .row { display: grid; grid-template-columns: 92px 1fr; gap: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+  .kv .row:last-child { border-bottom: 0; }
+  .kv .k { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding-top: 2px; }
+  .kv .v { color: var(--beige); font-size: 0.98rem; line-height: 1.45; }
+  .kv .v b { color: var(--cream); font-weight: 600; }
+  .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+  .chip { font-size: 0.74rem; font-weight: 500; color: var(--beige); background: rgba(246,245,239,0.05); border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px; }
+
+  /* ===== Live prototype slide ===== */
+  .slide.live { padding: 0; justify-content: flex-start; }
+  .slide.live::before { display: none; }
+  .liveband {
+    display: flex; align-items: center; gap: 14px;
+    padding: 13px clamp(18px, 2.6vw, 34px);
+    border-bottom: 1px solid var(--line); background: var(--bg-2); flex: 0 0 auto;
+  }
+  .liveband .badge-sm {
+    width: 30px; height: 30px; border-radius: 999px; background: var(--yellow); color: var(--charcoal);
+    display: grid; place-items: center; font-weight: 800; font-size: 0.92rem;
+  }
+  .liveband h2 { font-size: clamp(1rem, 1.6vw, 1.24rem); margin: 0; letter-spacing: -0.01em; }
+  .liveband .live-dot {
+    display: inline-flex; align-items: center; gap: 7px; font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+  }
+  .liveband .live-dot i { width: 7px; height: 7px; border-radius: 999px; background: var(--yellow); box-shadow: 0 0 0 0 rgba(229,188,16,0.6); animation: pulse 2.4s var(--ease) infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(229,188,16,0.55);} 70% { box-shadow: 0 0 0 7px rgba(229,188,16,0);} 100% { box-shadow: 0 0 0 0 rgba(229,188,16,0);} }
+  .liveband .spacer { flex: 1; }
+  .liveband a.openfull {
+    font-size: 0.8rem; font-weight: 600; color: var(--yellow);
+    display: inline-flex; align-items: center; gap: 7px;
+    border: 1px solid var(--line-2); padding: 7px 14px; border-radius: 999px; transition: background 0.18s var(--ease);
+  }
+  .liveband a.openfull:hover { background: rgba(229,188,16,0.1); }
+  .stage { position: relative; flex: 1 1 auto; min-height: 0; background: #fffefa; }
+  .stage iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+  .stage .loading {
+    position: absolute; inset: 0; display: grid; place-items: center; background: var(--bg-2);
+    color: var(--muted); font-size: 0.9rem; letter-spacing: 0.04em; transition: opacity 0.4s var(--ease);
+  }
+  .stage.ready .loading { opacity: 0; pointer-events: none; }
+
+  /* ===== Comparison table ===== */
+  .ctable { width: 100%; border-collapse: collapse; font-size: clamp(0.8rem, 1.1vw, 0.98rem); }
+  .ctable th, .ctable td { text-align: left; padding: 14px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .ctable thead th { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line-2); }
+  .ctable thead th.win { color: var(--charcoal); background: var(--yellow); border-radius: 8px 8px 0 0; }
+  .ctable td.win { background: rgba(229,188,16,0.08); color: var(--cream); }
+  .ctable tbody th { color: var(--cream); font-weight: 600; }
+  .ctable .col-label { color: var(--muted); font-weight: 600; }
+  .ctable td b { color: var(--cream); font-weight: 600; }
+
+  /* ===== Recommendation ===== */
+  .recogrid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(26px, 4vw, 56px); align-items: center; flex: 1; min-height: 0; }
+  .reasons { display: grid; gap: 18px; }
+  .reason { background: var(--bg-2); border: 1px solid var(--line); border-left: 3px solid var(--yellow); border-radius: 10px; padding: 16px 18px; }
+  .reason h3 { color: var(--cream); font-weight: 600; font-size: 1.04rem; margin-bottom: 4px; letter-spacing: -0.01em; }
+  .reason p { color: var(--beige); font-size: 0.93rem; }
+  .reason .tie { display: inline-block; margin-top: 7px; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; color: var(--yellow); }
+
+  .pill-rec { display: inline-flex; align-items: center; gap: 9px; background: var(--yellow); color: var(--charcoal); font-weight: 800; font-size: 0.86rem; letter-spacing: 0.02em; padding: 9px 16px; border-radius: 999px; margin-bottom: 18px; }
+
+  /* ===== Next steps ===== */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; flex: 1; align-content: center; }
+  .step { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--r-card); padding: 26px 24px; display: flex; flex-direction: column; gap: 10px; }
+  .step .num { font-weight: 800; color: var(--yellow); font-size: 1.5rem; }
+  .step h3 { color: var(--cream); font-weight: 600; font-size: 1.14rem; letter-spacing: -0.01em; }
+  .step p { color: var(--beige); font-size: 0.94rem; }
+  .closer { margin-top: 28px; display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; padding-top: 22px; border-top: 1px solid var(--line); }
+  .closer p { color: var(--muted); font-size: 0.92rem; }
+  .closer .cta { display: inline-flex; align-items: center; gap: 9px; background: var(--yellow); color: var(--charcoal); font-weight: 700; font-size: 0.94rem; padding: 13px 22px; border-radius: 999px; }
+
+  /* ===== Nav ===== */
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--yellow); transition: width 0.3s var(--ease); z-index: 1000; }
+  .nav { position: fixed; bottom: 22px; right: 26px; display: flex; align-items: center; gap: 14px; z-index: 1000; }
+  .nav button { background: rgba(246,245,239,0.08); border: 1px solid var(--line); color: var(--cream); width: 40px; height: 40px; border-radius: 999px; cursor: pointer; font-size: 17px; transition: background 0.18s var(--ease); }
+  .nav button:hover { background: rgba(246,245,239,0.16); }
+  .counter { color: var(--muted); font-size: 0.82rem; font-variant-numeric: tabular-nums; }
+  .brandmark { position: fixed; bottom: 22px; left: 26px; z-index: 1000; height: 22px; opacity: 0.6; }
+
+  @media (max-width: 768px) {
+    .split, .split.narrow-left, .recogrid { grid-template-columns: 1fr; gap: 22px; }
+    .steps { grid-template-columns: 1fr; gap: 12px; }
+    .slide { padding: 26px 22px; overflow-y: auto; }
+    .ctable th, .ctable td { padding: 9px 8px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0.001ms !important; }
+    .swarm span { animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<img class="brandmark" src="assets/swarming-icon-2color.svg" alt="Swarming" />
+
+<div class="deck">
+
+  <!-- 1 · Cover -->
+  <section class="slide cover active">
+    <div class="swarm" id="swarm" aria-hidden="true"></div>
+    <div class="brandrow">
+      <img src="assets/swarming-logo-yellow.svg" alt="Swarming" />
+      <span class="x">×</span>
+      <span class="client">Prosci</span>
+    </div>
+    <h1>The Prosci Course Finder, in <em>three directions</em>.</h1>
+    <p class="lead">One AI-guided experience that turns a messy change challenge into a confident program choice — explored as three distinct designs, built on a single system drawn from your live store.</p>
+    <div class="meta">
+      <span><b>Prepared by</b> Swarming</span>
+      <span><b>For</b> Executive review</span>
+      <span><b>Working prototypes</b> · all three are clickable</span>
+    </div>
+  </section>
+
+  <!-- 2 · The opportunity -->
+  <section class="slide">
+    <div class="shead">
+      <div class="eyebrow">The opportunity</div>
+      <h2>Your buyers don't think in <em>course names</em>.</h2>
+    </div>
+    <div class="split">
+      <div>
+        <p class="lead" style="margin-bottom:24px;">HR and L&amp;D leaders arrive with a real, time-pressured situation — <span class="accent">"we rolled out a new system and adoption is stalling"</span> — not a catalog query. Today they're left to guess which program fits.</p>
+        <div class="points">
+          <div class="point"><div class="n">1</div><div><h3>Describe, don't navigate</h3><p>Meet people in plain language instead of filters and taxonomy.</p></div></div>
+          <div class="point"><div class="n">2</div><div><h3>Reasoning is the product</h3><p>Every recommendation explains <em>why it fits</em> — not a bare results grid.</p></div></div>
+          <div class="point"><div class="n">3</div><div><h3>Confidence is the deliverable</h3><p>Success is a decisive choice, not time-on-page or browsing.</p></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="bignum">1 box</div>
+        <p class="lead" style="margin-top:10px;">From a sentence about the challenge to the right Prosci program — with the reasoning shown. That's the job to be done, and the bar every direction is measured against.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · One system, three directions -->
+  <section class="slide">
+    <div class="shead">
+      <div class="eyebrow">The approach</div>
+      <h2>One design system. <em>Three</em> takes.</h2>
+    </div>
+    <div class="split">
+      <div>
+        <p class="lead" style="margin-bottom:22px;">Every direction shares a single system derived directly from the live Prosci store — the damson-and-cream palette, Baskervville editorial headlines, and store-true cards. The brand reads <span class="accent">warm, credible, confident</span> across all three.</p>
+        <p class="lead">They diverge deliberately on the one question that matters: <b style="color:var(--cream)">how a buyer gets to the right course.</b></p>
+      </div>
+      <div class="kv">
+        <div class="row"><div class="k">A · Photo cards</div><div class="v">A familiar, browsable catalog with a smart match layer. Lowest-risk evolution of today's store.</div></div>
+        <div class="row"><div class="k">B · Reasoning cards</div><div class="v">Results that lead with <b>"why this fits"</b> and let you build a learning path.</div></div>
+        <div class="row"><div class="k">C · Ask the advisor</div><div class="v">A single ask box; the advisor reads your situation, maps it to <b>ADKAR</b>, and prescribes the path.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · Direction A -->
+  <section class="slide">
+    <div class="shead"><div class="eyebrow">Direction A</div><h2>Photo cards</h2></div>
+    <div class="split narrow-left" style="direction:rtl;">
+      <div class="dmeta" style="direction:ltr;">
+        <div class="badge-lg">A</div>
+        <div class="kv">
+          <div class="row"><div class="k">Leads with</div><div class="v">A <b>match-strength pill</b> on photo-forward course cards.</div></div>
+          <div class="row"><div class="k">Refine via</div><div class="v">Chip-based facet filters, like the store today.</div></div>
+          <div class="row"><div class="k">Strength</div><div class="v">Familiar and lowest-risk — closest to the live store, easy to adopt.</div></div>
+          <div class="row"><div class="k">Trade-off</div><div class="v">Still reads as a catalog; reasoning is present but secondary.</div></div>
+        </div>
+        <div class="chips"><span class="chip">Photo-top cards</span><span class="chip">Match pill</span><span class="chip">Chip facets</span></div>
+      </div>
+      <div style="direction:ltr;">
+        <div class="frame cropped"><div class="bar"><i></i><i></i><i></i><span class="url">prosci.com · course finder</span></div><img src="previews/version-a.png" alt="Direction A — photo cards" /></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Direction A · live -->
+  <section class="slide live">
+    <div class="liveband">
+      <span class="badge-sm">A</span>
+      <h2>Photo cards</h2>
+      <span class="live-dot"><i></i> Live prototype</span>
+      <span class="spacer"></span>
+      <a class="openfull" href="version-a.html" target="_blank" rel="noopener">Open full ↗</a>
+    </div>
+    <div class="stage">
+      <div class="loading">Loading prototype…</div>
+      <iframe data-src="version-a.html" title="Direction A — live prototype" loading="lazy"></iframe>
+    </div>
+  </section>
+
+  <!-- 5 · Direction B -->
+  <section class="slide">
+    <div class="shead"><div class="eyebrow">Direction B</div><h2>Reasoning cards</h2></div>
+    <div class="split narrow-left" style="direction:rtl;">
+      <div class="dmeta" style="direction:ltr;">
+        <div class="badge-lg">B</div>
+        <div class="kv">
+          <div class="row"><div class="k">Leads with</div><div class="v">A <b>"why this fits"</b> rationale on each card, plus <b>Add to path</b>.</div></div>
+          <div class="row"><div class="k">Refine via</div><div class="v">A structured checkbox &amp; radio filter panel.</div></div>
+          <div class="row"><div class="k">Strength</div><div class="v">Puts reasoning up front and supports building a multi-course path.</div></div>
+          <div class="row"><div class="k">Trade-off</div><div class="v">Still a results page first; the buyer assembles the answer themselves.</div></div>
+        </div>
+        <div class="chips"><span class="chip">Why this fits</span><span class="chip">Add to path</span><span class="chip">Filter panel</span></div>
+      </div>
+      <div style="direction:ltr;">
+        <div class="frame cropped"><div class="bar"><i></i><i></i><i></i><span class="url">prosci.com · course finder</span></div><img src="previews/version-b.png" alt="Direction B — reasoning cards" /></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Direction B · live -->
+  <section class="slide live">
+    <div class="liveband">
+      <span class="badge-sm">B</span>
+      <h2>Reasoning cards</h2>
+      <span class="live-dot"><i></i> Live prototype</span>
+      <span class="spacer"></span>
+      <a class="openfull" href="version-b.html" target="_blank" rel="noopener">Open full ↗</a>
+    </div>
+    <div class="stage">
+      <div class="loading">Loading prototype…</div>
+      <iframe data-src="version-b.html" title="Direction B — live prototype" loading="lazy"></iframe>
+    </div>
+  </section>
+
+  <!-- 6 · Direction C -->
+  <section class="slide">
+    <div class="shead"><div class="eyebrow">Direction C · our recommendation</div><h2>Ask the advisor</h2></div>
+    <div class="split narrow-left" style="direction:rtl;">
+      <div class="dmeta" style="direction:ltr;">
+        <div class="badge-lg">C</div>
+        <div class="kv">
+          <div class="row"><div class="k">Leads with</div><div class="v">One prominent <b>ask box</b> — describe the challenge in plain language.</div></div>
+          <div class="row"><div class="k">Returns</div><div class="v">A written advisor <b>read</b>, a placement on the <b>ADKAR</b> model, and a prescribed training path.</div></div>
+          <div class="row"><div class="k">Strength</div><div class="v">Delivers the job directly: describe → confident path, reasoning first.</div></div>
+          <div class="row"><div class="k">Trade-off</div><div class="v">Boldest departure from today's store — the highest-upside bet.</div></div>
+        </div>
+        <div class="chips"><span class="chip">Single ask box</span><span class="chip">Advisor read</span><span class="chip">ADKAR map</span><span class="chip">Learning path</span></div>
+      </div>
+      <div style="direction:ltr;">
+        <div class="frame cropped"><div class="bar"><i></i><i></i><i></i><span class="url">prosci.com · course finder</span></div><img src="previews/version-d.png" alt="Direction C — ask the advisor" /></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Direction C · live -->
+  <section class="slide live">
+    <div class="liveband">
+      <span class="badge-sm">C</span>
+      <h2>Ask the advisor</h2>
+      <span class="live-dot"><i></i> Live prototype</span>
+      <span class="spacer"></span>
+      <a class="openfull" href="version-d/index.html" target="_blank" rel="noopener">Open full ↗</a>
+    </div>
+    <div class="stage">
+      <div class="loading">Loading prototype…</div>
+      <iframe data-src="version-d/index.html" title="Direction C — live prototype" loading="lazy"></iframe>
+    </div>
+  </section>
+
+  <!-- 7 · At a glance -->
+  <section class="slide">
+    <div class="shead"><div class="eyebrow">At a glance</div><h2>How the three <em>compare</em>.</h2></div>
+    <table class="ctable">
+      <thead>
+        <tr>
+          <th class="col-label"></th>
+          <th>A · Photo cards</th>
+          <th>B · Reasoning cards</th>
+          <th class="win">C · Ask the advisor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>Entry point</th><td>Browse a smart catalog</td><td>Browse, with rationale</td><td class="win"><b>Describe in one box</b></td></tr>
+        <tr><th>Where reasoning lives</th><td>A match pill</td><td>On each card</td><td class="win"><b>The whole experience</b></td></tr>
+        <tr><th>Who assembles the answer</th><td>The buyer</td><td>The buyer</td><td class="win"><b>The advisor</b></td></tr>
+        <tr><th>Feels like</th><td>Today's store, smarter</td><td>A guided shortlist</td><td class="win"><b>A consultant</b></td></tr>
+        <tr><th>Adoption risk</th><td>Lowest</td><td>Moderate</td><td class="win"><b>Boldest · highest upside</b></td></tr>
+      </tbody>
+    </table>
+    <p class="muted" style="margin-top:18px; font-size:0.9rem;">All three are real, clickable prototypes built on the same system — the choice is a strategic one, not a technical one.</p>
+  </section>
+
+  <!-- 8 · Recommendation -->
+  <section class="slide">
+    <div class="recogrid">
+      <div>
+        <div class="pill-rec">★ Our recommendation</div>
+        <h2 style="margin-bottom:14px;">Lead with <em>Ask the advisor</em>.</h2>
+        <p class="lead">It's the only direction that delivers the job to be done end-to-end — and it's the one that turns "Prosci has courses" into "Prosci understood my problem." The card patterns from A and B fold neatly into its results.</p>
+      </div>
+      <div class="reasons">
+        <div class="reason"><h3>Describe, don't navigate</h3><p>One plain-language box replaces filters and taxonomy entirely.</p><span class="tie">Maps to principle 2</span></div>
+        <div class="reason"><h3>Reasoning is the whole product</h3><p>An advisor read plus an ADKAR placement — the rationale <em>is</em> the experience.</p><span class="tie">Maps to principle 1</span></div>
+        <div class="reason"><h3>Confidence is the deliverable</h3><p>A prescribed path, not a list to sift — the buyer leaves decided.</p><span class="tie">Maps to principle 4</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 · Next steps -->
+  <section class="slide">
+    <div class="shead"><div class="eyebrow">Where we go next</div><h2>From prototype to <em>live</em>.</h2></div>
+    <div class="steps">
+      <div class="step"><div class="num">01</div><h3>Pick the direction</h3><p>Confirm Ask the advisor (or a blend) so we can lock the experience and scope.</p></div>
+      <div class="step"><div class="num">02</div><h3>Wire the real advisor</h3><p>Connect live AI to the Prosci catalog and ADKAR model, replacing today's demo data.</p></div>
+      <div class="step"><div class="num">03</div><h3>Instrument confidence</h3><p>Measure decisive course selection and enrollment — the outcome that matters.</p></div>
+    </div>
+    <div class="closer">
+      <p>You've reviewed all three live · AI recommendation and matching shown as demo data.</p>
+      <a class="cta" href="index.html" target="_blank" rel="noopener">Browse the hub →</a>
+    </div>
+  </section>
+
+</div>
+
+<div class="nav">
+  <button onclick="prev()" aria-label="Previous slide">←</button>
+  <span class="counter"><span id="cur">1</span> / <span id="tot">9</span></span>
+  <button onclick="next()" aria-label="Next slide">→</button>
+</div>
+
+<script>
+  var current = 1;
+  var slides = document.querySelectorAll('.slide');
+  var total = slides.length;
+  document.getElementById('tot').textContent = total;
+
+  function show(n) {
+    if (n < 1) n = 1; if (n > total) n = total;
+    current = n;
+    slides.forEach(function (s, i) { s.classList.toggle('active', i === n - 1); });
+    document.getElementById('cur').textContent = n;
+    document.getElementById('progress').style.width = (n / total * 100) + '%';
+
+    /* Lazy-load the live prototype on the active slide, only once. */
+    var frame = slides[n - 1].querySelector('iframe[data-src]');
+    if (frame && !frame.getAttribute('src')) {
+      var stage = frame.closest('.stage');
+      frame.addEventListener('load', function () { if (stage) stage.classList.add('ready'); }, { once: true });
+      frame.setAttribute('src', frame.getAttribute('data-src'));
+    }
+  }
+  function next() { show(current + 1); }
+  function prev() { show(current - 1); }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+  });
+
+  /* Cover swarm field — echoes the Swarming mark */
+  (function () {
+    var swarm = document.getElementById('swarm');
+    if (!swarm) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var dots = [];
+    for (var i = 0; i < 150; i++) {
+      var x = Math.pow(Math.random(), 0.75);
+      if (Math.random() > 0.30 + x * 0.70) continue;
+      var y = Math.random();
+      var size = (1 + Math.random() * Math.random() * 4.5).toFixed(1);
+      var op = (0.10 + Math.random() * 0.5).toFixed(2);
+      var yellow = Math.random() < 0.17;
+      var anim = reduce ? '' :
+        'animation-duration:' + (6 + Math.random() * 9).toFixed(2) + 's;' +
+        'animation-delay:' + (-Math.random() * 9).toFixed(2) + 's;';
+      dots.push('<span style="left:' + (x*100).toFixed(2) + '%;top:' + (y*100).toFixed(2) +
+        '%;width:' + size + 'px;height:' + size + 'px;opacity:' + op +
+        ';background:' + (yellow ? 'var(--yellow)' : 'var(--cream)') + ';' + anim + '"></span>');
+    }
+    swarm.innerHTML = dots.join('');
+  })();
+
+  show(1);
+</script>
+</body>
+</html>
