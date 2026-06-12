@@ -877,8 +877,6 @@
   var clearAll = document.getElementById("clear-all");
 
   var STRONG_THRESHOLD = 70;
-  var hasSearchedSeg = false;
-
   /* ---- Audience segment (Enterprise / Individual) ---- */
   var SEG_BONUS = 8, SEG_PENALTY = 12;
   var SEG = {
@@ -906,7 +904,7 @@
     try { localStorage.setItem("prosci-segment", seg); } catch (e) {}
     document.querySelectorAll(".seg-input").forEach(function (i) { i.checked = (i.value === seg); });
     document.querySelectorAll(".seg-help").forEach(function (h) { h.textContent = SEG[seg].help; });
-    if (rerender && hasSearchedSeg) { aiBody.innerHTML = pickAnswer(railQ.value); renderList(); }
+    if (rerender && hasSearched) { aiBody.innerHTML = pickAnswer(railQ.value); renderList(); }
   }
   var hasSearched = false;
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1095,7 +1093,6 @@
   }
 
   function pickAnswer(text) {
-    hasSearchedSeg = true;
     var t = text.toLowerCase();
     var base = ANSWER;
     if (t.indexOf("manager") > -1 && t.indexOf("resist") > -1) base = ANSWER_MGR;
